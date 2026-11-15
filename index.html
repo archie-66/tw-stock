@@ -120,6 +120,34 @@ body.simple .adv{display:none!important}
 .sbtn{flex-shrink:0;border:0;background:var(--accentbg);color:var(--accent);font:inherit;font-size:13px;font-weight:700;padding:7px 12px;border-radius:999px;transition:transform .15s}
 .sbtn:active{transform:scale(.94)}
 .empty{text-align:center;color:var(--mute);font-size:14px;padding:18px 0}
+.lvl{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--downbg);color:var(--down);transition:all .3s}
+.lvl[data-lv="2"]{background:var(--accentbg);color:var(--accent)}.lvl[data-lv="3"]{background:var(--upbg);color:var(--up)}
+.lvbar{height:6px;border-radius:999px;background:var(--line);overflow:hidden;margin-top:8px}
+.lvbar div{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--up));border-radius:999px;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.qtabs button.on,.mini2 button.on{background:var(--card);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.qtabs{margin:12px 0 10px}.mini2{margin:0 0 10px}
+.nbadge{display:inline-block;min-width:18px;padding:0 5px;border-radius:999px;background:var(--up);color:#fff;font-size:11px;line-height:18px}
+.dots span.ok{background:var(--down)}.dots span.ng{background:var(--up)}
+.btn.ghost{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+.row2{display:flex;gap:8px;justify-content:center;margin-top:8px}
+.big-emoji{font-size:48px;line-height:1.2}
+.pop-in{animation:pop .5s cubic-bezier(.3,1.6,.5,1)}
+.cf{position:absolute;top:-10px;width:8px;height:12px;border-radius:2px;animation:fall 1.5s ease-in forwards;pointer-events:none}
+@keyframes fall{to{transform:translate(var(--dx),420px) rotate(540deg);opacity:0}}
+.flip{perspective:900px;height:200px;cursor:pointer;transition:transform .3s,opacity .3s}
+.flip.gone{transform:translateX(60px) scale(.9);opacity:0}
+.fin{position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.3,1.3,.5,1);transform-style:preserve-3d}
+.flip.flipped .fin{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:18px;padding:16px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:linear-gradient(135deg,var(--accentbg),var(--bg));border:1px solid var(--line)}
+.face.back{transform:rotateY(180deg);background:var(--bg);align-items:flex-start;text-align:left}
+.face p{margin:6px 0;font-size:14px;line-height:1.65}
+.ftag{font-size:11px;color:var(--mute);margin-bottom:6px}
+.ftitle{font-size:22px;font-weight:900;margin-bottom:6px}.ftitle.sm{font-size:16px;margin:0}
+.feg{font-size:13px;color:var(--accent);background:var(--accentbg);border-radius:10px;padding:6px 10px}
+.revnav{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.revnav .btn{padding:8px 18px}.revnav .btn:disabled{opacity:.3}
+.okbtn{width:100%;margin-top:10px;background:var(--down)}
+[hidden]{display:none!important}
 /* learn */
 .chat{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;padding:2px}
 .bub{max-width:88%;padding:9px 12px;border-radius:16px;font-size:14px;line-height:1.65;animation:pop .3s cubic-bezier(.3,1.4,.5,1)}
@@ -277,13 +305,31 @@ footer a{color:var(--mute)}
       <div class="quick" id="quick"></div>
       <form class="askrow" id="askForm"><input id="askQ" placeholder="例如：成交量大代表什麼？" autocomplete="off"><button class="btn">問</button></form>
     </div>
-    <div class="card" style="--i:1">
-      <h2>🎯 小測驗</h2>
-      <div class="dots" id="qDots"></div>
-      <div class="q" id="qText"></div>
-      <div class="opts" id="qOpts"></div>
-      <div class="fb" id="qFb"></div>
-      <div class="foot"><span class="sub" id="qScore"></span><button class="btn" id="qNext" disabled>下一題 →</button></div>
+    <div class="card" style="--i:1;position:relative;overflow:hidden" id="quizCard">
+      <div class="hrow"><h2>🎯 小測驗</h2><span class="lvl" id="lvBadge"></span></div>
+      <div class="lvbar"><div id="lvFill"></div></div>
+      <div class="sub" id="lvTxt" style="margin-top:4px"></div>
+      <div class="seg qtabs"><button class="on" id="tabQuiz">測驗</button><button id="tabRev">觀念複習 <span class="nbadge" id="wrongN"></span></button></div>
+      <div id="quizView">
+        <div id="qStart"></div>
+        <div id="qPlay" hidden>
+          <div class="dots" id="qDots"></div>
+          <div class="q" id="qText"></div>
+          <div class="opts" id="qOpts"></div>
+          <div class="fb" id="qFb"></div>
+          <div class="foot"><span></span><button class="btn" id="qNext" disabled>下一題 →</button></div>
+        </div>
+        <div id="qEnd" hidden style="text-align:center"></div>
+      </div>
+      <div id="revView" hidden>
+        <div class="seg mini2" id="revSeg"><button class="on" data-f="all">全部觀念</button><button data-f="weak">要加強</button></div>
+        <div id="revEmpty" class="empty" hidden>🎉 目前沒有要加強的觀念<br><span class="sub">測驗答錯的觀念會自動放進來</span></div>
+        <div id="revBody">
+          <div class="flip" id="flip"><div class="fin"><div class="face" id="fFront"></div><div class="face back" id="fBack"></div></div></div>
+          <div class="revnav"><button class="btn ghost" id="revPrev">←</button><span class="sub" id="revPos"></span><button class="btn ghost" id="revNext">→</button></div>
+          <button class="btn okbtn" id="revOk" hidden>✅ 我記住了</button>
+        </div>
+      </div>
     </div>
     <div class="card" style="--i:2">
       <h2>📖 名詞小辭典</h2>
@@ -524,34 +570,6 @@ requestAnimationFrame(()=>moveKnob(segBtns[0]));
 /* ---------- 辭典 ---------- */
 $("dict").innerHTML=DICT.map(d=>`<details><summary>${d[0]}</summary><p>${d[1]}</p></details>`).join("");
 
-/* ---------- 測驗（選項位置打亂，正解不一定最長）---------- */
-const QUIZ=[
-  {q:"在台股的看盤軟體裡，紅色代表什麼？",o:["下跌","上漲","沒有變化"],a:1,e:"台股紅色＝漲、綠色＝跌，跟美股剛好相反。"},
-  {q:"指數比昨天漲，但收盤比今天開盤低，K 棒會是？",o:["紅 K","綠（黑）K","不會畫出來"],a:1,e:"K 棒顏色比的是「今天開盤」，漲跌比的是「昨天收盤」。"},
-  {q:"1 張股票等於幾股？",o:["100 股","10 股","1,000 股"],a:2,e:"台股 1 張＝1,000 股，不到 1 張的就是零股。"},
-  {q:"上漲 800 家、下跌 200 家，氣氛比較像？",o:["只有少數大公司在撐，其他大多下跌","多數股票都漲","大家都在觀望"],a:1,e:"約 8 成股票上漲，是全面上漲的一天。"},
-  {q:"「外資買超 288 億」的意思是？",o:["外資今天總共買了 288 億","外資買進比賣出多 288 億","外資今天賺了 288 億"],a:1,e:"買超是「買進減賣出」的差額。"},
-  {q:"台股一天最多可以漲多少？",o:["10%","沒有上限","5%"],a:0,e:"漲跌幅限制是 10%，碰到就是漲停或跌停。"},
-  {q:"名字有「正2」的 ETF 是什麼？",o:["配息兩次的 ETF","漲跌約為指數 2 倍的槓桿 ETF","第二檔上市的 ETF"],a:1,e:"正2 是槓桿型，波動比一般 ETF 大很多。"},
-  {q:"台股一般交易時間是？",o:["8:00～12:00","9:00～13:30","9:30～16:00"],a:1,e:"週一到週五 9:00 開盤，13:30 收盤。"}
-];
-let qi=0,score=0,answered=false,done=false;
-$("qDots").innerHTML=QUIZ.map(()=>"<span></span>").join("");
-function showQ(){
-  const q=QUIZ[qi];answered=false;
-  [...$("qDots").children].forEach((d,i)=>d.classList.toggle("on",i===qi));
-  $("qText").textContent=q.q;$("qFb").textContent="";$("qNext").disabled=true;$("qNext").textContent=qi===QUIZ.length-1?"看成績":"下一題 →";
-  $("qOpts").innerHTML=q.o.map((o,i)=>`<button data-i="${i}">${o}</button>`).join("");
-  $("qOpts").querySelectorAll("button").forEach(b=>b.onclick=()=>{if(answered)return;answered=true;const i=+b.dataset.i;$("qOpts").children[q.a].classList.add("right");
-    if(i===q.a){score++;$("qFb").innerHTML=`<b class="down">答對了！</b> ${q.e}`}else{b.classList.add("wrong");$("qFb").innerHTML=`<b class="up">差一點～</b> ${q.e}`}
-    $("qScore").textContent=`${score} 分`;$("qNext").disabled=false;});
-}
-$("qNext").onclick=()=>{
-  if(done){qi=0;score=0;done=false;$("qScore").textContent="";showQ();return}
-  if(qi<QUIZ.length-1){qi++;showQ()}else{done=true;$("qText").textContent=`答對 ${score} / ${QUIZ.length} 題 ${score===QUIZ.length?"🎉 全對！":score>=5?"👍 很不錯":"💪 看看辭典再挑戰一次"}`;$("qOpts").innerHTML="";$("qFb").textContent="";$("qNext").textContent="再玩一次"}
-};
-showQ();
-
 /* ---------- 內建問答（不用 Claude） ---------- */
 const FAQ=[
   {k:["大盤","今天","怎麼樣","盤勢","指數","漲多少","跌多少"],q:"今天大盤怎麼樣？",a:()=>`今天加權指數收 ${fmt(D.idx.close)}，${D._ch>=0?"上漲":"下跌"} ${fmt(Math.abs(D._ch))} 點（${D._pct.toFixed(2)}%）。${D.breadth?`上漲 ${D.breadth.up} 家、下跌 ${D.breadth.down} 家。`:""}詳細可以看「大盤」和「熱度」頁。`},
@@ -593,5 +611,6 @@ load().then(()=>{
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&D){const age=Date.now()-new Date(D.updatedAt.replace(" ","T")+"+08:00");if(age>3*3600e3)load()}});
 if("serviceWorker" in navigator&&location.hostname.endsWith("github.io")){navigator.serviceWorker.register("sw.js").catch(()=>{})}
 </script>
+<script src="quiz.js"></script>
 </body>
 </html>
