@@ -33,7 +33,7 @@ var STATIC={
 "例如：成交量大代表什麼？":"e.g. What does high volume mean?","問":"Ask","🎯 小測驗":"🎯 Quiz","測驗":"Quiz","觀念複習":"Review","下一題 →":"Next →","全部觀念":"All concepts","要加強":"Needs work",
 "🎉 目前沒有要加強的觀念":"🎉 Nothing to work on right now","測驗答錯的觀念會自動放進來":"Concepts you miss in the quiz show up here","✅ 我記住了":"✅ Got it","📖 名詞小辭典":"📖 Glossary",
 "學習工具，只描述「發生了什麼」，":"A learning tool that only describes what happened. ","不是投資建議":"Not investment advice","，也不預測股價。":", and no price predictions.",
-"每個交易日約 15:20 自動更新（收盤 13:30，法人資料約 15:00 公布）。":"Updates automatically around 3:20 pm (Taipei) every trading day. The market closes at 1:30 pm; institutional data comes out around 3:00 pm.",
+"每個交易日收盤後自動更新：股價約 14:00～14:30、法人資料約 15:00～15:30（開著 App 也會自己更新）。":"Updates automatically after the close each trading day: prices around 2:00–2:30 pm, institutional data around 3:00–3:30 pm (Taipei). It also refreshes itself while open.",
 "資料來源：":"Data: ","設計參考：投資先生 App 簡易模式、quants.tw。":"Design inspired by the Mr. Investment app's simple mode and quants.tw.",
 "模擬":"Practice","← 左右滑動換頁 →":"← Swipe to change pages →","外觀":"Appearance","跟隨系統":"System","淺色":"Light","深色":"Dark","漲跌顏色":"Up/down colors",
 "台股":"Taiwan","漲":"up","跌":"down","國際":"Global","顯示內容":"Detail level","設定只存在這台裝置上。":"Settings are saved on this device only.","語言":"Language"

@@ -77,6 +77,11 @@ def main():
     except Exception:
         old = {}
 
+    # 今天的完整資料已經有了就不用再抓（每 15 分鐘會跑一次）
+    if old.get("date") == today and old.get("complete"):
+        print("今天的資料已經完整，不用更新。")
+        return 0
+
     # 1) 大盤：成交量、成交金額、收盤、漲跌（FMTQIK，當月每日）
     fm = get(f"{BASE}/afterTrading/FMTQIK?date={ymd}&response=json")
     rows = [r for (_, f, d) in tables(fm) for r in d] if fm and fm.get("stat") == "OK" else []
@@ -146,6 +151,9 @@ def main():
                 elif "持平" in k: b["flat"] = int(v or 0)
             if "up" in b:
                 breadth = b
+    if not stocks:
+        print("個股收盤行情還沒公布，等下一次再試。")
+        return 0
     if breadth is None and stocks:  # 備用：自己數
         breadth = {"up": sum(1 for s in stocks if s[5] > 0), "down": sum(1 for s in stocks if s[5] < 0),
                    "flat": sum(1 for s in stocks if s[5] == 0)}
@@ -181,12 +189,16 @@ def main():
     inst_hist = [h for h in old.get("instHistory", []) if h.get("date") != today]
     if inst:
         inst_hist.append({"date": today, **inst})
+    elif old.get("date") == today and old.get("inst"):  # 不要把已經抓到的法人資料蓋掉
+        inst = old["inst"]
+        inst_hist.append({"date": today, **inst})
     inst_hist = inst_hist[-KEEP:]
 
     out = {
         "date": today,
         "weekday": "一二三四五六日"[now.weekday()],
         "updatedAt": now.strftime("%Y-%m-%d %H:%M"),
+        "complete": bool(inst and idx["open"] is not None and breadth),
         "idx": idx,
         "amount": round((num(r[i_amt]) or 0) / 1e8, 2),
         "shares": int((num(r[i_sh]) or 0) / 1000),

@@ -2,16 +2,24 @@ name: 每日更新台股資料
 
 on:
   schedule:
-    - cron: "20 7 * * 1-5"   # 台北時間 15:20（週一～五）
-    - cron: "50 8 * * 1-5"   # 台北時間 16:50 再試一次（萬一第一次資料還沒出來）
+    # 台北時間 13:37～17:52 每 15 分鐘檢查一次（週一～五）
+    # 收盤行情約 14:00 出來、三大法人約 15:00 出來；資料完整後就不會再更新。
+    # 故意避開整點：GitHub 整點排程最容易塞車延遲。
+    - cron: "37,52 5 * * 1-5"
+    - cron: "7,22,37,52 6-9 * * 1-5"
   workflow_dispatch:          # 也可以在 Actions 頁面手動按「Run workflow」
 
 permissions:
   contents: write
 
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -24,4 +32,8 @@ jobs:
           git config user.name "stock-bot"
           git config user.email "stock-bot@users.noreply.github.com"
           git add data.json
-          git diff --cached --quiet || (git commit -m "更新台股資料 $(TZ=Asia/Taipei date +%F)" && git push)
+          if ! git diff --cached --quiet; then
+            git commit -m "更新台股資料 $(TZ=Asia/Taipei date '+%F %H:%M')"
+            git pull --rebase -q origin main
+            git push
+          fi

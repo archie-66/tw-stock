@@ -445,7 +445,7 @@ footer a{color:var(--mute)}
     </div>
     <footer class="card" style="--i:3;background:none;border:0;box-shadow:none">
       學習工具，只描述「發生了什麼」，<b>不是投資建議</b>，也不預測股價。<br>
-      每個交易日約 15:20 自動更新（收盤 13:30，法人資料約 15:00 公布）。<br>
+      每個交易日收盤後自動更新：股價約 14:00～14:30、法人資料約 15:00～15:30（開著 App 也會自己更新）。<br>
       資料來源：<span id="srcs"></span><br>設計參考：投資先生 App 簡易模式、quants.tw。
     </footer>
   </div></section>
@@ -593,7 +593,20 @@ async function load(){
   catch(e){$("dateLine").textContent=t("讀不到資料，稍後再按 ↻ 試試","Couldn't load data. Tap ↻ to try again later.");}
   $("refresh").classList.remove("spin");
 }
-$("refresh").onclick=()=>{load().then(()=>{pages.forEach(p=>p.classList.remove("live"));requestAnimationFrame(()=>{cur=-1;onScroll()})})};
+const refreshNow=()=>load().then(()=>{pages.forEach(p=>p.classList.remove("live"));requestAnimationFrame(()=>{cur=-1;onScroll()})});
+$("refresh").onclick=refreshNow;
+/* 收盤後（台北 13:40～19:00）資料還不是今天的完整版，就每 5 分鐘自己去拿 */
+function needFresh(){
+  const tp=new Date(Date.now()+8*3600e3),wd=tp.getUTCDay(),m=tp.getUTCHours()*60+tp.getUTCMinutes();
+  if(wd<1||wd>5||m<13*60+40||m>19*60)return false;
+  return !D||D.date!==tp.toISOString().slice(0,10)||!D.complete;
+}
+async function autoCheck(){
+  if(document.hidden||!needFresh())return;
+  const before=D&&D.updatedAt;
+  try{const r=await fetch("data.json?t="+Date.now(),{cache:"no-store"});const nd=await r.json();if(nd.updatedAt!==before){D=nd;render();pages.forEach(p=>p.classList.remove("live"));requestAnimationFrame(()=>{cur=-1;onScroll()})}}catch(e){}
+}
+setInterval(autoCheck,5*60e3);
 
 function render(){
   const I=D.idx, ch=I.close-I.prev, pct=ch/I.prev*100;
@@ -676,6 +689,9 @@ function render(){
     $("instNote").innerHTML=note;
     if(IH.length>=2){$("streaks").innerHTML=Object.keys(nm).map(k=>`<div style="display:flex;align-items:center;gap:10px;margin:8px 0"><b style="width:${EN?96:52}px;font-size:13px">${nm[k]}</b><div class="streak">${IH.map(x=>`<span title="${x.date}" style="background:${x[k]>=0?"var(--up)":"var(--down)"};opacity:${.35+.65*Math.min(1,Math.abs(x[k])/150)}"></span>`).join("")}</div></div>`).join("")+`<div class="sub">${IH[0].date.slice(5)} → ${IH[IH.length-1].date.slice(5)}</div>`}
     else $("streaks").innerHTML=`<div class="sub">${t("資料累積 2 天以上就會出現。","Shows up after 2+ days of data.")}</div>`;
+  } else {
+    $("inst").innerHTML="";
+    $("instNote").innerHTML=t("今天的法人買賣資料大約 15:00 公布，公布後 App 會自動更新。","Today's institutional data comes out around 3:00 pm. The app will update automatically.");
   }
 
   /* 個股 */
@@ -797,7 +813,7 @@ const FAQ=EN?[
   {k:["why","reason","cause"],q:"Why did the market go up/down today?",a:()=>"This app shows what happened (the numbers). For the why, check the news — global markets, big announcements, earnings. Search \"Taiwan stocks close\" and compare with the numbers here."},
   {k:["practice","paper","simulat","fake","order"],q:"How do I use paper trading?",a:()=>"Open the Practice tab, search a stock, choose buy or sell and round or odd lot, and you'll see the full cost with fees and tax. It uses fake money and the latest close, so practice freely 💪"},
   {k:["watchlist","star","favorite","follow"],q:"How do I add to my watchlist?",a:()=>"On the Stocks page, tap the ☆ next to a stock's name in the ranking or search results. It will appear in the Watchlist at the top."},
-  {k:["hour","time","open","close","when","update"],q:"When does the app update?",a:()=>"Taiwan stocks trade 9:00 am – 1:30 pm (Taipei). Institutional data comes out around 3:00 pm, so the app updates around 3:20 pm on trading days. No update on holidays."}
+  {k:["hour","time","open","close","when","update"],q:"When does the app update?",a:()=>"Taiwan stocks trade 9:00 am – 1:30 pm (Taipei). After the close the app checks every 15 minutes: prices update around 2:00–2:30 pm and institutional data around 3:00–3:30 pm. No update on holidays."}
 ]:[
   {k:["大盤","今天","怎麼樣","盤勢","指數","漲多少","跌多少"],q:"今天大盤怎麼樣？",a:()=>`今天加權指數收 ${fmt(D.idx.close)}，${D._ch>=0?"上漲":"下跌"} ${fmt(Math.abs(D._ch))} 點（${D._pct.toFixed(2)}%）。${D.breadth?`上漲 ${D.breadth.up} 家、下跌 ${D.breadth.down} 家。`:""}詳細可以看「大盤」和「熱度」頁。`},
   {k:["k","K","紅","綠","黑","顏色","k棒","K棒"],q:"K 棒的紅綠跟漲跌有什麼不同？",a:()=>`K 棒顏色是「收盤 vs 今天開盤」，漲跌是「收盤 vs 昨天收盤」。今天開 ${fmt(D.idx.open)}、收 ${fmt(D.idx.close)}，所以是${kName(D.idx.close>=D.idx.open)}；跟昨天比則是${D._ch>=0?"漲":"跌"}。兩者可以不一樣喔！`},
@@ -814,7 +830,7 @@ const FAQ=EN?[
   {k:["為什麼","原因","why"],q:"為什麼今天會漲/跌？",a:()=>"這個 App 顯示的是「發生了什麼」（數字），原因通常要看新聞，例如國際股市、重大消息、財報。可以搜尋「台股 收盤」看當天的新聞整理，再對照這裡的數字。"},
   {k:["模擬","練習","下單","假錢"],q:"模擬交易怎麼用？",a:()=>"到「模擬」頁搜尋一檔股票，選買進或賣出、整張或零股，就會看到要付多少錢（含手續費和稅）。用的是假錢和最新收盤價，可以放心練習 💪"},
   {k:["自選","收藏","關注","星星"],q:"自選股怎麼加？",a:()=>"在「個股」頁的排行或搜尋結果，點股票名稱旁的 ☆ 就會加入，最上面的「自選股」就看得到它每天的漲跌。"},
-  {k:["幾點","時間","開盤","收盤","什麼時候","更新"],q:"什麼時候會更新？",a:()=>"台股 9:00 開盤、13:30 收盤；三大法人資料約 15:00 公布，所以這個 App 在每個交易日約 15:20 自動更新。假日沒開盤就不會更新。"}
+  {k:["幾點","時間","開盤","收盤","什麼時候","更新"],q:"什麼時候會更新？",a:()=>"台股 9:00 開盤、13:30 收盤；三大法人資料約 15:00 公布，所以這個 App 收盤後會每 15 分鐘檢查一次：股價大約 14:00～14:30 更新、法人資料大約 15:00～15:30 補上。假日沒開盤就不會更新。"}
 ];
 function answer(q){
   const s=q.toLowerCase();let best=null,bs=0;
@@ -837,7 +853,7 @@ load().then(()=>{
   if(!store.get("twswiped")){$("hintswipe").classList.add("show");setTimeout(()=>$("hintswipe").classList.remove("show"),3500)}
   pager.addEventListener("scroll",()=>store.set("twswiped","1"),{once:true});
 });
-document.addEventListener("visibilitychange",()=>{if(!document.hidden&&D){const age=Date.now()-new Date(D.updatedAt.replace(" ","T")+"+08:00");if(age>3*3600e3)load()}});
+document.addEventListener("visibilitychange",()=>{if(document.hidden||!D)return;const age=Date.now()-new Date(D.updatedAt.replace(" ","T")+"+08:00");if(needFresh())autoCheck();else if(age>3*3600e3)refreshNow()});
 if("serviceWorker" in navigator&&location.hostname.endsWith("github.io")){navigator.serviceWorker.register("sw.js").catch(()=>{})}
 </script>
 <script src="quiz.js"></script>
