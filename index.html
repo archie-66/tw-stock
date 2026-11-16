@@ -16,15 +16,15 @@
 <style>
 :root{
   --bg:#f4f1ea; --card:#fffdf9; --ink:#22242a; --mute:#7a7a82; --line:#e8e2d6;
-  --up:#e0384b; --upbg:#fde9eb; --down:#1f9a5a; --downbg:#e3f5ea; --flat:#9a9aa0;
+  --red:#e0384b; --redbg:#fde9eb; --green:#1f9a5a; --greenbg:#e3f5ea; --flat:#9a9aa0;
+  --up:var(--red); --upbg:var(--redbg); --down:var(--green); --downbg:var(--greenbg);
   --accent:#3e63dd; --accentbg:#eaefff; --warnbg:#fff3dc;
   --r:20px; --tabh:64px;
   --st:env(safe-area-inset-top,0px); --sb:env(safe-area-inset-bottom,0px);
 }
-@media (prefers-color-scheme:dark){
-  :root{--bg:#131418;--card:#1d1f25;--ink:#f1f1f4;--mute:#9b9ba5;--line:#2b2e36;
-  --upbg:#3b1a20;--downbg:#14301f;--accentbg:#1e2547;--warnbg:#3a2d14;--up:#ff5d70;--down:#3fd081;--accent:#8aa2ff}
-}
+:root[data-theme="dark"]{--bg:#131418;--card:#1d1f25;--ink:#f1f1f4;--mute:#9b9ba5;--line:#2b2e36;--redbg:#3b1a20;--greenbg:#14301f;--accentbg:#1e2547;--warnbg:#3a2d14;--red:#ff5d70;--green:#3fd081;--accent:#8aa2ff;color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#131418;--card:#1d1f25;--ink:#f1f1f4;--mute:#9b9ba5;--line:#2b2e36;--redbg:#3b1a20;--greenbg:#14301f;--accentbg:#1e2547;--warnbg:#3a2d14;--red:#ff5d70;--green:#3fd081;--accent:#8aa2ff;color-scheme:dark}}
+:root[data-color="intl"]{--up:var(--green);--upbg:var(--greenbg);--down:var(--red);--downbg:var(--redbg)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
 body.simple .adv{display:none!important}
@@ -69,8 +69,8 @@ body.simple .adv{display:none!important}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 .stat{border:1px solid var(--line);border-radius:14px;padding:10px}
 .stat .k{font-size:12px;color:var(--mute)}.stat .v{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}
-.pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--up);margin-right:6px;animation:pulse 1.6s infinite}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(224,56,75,.5)}70%{box-shadow:0 0 0 8px rgba(224,56,75,0)}100%{box-shadow:0 0 0 0 rgba(224,56,75,0)}}
+.pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:6px;animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 50%,transparent)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
 
 /* charts */
 #hist{width:100%;height:110px;display:block;margin-top:6px}
@@ -85,7 +85,7 @@ body.simple .adv{display:none!important}
 .legend{font-size:13px;line-height:1.9}
 .breadth{display:flex;height:30px;border-radius:10px;overflow:hidden;margin:8px 0;background:var(--line)}
 .breadth div{display:grid;place-items:center;color:#fff;font-size:12px;font-weight:700;width:0;transition:width 1s cubic-bezier(.2,.8,.2,1)}
-.thermo{position:relative;height:12px;border-radius:999px;background:linear-gradient(90deg,#1f9a5a,#cfcfcf 50%,#e0384b);margin:20px 0 6px}
+.thermo{position:relative;height:12px;border-radius:999px;background:linear-gradient(90deg,var(--down),#cfcfcf 50%,var(--up));margin:20px 0 6px}
 .thermo .dot{position:absolute;top:50%;left:50%;width:22px;height:22px;border-radius:50%;background:var(--card);border:3px solid var(--ink);transform:translate(-50%,-50%);transition:left 1.2s cubic-bezier(.3,1.4,.5,1)}
 .bars .row{display:grid;grid-template-columns:70px 1fr 84px;align-items:center;gap:8px;margin:10px 0;font-size:14px}
 .bars .track{height:18px;background:var(--line);border-radius:8px;overflow:hidden;display:flex}
@@ -115,6 +115,10 @@ body.simple .adv{display:none!important}
 
 .search{display:flex;align-items:center;gap:8px;max-height:0;opacity:0;overflow:hidden;transition:max-height .35s cubic-bezier(.2,.8,.2,1),opacity .25s,margin .35s}
 .search.open{max-height:60px;opacity:1;margin:4px 0 10px}
+.sinput{width:100%;border:1.5px solid var(--line);border-radius:999px;background:var(--bg);color:var(--ink);font:inherit;font-size:16px;padding:9px 14px}
+#simCap button.on{background:var(--card);box-shadow:0 2px 8px rgba(0,0,0,.08);color:var(--ink);font-weight:700}
+#tSide button,#tUnit button,#simCap button,.setrow .seg button{color:var(--mute)}
+#tUnit button.on,.setrow .seg button.on{color:var(--ink);font-weight:700}
 .search input{flex:1;min-width:0;border:1.5px solid var(--accent);border-radius:999px;background:var(--bg);color:var(--ink);font:inherit;font-size:16px;padding:9px 14px}
 .hrow{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .sbtn{flex-shrink:0;border:0;background:var(--accentbg);color:var(--accent);font:inherit;font-size:13px;font-weight:700;padding:7px 12px;border-radius:999px;transition:transform .15s}
@@ -148,6 +152,57 @@ body.simple .adv{display:none!important}
 .revnav .btn{padding:8px 18px}.revnav .btn:disabled{opacity:.3}
 .okbtn{width:100%;margin-top:10px;background:var(--down)}
 [hidden]{display:none!important}
+@media (max-width:440px){.top .mode{display:none}}
+.tabs button svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s cubic-bezier(.3,1.6,.5,1)}
+.tabs button.on svg{transform:translateY(-1px) scale(1.1)}
+.icon-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.sbtn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;vertical-align:-2px;margin-right:3px}
+.star{border:0;background:none;color:var(--mute);font-size:19px;line-height:1;padding:2px 4px;margin-left:2px;vertical-align:-2px;transition:transform .25s cubic-bezier(.3,1.8,.5,1),color .2s}
+.star.on{color:#f5b400}.star.pop{transform:scale(1.45)}
+.detail .acts{display:flex;gap:8px;margin-top:8px}
+.detail .acts button{flex:1;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:13px;padding:7px;border-radius:10px}
+.wl-empty{font-size:13px;color:var(--mute);line-height:1.6}
+.legend .k{display:inline-block;width:34px;color:var(--mute)}
+/* 設定 */
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:19;opacity:0;pointer-events:none;transition:opacity .3s}
+.backdrop.show{opacity:1;pointer-events:auto}
+.setsheet{position:fixed;left:50%;bottom:0;width:min(100%,560px);transform:translate(-50%,110%);z-index:20;background:var(--card);color:var(--ink);border-radius:24px 24px 0 0;padding:10px 18px calc(var(--sb) + 22px);transition:transform .4s cubic-bezier(.2,.9,.3,1.05);box-shadow:0 -10px 40px rgba(0,0,0,.2)}
+.setsheet.show{transform:translate(-50%,0)}
+.setsheet .grab{width:40px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 12px}
+.setsheet h3{margin:0 0 4px;font-size:18px}
+.setrow{margin:16px 0 0}.setrow .lab{font-size:14px;font-weight:700;margin-bottom:6px}
+.setrow .seg{margin:0}
+.setrow .seg button.on{background:var(--card);box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.swatch{display:inline-block;width:9px;height:9px;border-radius:2px;margin:0 1px 0 4px}
+/* 模擬 */
+#simTotal{font-size:36px}
+.sugs{display:flex;flex-direction:column;gap:2px;margin-top:6px}
+.sugs button{display:flex;align-items:center;gap:6px;border:0;background:var(--bg);color:var(--ink);font:inherit;font-size:14px;padding:9px 12px;border-radius:10px;text-align:left}
+.tstock{display:flex;justify-content:space-between;align-items:center;background:var(--bg);border-radius:14px;padding:10px 12px;margin:10px 0}
+#tSide button.on{color:#fff!important}
+#tSide[data-v="buy"] button.on{background:var(--up)}#tSide[data-v="sell"] button.on{background:var(--down)}
+#tUnit button.on{background:var(--card);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.stepper{display:flex;align-items:center;gap:8px;margin:10px 0 6px}
+.stepper button{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:20px}
+.stepper input{flex:1;min-width:0;text-align:center;font:inherit;font-size:20px;font-weight:700;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);padding:7px}
+.chips2{display:flex;gap:6px;flex-wrap:wrap}
+.chips2 button{border:1px solid var(--line);background:none;color:var(--ink);font:inherit;font-size:12px;padding:4px 10px;border-radius:999px}
+.prev{margin-top:12px;border-top:1px dashed var(--line);padding-top:8px;font-size:14px}
+.prev div{display:flex;justify-content:space-between;padding:3px 0}.prev span{color:var(--mute)}
+.prev .tot{border-top:1px solid var(--line);margin-top:6px;padding-top:8px;font-size:16px}.prev .tot span{color:var(--ink);font-weight:700}
+.err{color:var(--up);font-size:13px;min-height:18px;margin-top:6px}
+.gobtn{width:100%;padding:13px;font-size:16px;margin-top:4px;transition:transform .15s,background .3s}
+.gobtn.buy{background:var(--up)}.gobtn.sell{background:var(--down)}
+.gobtn.done{animation:popbtn .6s}
+@keyframes popbtn{30%{transform:scale(1.05)}60%{transform:scale(.97)}}
+.logrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.logrow:last-child{border-bottom:0}
+.tag{font-size:12px;font-weight:700;color:#fff;border-radius:6px;padding:2px 7px}.tag.buy{background:var(--up)}.tag.sell{background:var(--down)}
+.toast{position:fixed;left:50%;top:calc(var(--st) + 66px);transform:translate(-50%,-20px);background:var(--ink);color:var(--bg);font-size:14px;padding:10px 16px;border-radius:14px;z-index:30;opacity:0;pointer-events:none;transition:all .35s cubic-bezier(.3,1.4,.5,1);max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+#simEq{width:100%;height:80px;display:block}
+.page.live #simEq .ln{stroke-dasharray:1000;stroke-dashoffset:1000;animation:draw 1.2s .3s ease forwards}
+#watch .item,.item.pos{grid-template-columns:1fr auto}#watch .rk,.item.pos .rk{display:none}
 /* learn */
 .chat{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;padding:2px}
 .bub{max-width:88%;padding:9px 12px;border-radius:16px;font-size:14px;line-height:1.65;animation:pop .3s cubic-bezier(.3,1.4,.5,1)}
@@ -181,7 +236,7 @@ details p{margin:6px 0 0;font-size:14px;line-height:1.65}
 .dots span.on{background:var(--ink);transform:scale(1.25)}
 
 /* tab bar */
-.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--sb) + 10px);z-index:10;width:min(94vw,520px);height:var(--tabh);background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:22px;display:flex;padding:6px;box-shadow:0 10px 30px -12px rgba(0,0,0,.3)}
+.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--sb) + 10px);z-index:10;width:min(96vw,580px);height:var(--tabh);background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:22px;display:flex;padding:6px;box-shadow:0 10px 30px -12px rgba(0,0,0,.3)}
 .tabs .ind{position:absolute;top:6px;bottom:6px;left:6px;border-radius:16px;background:var(--ink);will-change:transform}
 .tabs button{position:relative;z-index:1;flex:1;border:0;background:none;color:var(--mute);font:inherit;font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transition:color .25s}
 .tabs button .e{font-size:19px;line-height:1;transition:transform .3s cubic-bezier(.3,1.6,.5,1)}
@@ -202,7 +257,8 @@ footer a{color:var(--mute)}
 
 <div class="top">
   <h1><span id="pgTitle">大盤</span><span class="pg" id="dateLine">載入中…</span></h1>
-  <button class="icon-btn" id="refresh" aria-label="重新整理">↻</button>
+  <button class="icon-btn" id="refresh" aria-label="重新整理"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v5h-5"/></svg></button>
+  <button class="icon-btn" id="setBtn" aria-label="設定"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
   <div class="mode"><button id="mSimple" class="on">簡易</button><button id="mAdv">進階</button></div>
 </div>
 
@@ -213,30 +269,30 @@ footer a{color:var(--mute)}
       <div class="lab"><span class="pulse"></span><span class="term" data-t="加權指數">加權指數</span>（大盤）</div>
       <div class="big" id="idxBig">--</div>
       <div class="chg" id="idxChg"></div>
-      <div class="say">💬 <span id="summary"></span></div>
+      <div class="say"><span id="summary"></span></div>
       <div class="grid">
         <div class="stat"><div class="k">昨天收盤</div><div class="v" id="prevV">--</div></div>
         <div class="stat"><div class="k" id="weekK">一週前</div><div class="v" id="weekV">--</div></div>
       </div>
     </div>
     <div class="card" style="--i:1">
-      <h2>📈 最近收盤走勢</h2>
+      <h2>最近收盤走勢</h2>
       <svg id="hist" viewBox="0 0 320 110" preserveAspectRatio="none"></svg>
       <div class="axis" id="histL"></div>
     </div>
     <div class="card" style="--i:2">
-      <h2>🕯️ 一根 <span class="term" data-t="K線">K 棒</span>看懂今天</h2>
+      <h2>一根 <span class="term" data-t="K線">K 棒</span>看懂今天</h2>
       <p class="hint">把今天的開盤、最高、最低、收盤畫成一根棒子。</p>
       <div class="candlebox"><svg id="candle" width="110" height="200" viewBox="0 0 110 200"></svg><div class="legend" id="candleLegend"></div></div>
       <div class="tip" id="candleTip"></div>
     </div>
-    <div class="warn card" style="--i:3">🔴 <b>台股顏色跟美股相反：</b>紅色＝漲、綠色＝跌。<br>👉 左右滑動可以換頁；虛線底線的字可以點。</div>
+    <div class="warn card" style="--i:3"><span id="colorNote"></span><br>左右滑動可以換頁；虛線底線的字可以點。右上角齒輪可以換深色模式和漲跌顏色。</div>
   </div></section>
 
   <!-- 2 熱度 -->
   <section class="page" data-title="熱度"><div class="inner">
     <div class="card" style="--i:0">
-      <h2>💰 今天買賣多熱絡？</h2>
+      <h2>今天買賣多熱絡？</h2>
       <p class="hint">成交量就是今天「成交了多少」。量大＝很多人在交易，量小＝大家在觀望。</p>
       <div class="grid">
         <div class="stat"><div class="k"><span class="term" data-t="成交金額">成交金額</span></div><div class="v"><span id="amtV">--</span> 億</div></div>
@@ -245,7 +301,7 @@ footer a{color:var(--mute)}
       <div class="tip" id="volTip"></div>
     </div>
     <div class="card" style="--i:1">
-      <h2>🌡️ 大家都漲，還是少數在撐？</h2>
+      <h2>大家都漲，還是少數在撐？</h2>
       <p class="hint">看 <span class="term" data-t="漲跌家數">漲跌家數</span> 才知道整體氣氛。</p>
       <div class="breadth"><div id="bUp" style="background:var(--up)"></div><div id="bFlat" style="background:var(--flat)"></div><div id="bDown" style="background:var(--down)"></div></div>
       <div style="font-size:13px" id="breadthTxt"></div>
@@ -260,18 +316,18 @@ footer a{color:var(--mute)}
   <!-- 3 法人 -->
   <section class="page" data-title="法人"><div class="inner">
     <div class="card" style="--i:0">
-      <h2>🏦 大戶在買還是在賣？</h2>
+      <h2>大戶在買還是在賣？</h2>
       <p class="hint"><span class="term" data-t="三大法人">三大法人</span>是資金最大的三種機構。<span class="term" data-t="買超">買超</span>＝買得比賣得多。</p>
       <div class="bars" id="inst"></div>
       <div class="tip"><b>今天解讀：</b><span id="instNote"></span></div>
     </div>
     <div class="card adv" style="--i:1" id="streakCard">
-      <h2>📅 最近幾天的方向</h2>
-      <p class="hint">紅格＝買超、綠格＝賣超（從這個 App 開始記錄的那天算起）。</p>
+      <h2>最近幾天的方向</h2>
+      <p class="hint" id="streakHint"></p>
       <div id="streaks"></div>
     </div>
     <div class="card" style="--i:2">
-      <h2>🤔 法人買超就代表會漲嗎？</h2>
+      <h2>法人買超就代表會漲嗎？</h2>
       <p class="hint" style="margin:0">不一定。法人買賣是「資金往哪裡去」的線索，但他們也會買錯、也會短線進出。新手可以把它當成「市場氣氛」的參考之一，而不是買賣的理由。</p>
     </div>
   </div></section>
@@ -279,24 +335,73 @@ footer a{color:var(--mute)}
   <!-- 4 個股 -->
   <section class="page" data-title="個股"><div class="inner">
     <div class="card" style="--i:0">
-      <div class="hrow"><h2>🔥 今天大家在交易什麼？</h2><button class="sbtn" id="sBtn">🔍 搜尋</button></div>
+      <div class="hrow"><h2>自選股 <span class="sub" id="wlCount"></span></h2></div>
+      <div id="watch"></div>
+    </div>
+    <div class="card" style="--i:1">
+      <div class="hrow"><h2>今天大家在交易什麼？</h2><button class="sbtn" id="sBtn"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>搜尋</button></div>
       <form class="search" id="sBox"><input id="sQ" type="search" placeholder="輸入股票代號或名稱，例如 2330、台積" autocomplete="off" enterkeyhint="search"><button type="button" class="sbtn" id="sClr">取消</button></form>
       <p class="hint" id="listHint">點一檔看白話說明。排行＝市場注意力，<b>不是推薦</b>。</p>
       <div class="seg" id="seg"><div class="knob" id="knob"></div><button class="on" data-s="amt">成交金額</button><button data-s="vol">成交張數</button><button data-s="pct">漲幅</button></div>
       <div id="list"></div>
     </div>
-    <div class="card" style="--i:1" id="moversCard">
-      <h2>🚀 今天漲最多／跌最多</h2>
+    <div class="card" style="--i:2" id="moversCard">
+      <h2>今天漲最多／跌最多</h2>
       <p class="hint">只算成交金額 1 億元以上的股票。</p>
       <div class="mini"><div class="col" id="gainers"></div><div class="col" id="losers"></div></div>
     </div>
-    <div class="card" style="--i:2">
-      <h2>💡 新手觀念</h2>
+    <div class="card" style="--i:3">
+      <h2>新手觀念</h2>
       <p class="hint" style="margin:0">高價股（像一張好幾百萬的）成交張數少但金額大；低價股張數多但金額小，所以「金額」和「張數」兩個排行會很不一樣。熱門股常常漲得快、跌得也快。</p>
     </div>
   </div></section>
 
-  <!-- 5 學習 -->
+  <!-- 5 模擬 -->
+  <section class="page" data-title="模擬交易"><div class="inner">
+    <div class="card hero" style="--i:0">
+      <div class="hrow"><div class="lab">模擬帳戶總資產</div><span class="sub" id="simInit"></span></div>
+      <div class="big" id="simTotal">--</div>
+      <div class="chg" id="simPL"></div>
+      <div class="grid">
+        <div class="stat"><div class="k">現金</div><div class="v" id="simCash">--</div></div>
+        <div class="stat"><div class="k">股票市值</div><div class="v" id="simStock">--</div></div>
+      </div>
+      <div id="simEqBox" hidden style="margin-top:12px"><div class="sub">資產變化</div><svg id="simEq" viewBox="0 0 320 80" preserveAspectRatio="none"></svg><div class="axis" id="simEqL"></div></div>
+    </div>
+    <div class="card" style="--i:1" id="orderCard">
+      <h2>練習下單</h2>
+      <p class="hint">用假錢練習，用最新收盤價成交（盤後模擬），會照真實規則扣手續費和證交稅。</p>
+      <input id="tSearch" class="sinput" type="search" placeholder="搜尋股票代號或名稱" autocomplete="off" enterkeyhint="search">
+      <div class="sugs" id="tSug"></div>
+      <div id="tEmpty" class="sub" style="margin-top:8px">先搜尋一檔股票，或到「個股」頁按「模擬買進」。</div>
+      <div class="tstock" id="tStock" hidden></div>
+      <div id="tForm" hidden>
+        <div class="seg" id="tSide" data-v="buy"><button class="on" data-v="buy">買進</button><button data-v="sell">賣出</button></div>
+        <div class="seg" id="tUnit" style="margin-top:6px"><button class="on" data-v="lot">整張（1,000 股）</button><button data-v="odd">零股（1～999 股）</button></div>
+        <div class="stepper"><button id="tMinus">−</button><input id="tQty" type="number" inputmode="numeric" min="1" max="999" value="1"><span id="tUnitLab" style="font-weight:700">張</span><button id="tPlus">＋</button></div>
+        <div class="chips2" id="tQuick"><button data-q="1">1</button><button data-q="5">5</button><button data-q="10">10</button><button data-q="100">100</button><button data-q="max">最多</button></div>
+        <div class="prev" id="tPrev"></div>
+        <div class="err" id="tErr"></div>
+        <button class="btn gobtn buy" id="tGo">確認買進</button>
+      </div>
+    </div>
+    <div class="card" style="--i:2">
+      <h2>我的持股</h2>
+      <div id="simPos"></div>
+    </div>
+    <div class="card" style="--i:3">
+      <h2>交易紀錄</h2>
+      <div id="simLog"></div>
+    </div>
+    <div class="card" style="--i:4">
+      <h2>重新開始</h2>
+      <p class="hint">清空所有持股和紀錄，用新的起始資金重來。</p>
+      <div class="seg" id="simCap"><button data-v="100000">10 萬</button><button data-v="500000">50 萬</button><button data-v="1000000">100 萬</button></div>
+      <button class="btn ghost" id="simReset" style="width:100%;margin-top:10px">重新開始</button>
+    </div>
+  </div></section>
+
+  <!-- 6 學習 -->
   <section class="page" data-title="學習"><div class="inner">
     <div class="card" style="--i:0">
       <h2>🙋 問問題</h2>
@@ -336,7 +441,7 @@ footer a{color:var(--mute)}
       <div id="dict"></div>
     </div>
     <footer class="card" style="--i:3;background:none;border:0;box-shadow:none">
-      ⚠️ 學習工具，只描述「發生了什麼」，<b>不是投資建議</b>，也不預測股價。<br>
+      學習工具，只描述「發生了什麼」，<b>不是投資建議</b>，也不預測股價。<br>
       每個交易日約 15:20 自動更新（收盤 13:30，法人資料約 15:00 公布）。<br>
       資料來源：<span id="srcs"></span><br>設計參考：投資先生 App 簡易模式、quants.tw。
     </footer>
@@ -345,13 +450,24 @@ footer a{color:var(--mute)}
 
 <nav class="tabs" id="tabs">
   <div class="ind" id="ind"></div>
-  <button class="on"><span class="e">📊</span>大盤</button>
-  <button><span class="e">🌡️</span>熱度</button>
-  <button><span class="e">🏦</span>法人</button>
-  <button><span class="e">🔥</span>個股</button>
-  <button><span class="e">📖</span>學習</button>
+  <button class="on"><svg viewBox="0 0 24 24"><path d="M3 17l5-5 4 4 8-8"/><path d="M15 8h5v5"/></svg>大盤</button>
+  <button><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v8.2a4 4 0 1 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M12 10v7"/></svg>熱度</button>
+  <button><svg viewBox="0 0 24 24"><path d="M3 10l9-6 9 6"/><path d="M5 10v8M10 10v8M14 10v8M19 10v8"/><path d="M3 20h18"/></svg>法人</button>
+  <button><svg viewBox="0 0 24 24"><path d="M7 4v16M17 4v16"/><rect x="4.5" y="8" width="5" height="8" rx="1"/><rect x="14.5" y="6" width="5" height="9" rx="1"/></svg>個股</button>
+  <button><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M7 15h4"/></svg>模擬</button>
+  <button><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/><path d="M9 7h6"/></svg>學習</button>
 </nav>
-<div class="hintswipe" id="hintswipe">👈 左右滑動換頁</div>
+<div class="hintswipe" id="hintswipe">← 左右滑動換頁 →</div>
+<div class="backdrop" id="backdrop"></div>
+<div class="setsheet" id="setSheet" role="dialog" aria-label="設定">
+  <div class="grab"></div>
+  <h3>設定</h3>
+  <div class="setrow"><div class="lab">外觀</div><div class="seg" id="setTheme"><button data-v="auto">跟隨系統</button><button data-v="light">淺色</button><button data-v="dark">深色</button></div></div>
+  <div class="setrow"><div class="lab">漲跌顏色</div><div class="seg" id="setColor"><button data-v="tw">台股 <span class="swatch" style="background:var(--red)"></span>漲 <span class="swatch" style="background:var(--green)"></span>跌</button><button data-v="intl">國際 <span class="swatch" style="background:var(--green)"></span>漲 <span class="swatch" style="background:var(--red)"></span>跌</button></div></div>
+  <div class="setrow"><div class="lab">顯示內容</div><div class="seg" id="setMode"><button data-v="s">簡易</button><button data-v="a">進階</button></div></div>
+  <p class="sub" style="margin-top:14px">設定只存在這台裝置上。</p>
+</div>
+<div class="toast" id="simToast"></div>
 <div class="sheet" id="sheet"><span class="x" id="sheetX">✕</span><b id="sheetT"></b><span id="sheetB"></span></div>
 
 <script>
@@ -389,10 +505,32 @@ const DICT=[
 const TERM={"加權指數":0,"K線":6,"上影線":7,"成交金額":4,"張":2,"漲跌家數":10,"三大法人":8,"買超":9};
 const KNOWN={"2330":"台積電：台股市值最大的公司，指數受它影響最大。","2454":"聯發科：手機晶片、IC 設計龍頭。","2317":"鴻海：全球最大電子代工廠。","2303":"聯電：晶圓代工「二哥」。","2308":"台達電：電源、散熱大廠。","3711":"日月光：晶片封裝測試龍頭。","2409":"友達：面板廠。","3481":"群創：面板廠。","1802":"台玻：玻璃製造商（傳產）。","1303":"南亞：塑膠、電子材料（台塑集團）。","2408":"南亞科：記憶體（DRAM）廠。","3443":"創意：客製化晶片（ASIC）設計服務。","3661":"世芯-KY：客製化晶片（ASIC）設計服務。","3008":"大立光：手機鏡頭龍頭。","2382":"廣達：伺服器、筆電代工。","2881":"富邦金：金融控股公司。","2882":"國泰金：金融控股公司。","2891":"中信金：金融控股公司。","0050":"元大台灣50：一次買進台灣前 50 大公司的 ETF，常被當新手入門標的。","0056":"元大高股息：挑高股息股票的 ETF。","00878":"國泰永續高股息：高股息 ETF，很多存股族持有。"};
 
+/* ---------- 外觀、漲跌顏色 ---------- */
+const intl=()=>document.documentElement.dataset.color==="intl";
+const kName=up=>up?(intl()?"綠 K":"紅 K"):(intl()?"紅（黑）K":"綠（黑）K");
+function applyTheme(v){
+  const r=document.documentElement;if(v==="auto")delete r.dataset.theme;else r.dataset.theme=v;
+  const dark=v==="dark"||(v==="auto"&&matchMedia("(prefers-color-scheme: dark)").matches);
+  document.querySelector('meta[name="theme-color"]').content=dark?"#131418":"#f4f1ea";
+  document.querySelectorAll("#setTheme button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));store.set("twtheme",v)}
+function applyColor(v){
+  const r=document.documentElement;if(v==="intl")r.dataset.color="intl";else delete r.dataset.color;
+  document.querySelectorAll("#setColor button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));store.set("twcolor",v);
+  $("colorNote").innerHTML=v==="intl"?"<b>目前是國際配色：</b>綠色＝漲、紅色＝跌（台股習慣剛好相反）。":"<b>台股顏色跟美股相反：</b>紅色＝漲、綠色＝跌。";
+  $("streakHint").textContent=(v==="intl"?"綠格＝買超、紅格＝賣超":"紅格＝買超、綠格＝賣超")+"（從這個 App 開始記錄的那天算起）。";
+  if(D){render();renderList();if(window.simRender)simRender()}}
+applyTheme(store.get("twtheme")||"auto");
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>applyTheme(store.get("twtheme")||"auto"));
+document.querySelectorAll("#setTheme button").forEach(b=>b.onclick=()=>applyTheme(b.dataset.v));
+document.querySelectorAll("#setColor button").forEach(b=>b.onclick=()=>applyColor(b.dataset.v));
+document.querySelectorAll("#setMode button").forEach(b=>b.onclick=()=>setMode(b.dataset.v==="s"));
+const openSet=o=>{$("setSheet").classList.toggle("show",o);$("backdrop").classList.toggle("show",o)};
+$("setBtn").onclick=()=>openSet(true);$("backdrop").onclick=()=>openSet(false);
+
 /* ---------- 模式 ---------- */
-const setMode=s=>{document.body.classList.toggle("simple",s);$("mSimple").classList.toggle("on",s);$("mAdv").classList.toggle("on",!s);store.set("twmode",s?"s":"a")};
+const setMode=s=>{document.body.classList.toggle("simple",s);$("mSimple").classList.toggle("on",s);$("mAdv").classList.toggle("on",!s);document.querySelectorAll("#setMode button").forEach(b=>b.classList.toggle("on",(b.dataset.v==="s")===s));store.set("twmode",s?"s":"a")};
 $("mSimple").onclick=()=>setMode(true);$("mAdv").onclick=()=>setMode(false);
-if(store.get("twmode")==="a")setMode(false);
+setMode(store.get("twmode")!=="a");applyColor(store.get("twcolor")||"tw");
 
 /* ---------- 滑動換頁 ---------- */
 const pager=$("pager"),pages=[...document.querySelectorAll(".page")],tabBtns=[...document.querySelectorAll(".tabs button")],ind=$("ind");
@@ -413,15 +551,16 @@ function activate(n){
   wake(n); store.set("twpage",n);
 }
 pager.addEventListener("scroll",()=>requestAnimationFrame(onScroll),{passive:true});
-tabBtns.forEach((b,i)=>b.onclick=()=>pager.scrollTo({left:i*pager.clientWidth,behavior:"smooth"}));
-document.addEventListener("keydown",e=>{if(e.key==="ArrowRight")tabBtns[Math.min(cur+1,4)].click();if(e.key==="ArrowLeft")tabBtns[Math.max(cur-1,0)].click();});
+const goPage=i=>pager.scrollTo({left:i*pager.clientWidth,behavior:"smooth"});window.goPage=goPage;
+tabBtns.forEach((b,i)=>b.onclick=()=>goPage(i));
+document.addEventListener("keydown",e=>{if(e.key==="ArrowRight")tabBtns[Math.min(cur+1,pages.length-1)].click();if(e.key==="ArrowLeft")tabBtns[Math.max(cur-1,0)].click();});
 
 /* ---------- 名詞彈出 ---------- */
 document.addEventListener("click",e=>{const t=e.target.closest(".term");if(!t)return;const d=DICT[TERM[t.dataset.t]];if(!d)return;$("sheetT").textContent=d[0];$("sheetB").textContent=d[1];$("sheet").classList.add("show")});
 $("sheetX").onclick=()=>$("sheet").classList.remove("show");
 
 /* ---------- 資料 ---------- */
-let D=null;
+var D=null;
 async function load(){
   $("refresh").classList.add("spin");
   try{const r=await fetch("data.json?t="+Date.now(),{cache:"no-store"});D=await r.json();render();}
@@ -469,12 +608,12 @@ function render(){
       <text x="102" y="${y(prev)+13}" font-size="10" fill="var(--mute)" text-anchor="end">昨收</text>
       <g class="grow"><line x1="55" x2="55" y1="${y(high)}" y2="${y(low)}" stroke="${col}" stroke-width="3"/>
       <rect x="35" y="${y(Math.max(open,close))}" width="40" height="${Math.max(3,Math.abs(y(open)-y(close)))}" fill="${col}" rx="3"/></g>`;
-    $("candleLegend").innerHTML=`<div>⬆️ 最高 <b>${fmt(high)}</b></div><div>🔔 開盤 <b>${fmt(open)}</b></div><div>🏁 收盤 <b>${fmt(close)}</b></div><div>⬇️ 最低 <b>${fmt(low)}</b></div><div class="sub">虛線＝昨收 ${fmt(prev)}</div>`;
+    $("candleLegend").innerHTML=`<div><span class="k">最高</span><b>${fmt(high)}</b></div><div><span class="k">開盤</span><b>${fmt(open)}</b></div><div><span class="k">收盤</span><b>${fmt(close)}</b></div><div><span class="k">最低</span><b>${fmt(low)}</b></div><div class="sub">虛線＝昨收 ${fmt(prev)}</div>`;
     const body=Math.abs(close-open),upS=high-Math.max(open,close),dnS=Math.min(open,close)-low;
-    let t=`收盤比開盤${red?"高":"低"} → <b class="${red?"up":"down"}">${red?"紅 K":"綠（黑）K"}</b>；跟昨天比是<b class="${cls(ch)}">${ch>=0?"漲":"跌"}</b>。`;
-    if(red!==(ch>=0))t+=`<br>👀 今天 K 棒顏色（比開盤）和漲跌（比昨收）剛好不一樣，這是新手最常搞混的地方！`;
-    if(upS>body*1.5&&upS>dnS)t+=`<br>📌 長長的<span class="term" data-t="上影線">上影線</span>：盤中一度衝到 ${fmt(high,0)}（比昨收 ${sgn(high-prev,0)}），後來被賣下來。`;
-    else if(dnS>body*1.5&&dnS>upS)t+=`<br>📌 長長的下影線：盤中一度跌到 ${fmt(low,0)}（比昨收 ${sgn(low-prev,0)}），後來被買回來。`;
+    let t=`收盤比開盤${red?"高":"低"} → <b class="${red?"up":"down"}">${kName(red)}</b>；跟昨天比是<b class="${cls(ch)}">${ch>=0?"漲":"跌"}</b>。`;
+    if(red!==(ch>=0))t+=`<br>注意：今天 K 棒顏色（比開盤）和漲跌（比昨收）剛好不一樣，這是新手最常搞混的地方！`;
+    if(upS>body*1.5&&upS>dnS)t+=`<br>長長的<span class="term" data-t="上影線">上影線</span>：盤中一度衝到 ${fmt(high,0)}（比昨收 ${sgn(high-prev,0)}），後來被賣下來。`;
+    else if(dnS>body*1.5&&dnS>upS)t+=`<br>長長的下影線：盤中一度跌到 ${fmt(low,0)}（比昨收 ${sgn(low-prev,0)}），後來被買回來。`;
     $("candleTip").innerHTML=t;
   } else { $("candle").closest(".card").style.display="none"; }
 
@@ -485,7 +624,7 @@ function render(){
   if(D.breadth){const {up,down,flat}=D.breadth,t=up+down+flat,temp=Math.round(up/((up+down)||1)*100);
     D._temp=temp;
     $("breadthTxt").innerHTML=`上漲 <b class="up">${up}</b>・持平 <b class="flat">${flat}</b>・下跌 <b class="down">${down}</b>（共 ${t} 檔）`;
-    const lab=temp>=80?"很熱 🔥":temp>=60?"偏熱":temp>40?"普通":temp>20?"偏冷":"很冷 🥶";
+    const lab=temp>=80?"很熱":temp>=60?"偏熱":temp>40?"普通":temp>20?"偏冷":"很冷";
     $("tempV").innerHTML=`<span class="${temp>50?"up":temp<50?"down":"flat"}">${temp}・${lab}</span>`;
     const iu=ch>=0,mu=up>down;
     $("breadthTip").innerHTML=iu&&mu?`多數股票都上漲，是<b class="up">全面上漲</b>的一天。`:!iu&&!mu?`多數股票都下跌，是<b class="down">全面下跌</b>的一天。`:iu?`指數漲，但<b class="down">下跌的股票比較多</b> → 可能只是少數大公司在撐指數。`:`指數跌，但<b class="up">上漲的股票比較多</b> → 可能是少數大公司拖累指數。`;
@@ -508,7 +647,7 @@ function render(){
   }
 
   /* 個股 */
-  renderList();
+  renderList();renderWatch();if(window.simRender)simRender();
   const mv=(arr)=>arr.map(s=>{const p=s[5]/(s[4]-s[5])*100;return `<div><span>${s[1]}</span><b class="${cls(p)}">${p>0?"+":""}${p.toFixed(1)}%</b></div>`}).join("");
   if(D.gainers&&D.gainers.length){$("gainers").innerHTML=`<div class="sub" style="border:0">漲最多</div>`+mv(D.gainers);$("losers").innerHTML=`<div class="sub" style="border:0">跌最多</div>`+mv(D.losers||[]);$("moversCard").style.display=""}else $("moversCard").style.display="none";
 
@@ -522,7 +661,8 @@ function animatePage(n){
     if(D.breadth){const {up,down,flat}=D.breadth,t=up+down+flat;[["bUp",up,"漲 "+up],["bFlat",flat,flat],["bDown",down,"跌 "+down]].forEach(([id,v,tx])=>{const el=$(id);el.style.width="0";el.textContent=v/t>.06?tx:"";setTimeout(()=>el.style.width=v/t*100+"%",250)});
     $("tempDot").style.left="50%";setTimeout(()=>$("tempDot").style.left=D._temp+"%",400);}}
   if(n===2)document.querySelectorAll("#inst .fill").forEach(f=>{f.style.width="0";setTimeout(()=>f.style.width=f.dataset.w+"%",300)});
-  if(n===3)renderList();
+  if(n===3){renderList();renderWatch()}
+  if(n===4&&window.simRender)simRender(true);
 }
 
 /* ---------- 個股列表 ---------- */
@@ -546,18 +686,46 @@ function renderList(){
       .sort((a,b)=>(b.code.toLowerCase()===q)-(a.code.toLowerCase()===q)||(b.code.toLowerCase().startsWith(q))-(a.code.toLowerCase().startsWith(q))||b.amt-a.amt).slice(0,30);
     $("seg").style.display="none";
     $("listHint").innerHTML=rows.length?`找到 ${rows.length>=30?"30+":rows.length} 檔，點一檔看說明。`:"";
-    if(!rows.length){$("list").innerHTML=`<div class="empty">找不到「${q.replace(/</g,"&lt;")}」😅<br><span class="sub">試試代號（例如 2330）或名稱的一部分（例如 台積）</span></div>`;return}
+    if(!rows.length){$("list").innerHTML=`<div class="empty">找不到「${q.replace(/</g,"&lt;")}」<br><span class="sub">試試代號（例如 2330）或名稱的一部分（例如 台積）</span></div>`;return}
   } else {
     rows=rows.sort((a,b)=>b[sortBy]-a[sortBy]).slice(0,12);
     $("seg").style.display="";
     $("listHint").innerHTML="點一檔看白話說明。排行＝市場注意力，<b>不是推薦</b>。";
   }
   $("list").innerHTML=rows.map((r,i)=>`<div class="item press" data-c="${r.code}" style="--j:${i}"><div class="rk">${i+1}</div>
-    <div><span class="nm">${r.name}</span><span class="cd">${r.code}</span><div class="meta">${sortBy==="vol"?r.vol.toLocaleString()+" 張":fmt(r.amt)+" 億元"}<span class="adv">・${sortBy==="vol"?fmt(r.amt)+" 億元":r.vol.toLocaleString()+" 張"}</span></div></div>
+    <div><span class="nm">${r.name}</span><span class="cd">${r.code}</span><button class="star ${isW(r.code)?"on":""}" data-star="${r.code}" aria-label="自選">${isW(r.code)?"★":"☆"}</button><div class="meta">${sortBy==="vol"?r.vol.toLocaleString()+" 張":fmt(r.amt)+" 億元"}<span class="adv">・${sortBy==="vol"?fmt(r.amt)+" 億元":r.vol.toLocaleString()+" 張"}</span></div></div>
     <div class="rt"><div class="px">${r.px.toLocaleString()}</div><span class="badge ${cls(r.ch)}">${arrow(r.ch)} ${Math.abs(r.pct).toFixed(2)}%</span></div></div>
-    <div class="detail" id="d${r.code}"><div>💡 ${stockNote(r)}</div></div>`).join("");
+    <div class="detail" id="d${r.code}"><div>${stockNote(r)}<div class="acts"><button data-sim="${r.code}">模擬買進</button><button data-star="${r.code}">${isW(r.code)?"移除自選":"加入自選"}</button></div></div></div>`).join("");
   document.querySelectorAll("#list .item").forEach(el=>el.onclick=()=>$("d"+el.dataset.c).classList.toggle("open"));
 }
+/* ---------- 自選股 ---------- */
+let WL=(()=>{try{return JSON.parse(localStorage.getItem("tw_watch"))||[]}catch(e){return []}})();
+const isW=c=>WL.includes(c);
+function toggleW(c,btn){
+  WL=isW(c)?WL.filter(x=>x!==c):[...WL,c];try{localStorage.setItem("tw_watch",JSON.stringify(WL))}catch(e){}
+  document.querySelectorAll(`.star[data-star="${c}"]`).forEach(b=>{b.classList.toggle("on",isW(c));b.textContent=isW(c)?"★":"☆";b.classList.add("pop");setTimeout(()=>b.classList.remove("pop"),250)});
+  document.querySelectorAll(`.acts [data-star="${c}"]`).forEach(b=>b.textContent=isW(c)?"移除自選":"加入自選");
+  renderWatch();
+}
+function renderWatch(){
+  if(!D)return;
+  const m={};D.stocks.forEach(s=>m[s[0]]=s);
+  $("wlCount").textContent=WL.length?`${WL.length} 檔`:"";
+  if(!WL.length){$("watch").innerHTML=`<div class="wl-empty">在下面的排行或搜尋結果，點股票名稱旁的 ☆ 就能加入自選股。</div>`;return}
+  $("watch").innerHTML=WL.map((c,i)=>{const s=m[c];
+    if(!s)return `<div class="item" style="--j:${i}"><div class="rk"></div><div><span class="nm">${c}</span><div class="meta">今天沒有這檔的資料</div></div><div class="rt"><button class="star on" data-star="${c}">★</button></div></div>`;
+    const r={code:s[0],name:s[1],amt:s[2],vol:s[3],px:s[4],ch:s[5]};r.pct=r.px-r.ch?r.ch/(r.px-r.ch)*100:0;
+    const held=window.simHeld?simHeld(c):0;
+    return `<div class="item press" data-w="${c}" style="--j:${i}"><div class="rk"></div>
+      <div><span class="nm">${r.name}</span><span class="cd">${c}</span><button class="star on" data-star="${c}">★</button><div class="meta">${held?`模擬持有 ${held.toLocaleString()} 股`:fmt(r.amt)+" 億元"}</div></div>
+      <div class="rt"><div class="px">${r.px.toLocaleString()}</div><span class="badge ${cls(r.ch)}">${arrow(r.ch)} ${Math.abs(r.pct).toFixed(2)}%</span></div></div>
+      <div class="detail" id="w${c}"><div>${stockNote(r)}<div class="acts"><button data-sim="${c}">模擬買賣</button></div></div></div>`}).join("");
+  document.querySelectorAll("#watch .item[data-w]").forEach(el=>el.onclick=()=>$("w"+el.dataset.w).classList.toggle("open"));
+}
+document.addEventListener("click",e=>{
+  const st=e.target.closest("[data-star]");if(st){e.stopPropagation();toggleW(st.dataset.star,st);return}
+  const sm=e.target.closest("[data-sim]");if(sm){e.stopPropagation();window.simPick&&simPick(sm.dataset.sim,"buy")}
+},true);
 $("sBtn").onclick=()=>{const b=$("sBox");b.classList.toggle("open");if(b.classList.contains("open"))setTimeout(()=>$("sQ").focus(),150);else{query="";$("sQ").value="";renderList()}};
 $("sClr").onclick=()=>{query="";$("sQ").value="";$("sBox").classList.remove("open");renderList()};
 let sT;$("sQ").oninput=e=>{clearTimeout(sT);sT=setTimeout(()=>{query=e.target.value;renderList()},150)};
@@ -573,7 +741,7 @@ $("dict").innerHTML=DICT.map(d=>`<details><summary>${d[0]}</summary><p>${d[1]}</
 /* ---------- 內建問答（不用 Claude） ---------- */
 const FAQ=[
   {k:["大盤","今天","怎麼樣","盤勢","指數","漲多少","跌多少"],q:"今天大盤怎麼樣？",a:()=>`今天加權指數收 ${fmt(D.idx.close)}，${D._ch>=0?"上漲":"下跌"} ${fmt(Math.abs(D._ch))} 點（${D._pct.toFixed(2)}%）。${D.breadth?`上漲 ${D.breadth.up} 家、下跌 ${D.breadth.down} 家。`:""}詳細可以看「大盤」和「熱度」頁。`},
-  {k:["k","K","紅","綠","黑","顏色","k棒","K棒"],q:"K 棒的紅綠跟漲跌有什麼不同？",a:()=>`K 棒顏色是「收盤 vs 今天開盤」，漲跌是「收盤 vs 昨天收盤」。今天開 ${fmt(D.idx.open)}、收 ${fmt(D.idx.close)}，所以是${D.idx.close>=D.idx.open?"紅":"綠"} K；跟昨天比則是${D._ch>=0?"漲":"跌"}。兩者可以不一樣喔！`},
+  {k:["k","K","紅","綠","黑","顏色","k棒","K棒"],q:"K 棒的紅綠跟漲跌有什麼不同？",a:()=>`K 棒顏色是「收盤 vs 今天開盤」，漲跌是「收盤 vs 昨天收盤」。今天開 ${fmt(D.idx.open)}、收 ${fmt(D.idx.close)}，所以是${kName(D.idx.close>=D.idx.open)}；跟昨天比則是${D._ch>=0?"漲":"跌"}。兩者可以不一樣喔！`},
   {k:["影線","上影","下影"],q:"上影線是什麼？",a:()=>"K 棒上方的細線叫上影線，代表盤中曾經漲到更高、後來被賣下來；下方的叫下影線，代表曾經跌更深、後來被買回。線越長，盤中拉扯越大。"},
   {k:["量","成交","熱絡","金額","張數"],q:"成交量大代表什麼？",a:()=>`成交量大＝很多人在買賣、市場很熱絡；量小＝大家在觀望。今天成交 ${fmt(D.amount,0)} 億元。量大配上漲通常代表買氣強，量大配上跌則可能是很多人急著賣。`},
   {k:["家數","溫度","氣氛","全面","撐"],q:"漲跌家數要怎麼看？",a:()=>D.breadth?`今天上漲 ${D.breadth.up} 家、下跌 ${D.breadth.down} 家，溫度 ${D._temp}。如果指數漲但下跌家數比較多，代表可能只是幾檔大公司在撐指數。`:"漲跌家數告訴你是不是大家都在漲。"},
@@ -585,6 +753,8 @@ const FAQ=[
   {k:["台積電","權值","2330"],q:"為什麼台積電這麼重要？",a:()=>{const t=D.stocks.find(s=>s[0]==="2330");return `台積電是台股市值最大的公司，在加權指數的比重很高，所以它一動指數就跟著動。${t?`今天台積電收 ${t[4].toLocaleString()} 元（${sgn(t[5],0)} 元）。`:""}`}},
   {k:["買","推薦","可以買","該買","要不要","賣"],q:"現在可以買嗎？",a:()=>"這個 App 不能給買賣建議，也不預測股價 🙏 但你可以練習觀察：大盤趨勢、成交量、法人方向，還有這家公司是做什麼的、有沒有賺錢。也可以先用「模擬交易」或很小的零股金額練習。"},
   {k:["為什麼","原因","why"],q:"為什麼今天會漲/跌？",a:()=>"這個 App 顯示的是「發生了什麼」（數字），原因通常要看新聞，例如國際股市、重大消息、財報。可以搜尋「台股 收盤」看當天的新聞整理，再對照這裡的數字。"},
+  {k:["模擬","練習","下單","假錢"],q:"模擬交易怎麼用？",a:()=>"到「模擬」頁搜尋一檔股票，選買進或賣出、整張或零股，就會看到要付多少錢（含手續費和稅）。用的是假錢和最新收盤價，可以放心練習 💪"},
+  {k:["自選","收藏","關注","星星"],q:"自選股怎麼加？",a:()=>"在「個股」頁的排行或搜尋結果，點股票名稱旁的 ☆ 就會加入，最上面的「自選股」就看得到它每天的漲跌。"},
   {k:["幾點","時間","開盤","收盤","什麼時候","更新"],q:"什麼時候會更新？",a:()=>"台股 9:00 開盤、13:30 收盤；三大法人資料約 15:00 公布，所以這個 App 在每個交易日約 15:20 自動更新。假日沒開盤就不會更新。"}
 ];
 function answer(q){
@@ -612,5 +782,6 @@ document.addEventListener("visibilitychange",()=>{if(!document.hidden&&D){const 
 if("serviceWorker" in navigator&&location.hostname.endsWith("github.io")){navigator.serviceWorker.register("sw.js").catch(()=>{})}
 </script>
 <script src="quiz.js"></script>
+<script src="sim.js"></script>
 </body>
 </html>
