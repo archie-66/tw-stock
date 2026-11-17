@@ -111,7 +111,7 @@ const BANK_ZH=[
 ];
 /* ---------- English ---------- */
 const C_EN={
- color:["Taiwan's colors","Red = up, green = down — the opposite of the US.","The index shown in red ▲ means it rose"],
+ color:["Taiwan's colors","Red = up, green = down. The opposite of the US.","The index shown in red ▲ means it rose"],
  change:["How change is counted","Change = today's close − yesterday's close. % change = change ÷ yesterday's close.","100 → 103 = +3%"],
  kbar:["Candlestick","One bar shows open, high, low, close. Close > open = red candle; close < open = green (black) candle.","Color compares with the open; change compares with yesterday"],
  shadow:["Upper / lower shadow","Long upper shadow = pushed up, then sold back. Long lower shadow = dropped, then bought back.","A long upper shadow often means selling pressure above"],
@@ -120,42 +120,42 @@ const C_EN={
  limit:["Limit up / down","Most Taiwan stocks can move at most 10% a day.","Prev close 100 → max 110, min 90"],
  hours:["Trading hours","Monday to Friday, 9:00 am – 1:30 pm. Closed on weekends.","Orders can be placed from 8:30 am"],
  volume:["Volume","How much was traded (lots or value). High volume = busy trading, not a guarantee of gains.","Big moves often come with big volume"],
- breadth:["Advancers / decliners","How many stocks rose vs. fell — was the move broad or just a few stocks?","Index up but most stocks down = a few big stocks holding it up"],
+ breadth:["Advancers / decliners","How many stocks rose vs. fell. Was the move broad, or just a few stocks?","Index up but most stocks down = a few big stocks holding it up"],
  inst:["Three major institutions","Foreign investors, investment trusts and dealers. They move big money and hint at market direction.","Retail investors are not institutions"],
  buysell:["Net buy / net sell","Net buy = bought more than sold (the difference). Net sell is the opposite.","Net buy of NT$10bn ≠ bought NT$10bn"],
  index:["TAIEX","Tracks all listed stocks, weighted by market value. Also called \"the market\".","Big companies count more"],
  weight:["Heavyweights","Huge companies with a big effect on the index.","TSMC alone is a large part of the index"],
- etf:["ETF","A basket of stocks in one product — instant diversification.","0050 = Taiwan's top 50 companies"],
+ etf:["ETF","A basket of stocks in one product, so you diversify instantly.","0050 = Taiwan's top 50 companies"],
  lev:["Leveraged / inverse ETF","2× ETFs move about twice the index; inverse ETFs move the opposite way. They reset daily and lose value in choppy markets.","Index +10% then −10% → 2× ETF ≈ −4%"],
  fee:["Broker fee","Paid on both buying and selling, up to 0.1425%. Many brokers give discounts.","NT$100,000 trade → max NT$142"],
  tax:["Transaction tax","Charged only when you sell: 0.3% for stocks, 0.1% for ETFs, 0.15% for day trades.","Sell NT$100,000 of stock → NT$300"],
  settle:["Settlement T+2","You must pay on the 2nd business day after buying. Not paying = settlement default, which is serious.","Buy Monday → pay Wednesday"],
- eps:["EPS","Net profit ÷ number of shares — how much each share earned.","EPS 5 = each share earned NT$5"],
+ eps:["EPS","Net profit ÷ number of shares: how much each share earned.","EPS 5 = each share earned NT$5"],
  pe:["P/E ratio","Price ÷ EPS. Higher means the market pays more for expected growth.","Price 100, EPS 5 → P/E 20"],
  yield:["Dividend yield","Dividend ÷ price. If the price falls and the dividend stays the same, the yield goes up.","Price 100, dividend 5 → 5%"],
  div:["Ex-dividend / recovery","On the ex-dividend day the price drops by the dividend; climbing back to the old price is called 填息 (fill-the-gap).","NT$100 stock pays 5 → NT$95 after"],
  ma:["Moving averages","Average closing price of the last N days. 5-day = weekly, 20-day = monthly, 60-day = quarterly line.","Price above the 20-day line = most buyers from the last month are in profit"],
  cross:["Golden / death cross","Short MA crossing above the long MA = golden cross; crossing below = death cross.","Only a signal, not a guarantee"],
  support:["Support and resistance","Support = where buyers often step in; resistance = where sellers often appear. Broken resistance often becomes support.","Previous highs are common resistance"],
- volprice:["Price and volume","Price up with volume up = strong buying. Price up with volume down = fewer buyers chasing (divergence).","New high on low volume — be careful"],
- mktcap:["Market cap","Share price × shares outstanding — what the whole company is worth on the market.","Bigger market cap = more weight in the index"],
+ volprice:["Price and volume","Price up with volume up = strong buying. Price up with volume down = fewer buyers chasing (divergence).","New high on low volume: be careful"],
+ mktcap:["Market cap","Share price × shares outstanding: what the whole company is worth on the market.","Bigger market cap = more weight in the index"],
  otc:["Listed / OTC / emerging","Listed stocks trade on TWSE, OTC stocks on TPEx. Emerging stocks have no daily limit and more risk.","The TPEx index tracks OTC stocks"],
  dca:["Dollar-cost averaging","Invest a fixed amount every month without guessing highs and lows. Good for beginners.","NT$3,000 into 0050 every month"],
- revenue:["Monthly revenue","Listed companies report last month's revenue by the 10th — the fastest report card.","Growing revenue attracts attention"],
+ revenue:["Monthly revenue","Listed companies report last month's revenue by the 10th. It's the fastest report card.","Growing revenue attracts attention"],
  report:["Earnings deadlines","Q1 by May 15, Q2 by Aug 14, Q3 by Nov 14, annual by end of March next year.","Prices often swing around earnings"],
  margin:["Margin buying / short selling","Margin = borrow money to buy; short = borrow shares to sell (betting on a fall). Both use leverage.","A big drop can trigger a margin call"],
- daytrade:["Day trading","Buying and selling on the same day. High risk — not for beginners.","You pay fees and tax even when you lose"],
+ daytrade:["Day trading","Buying and selling on the same day. High risk, not for beginners.","You pay fees and tax even when you lose"],
  pb:["P/B ratio","Price ÷ book value per share. Below 1 = priced below the company's book value.","Often used for financial stocks"],
  roe:["ROE","Return on equity: how well a company turns shareholders' money into profit.","ROE 15% = NT$15 profit per NT$100"],
  disposal:["Watch / disposal stocks","Unusual price or volume → the exchange flags it; serious cases get trading restrictions.","Disposal stocks require paying before buying"],
- diversify:["Diversification","Don't put all your money in one stock — it reduces single-company risk.","ETFs are the easiest way"]
+ diversify:["Diversification","Don't put all your money in one stock. It reduces single-company risk.","ETFs are the easiest way"]
 };
 const BANK_EN=[
  ["In Taiwan, red means?",["Up","Down","Flat"]],["1 lot = how many shares?",["1,000","100","10"]],["Max daily rise for most stocks?",["10%","7%","No limit"]],["When does the market close?",["1:30 pm","3:00 pm","12:00 pm"]],
- ["Close above open — candle color?",["Red","Green","No candle"]],["Less than one lot is called?",["Odd lot","Loose shares","Mini lot"]],["High volume usually means?",["Busy trading","Price will rise","Big profits"]],["Which is NOT an institution?",["Retail investors","Foreign investors","Investment trusts"]],
+ ["Close above open: candle color?",["Red","Green","No candle"]],["Less than one lot is called?",["Odd lot","Loose shares","Mini lot"]],["High volume usually means?",["Busy trading","Price will rise","Big profits"]],["Which is NOT an institution?",["Retail investors","Foreign investors","Investment trusts"]],
  ["\"Net buy\" means?",["Bought more than sold","Bought many times","Bought too high"]],["The TAIEX represents?",["All listed stocks","TSMC's price","Top-10 average"]],["Who moves the TAIEX most?",["Largest market cap","Highest share price","Cheapest stock"]],["0050 is a(n)?",["ETF","Single stock","Bond"]],
  ["Index up but most stocks down?",["A few big stocks lifting it","Broad rally","Data error"]],["A long upper shadow means?",["Pushed up, then sold back","Closed at the high","Limit down at open"]],["Today's change compares with?",["Yesterday's close","Today's open","Last week's close"]],["Hitting the daily top is called?",["Limit up","Max out","Price cap"]],
- ["NT$50 stock — cost of one lot?",["NT$50,000","NT$5,000","NT$500,000"]],["Is the market open on Saturday?",["No","Yes","Mornings only"]],["Foreign investors \"net sell\" means?",["Sold more than bought","Sold everything","Lost money"]],["Green ▼ on a Taiwan app means?",["Down","Up","Trading halted"]],
+ ["NT$50 stock: cost of one lot?",["NT$50,000","NT$5,000","NT$500,000"]],["Is the market open on Saturday?",["No","Yes","Mornings only"]],["Foreign investors \"net sell\" means?",["Sold more than bought","Sold everything","Lost money"]],["Green ▼ on a Taiwan app means?",["Down","Up","Trading halted"]],
  ["Max broker fee?",["0.1425%","1.425%","0.3%"]],["When is transaction tax charged?",["When selling","When buying","Both"]],["Transaction tax on stocks?",["0.3%","0.1%","1%"]],["When must you pay for a purchase?",["T+2","Same day","T+5"]],
  ["What is EPS?",["Earnings per share","Price per share","Dividend per share"]],["P/E ratio = ?",["Price ÷ EPS","EPS ÷ price","Dividend ÷ price"]],["Dividend yield = ?",["Dividend ÷ price","Price ÷ dividend","EPS ÷ price"]],["On the ex-dividend day the price?",["Drops by the dividend","Rises automatically","Stays the same"]],
  ["Price climbing back after ex-dividend?",["Filling the gap","Gap down","Dividend loss"]],["20-day moving average is called?",["Monthly line","Weekly line","Quarterly line"]],["60-day moving average is called?",["Quarterly line","Monthly line","Yearly line"]],["Short MA crossing above long MA?",["Golden cross","Death cross","Tangled MAs"]],
@@ -164,7 +164,7 @@ const BANK_EN=[
  ["Margin buying means?",["Borrowing money to buy","Borrowing shares to sell","Selling for cash"]],["Short selling means?",["Borrowing shares to sell","Borrowing money to buy","Storing shares"]],["Buying and selling the same day?",["Day trading","Swing trading","Long-term holding"]],["Tax rate on day trades?",["0.15%","0.3%","Tax-free"]],
  ["P/B ratio = ?",["Price ÷ book value/share","Book value ÷ revenue","Price ÷ EPS"]],["What is ROE?",["Return on equity","Debt ratio","P/E ratio"]],["Stocks restricted for unusual trading?",["Disposal stocks","Heavyweights","Dividend stocks"]],["New high on lower volume is?",["Divergence","Price-volume rally","In sync"]],
  ["Broken resistance often becomes?",["Support","Stronger resistance","Stop-loss"]],["A death cross is?",["Short MA falls below long MA","Limit down","Institutions sell all"]],["Index at new high, fewer advancers?",["Gains concentrated","Broad strength","Volume rising"]],["Q3 earnings deadline?",["Nov 14","Sep 30","Next March"]],
- ["A high P/E usually means?",["Market expects growth","Company is losing money","Price will fall"]],["Price falls, dividend same — yield?",["Rises","Falls","Unchanged"]],["Diversification mainly reduces?",["Single-company risk","Whole-market risk","Fees"]],["Not paying on T+2 becomes?",["Settlement default","Auto-cancel","One-week delay"]],
+ ["A high P/E usually means?",["Market expects growth","Company is losing money","Price will fall"]],["Price falls, dividend same: yield?",["Rises","Falls","Unchanged"]],["Diversification mainly reduces?",["Single-company risk","Whole-market risk","Fees"]],["Not paying on T+2 becomes?",["Settlement default","Auto-cancel","One-week delay"]],
  ["Index +10% then −10%: a 2× ETF ≈ ?",["−4%","Break even","+4%"]],["P/B below 1 means?",["Price below book value","Company losing money","Very expensive"]]
 ];
 
@@ -227,7 +227,7 @@ function finish(){
   let msg,emo,extra="";
   const leftThis=pool(lv).length;
   if(score>=UP&&lv<3){lv++;save();emo="🚀";msg=t(`升級到 Lv.${lv} ${LV[lv]}！`,`Level up! Lv.${lv} ${LV[lv]}`);extra=t(`接下來是更進階的觀念題。`,`Harder concept questions are next.`);}
-  else if(score>=UP){emo="🏆";msg=t("高手等級，太強了！","Expert level — amazing!");extra=leftThis?t(`還有 ${leftThis} 題高手題可以挑戰。`,`${leftThis} expert questions left.`):"";}
+  else if(score>=UP){emo="🏆";msg=t("高手等級，太強了！","Expert level. Amazing!");extra=leftThis?t(`還有 ${leftThis} 題高手題可以挑戰。`,`${leftThis} expert questions left.`):"";}
   else if(score>=3){emo="👍";msg=t("不錯喔！","Nice!");extra=t(`再一回合答對 ${UP} 題就能升級。`,`Get ${UP} right in a round to level up.`);}
   else{emo="💪";msg=t("先複習一下再挑戰","Review a bit, then try again");extra=t("錯的觀念已經放進「觀念複習」。","Missed concepts were added to Review.");}
   $("qEnd").innerHTML=`<div class="big-emoji pop-in">${emo}</div><div class="q">${score} / ${round.length}　${msg}</div><p class="hint">${extra}</p><div class="row2"><button class="btn" id="again">${t("再一回合","Another round")}</button>${score<UP?`<button class="btn ghost" id="goRev">${t("觀念複習","Review")}</button>`:""}</div>`;

@@ -319,7 +319,7 @@ footer a{color:var(--mute)}
       <div class="thermo"><div class="dot" id="tempDot"></div></div>
       <div class="axis"><span>0 很冷</span><span>50 普通</span><span>100 很熱</span></div>
       <div class="grid adv" id="limitBox"></div>
-      <div class="tip"><b>今天解讀：</b><span id="breadthTip"></span><br><span class="sub">溫度＝上漲家數 ÷（上漲＋下跌）× 100，是這個 App 自己的簡單算法。</span></div>
+      <div class="tip"><b>今天解讀：</b><span id="breadthTip"></span><br><span class="sub">溫度＝上漲家數 ÷（上漲＋下跌）× 100。</span></div>
     </div>
   </div></section>
 
@@ -351,7 +351,7 @@ footer a{color:var(--mute)}
     <div class="card" style="--i:1">
       <div class="hrow"><h2>今天大家在交易什麼？</h2><button class="sbtn" id="sBtn"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>搜尋</button></div>
       <form class="search" id="sBox"><input id="sQ" type="search" placeholder="輸入股票代號或名稱，例如 2330、台積" autocomplete="off" enterkeyhint="search"><button type="button" class="sbtn" id="sClr">取消</button></form>
-      <p class="hint" id="listHint">點一檔看白話說明。排行＝市場注意力，<b>不是推薦</b>。</p>
+      <p class="hint" id="listHint">點一檔看說明。排行＝市場注意力，<b>不是推薦</b>。</p>
       <div class="seg" id="seg"><div class="knob" id="knob"></div><button class="on" data-s="amt">成交金額</button><button data-s="vol">成交張數</button><button data-s="pct">漲幅</button></div>
       <div id="list"></div>
     </div>
@@ -415,7 +415,7 @@ footer a{color:var(--mute)}
   <section class="page" data-title="學習"><div class="inner">
     <div class="card" style="--i:0">
       <h2>🙋 問問題</h2>
-      <p class="hint">內建的問答，不用 Claude、也不用網路帳號，誰都可以用。</p>
+      <p class="hint">看不懂的地方可以直接問，或點下面的常見問題。</p>
       <div class="chat" id="chat"></div>
       <div class="quick" id="quick"></div>
       <form class="askrow" id="askForm"><input id="askQ" placeholder="例如：成交量大代表什麼？" autocomplete="off"><button class="btn">問</button></form>
@@ -547,7 +547,7 @@ function applyTheme(v){
 function applyColor(v){
   const r=document.documentElement;if(v==="intl")r.dataset.color="intl";else delete r.dataset.color;
   document.querySelectorAll("#setColor button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));store.set("twcolor",v);
-  $("colorNote").innerHTML=EN?(v==="intl"?"<b>Global colors:</b> green = up, red = down (Taiwan normally uses the opposite).":"<b>Taiwan colors:</b> red = up, green = down — the opposite of the US. You can switch in Settings."):(v==="intl"?"<b>目前是國際配色：</b>綠色＝漲、紅色＝跌（台股習慣剛好相反）。":"<b>台股顏色跟美股相反：</b>紅色＝漲、綠色＝跌。");
+  $("colorNote").innerHTML=EN?(v==="intl"?"<b>Global colors:</b> green = up, red = down (Taiwan normally uses the opposite).":"<b>Taiwan colors:</b> red = up, green = down. That's the opposite of the US. You can switch in Settings."):(v==="intl"?"<b>目前是國際配色：</b>綠色＝漲、紅色＝跌（台股習慣剛好相反）。":"<b>台股顏色跟美股相反：</b>紅色＝漲、綠色＝跌。");
   $("streakHint").textContent=EN?(v==="intl"?"Green = net buy, red = net sell":"Red = net buy, green = net sell")+" (since this app started recording).":(v==="intl"?"綠格＝買超、紅格＝賣超":"紅格＝買超、綠格＝賣超")+"（從這個 App 開始記錄的那天算起）。";
   if(D){render();renderList();if(window.simRender)simRender()}}
 applyTheme(store.get("twtheme")||"auto");
@@ -672,8 +672,8 @@ function render(){
       cell(t("成交筆數","Number of trades"),D.transactions?fmt(D.transactions,0):"--")+
       cell(t("法人占成交金額","Institutions vs. value"),it!=null&&D.amount?(Math.abs(it)/D.amount*100).toFixed(1)+"%":"--");
     let tip=t("<b>怎麼看：</b>","<b>How to read it:</b> ");
-    if(amp!=null)tip+=amp>=3?t(`振幅 ${amp.toFixed(1)}%，盤中上下震盪很大。`,`A ${amp.toFixed(1)}% range — a very volatile day. `):amp<1?t(`振幅只有 ${amp.toFixed(1)}%，盤中很平靜。`,`Only a ${amp.toFixed(1)}% range — a calm day. `):t(`振幅 ${amp.toFixed(1)}%，屬於一般波動。`,`A ${amp.toFixed(1)}% range — normal movement. `);
-    if(ma5&&ma20)tip+=I.close>=ma5&&I.close>=ma20?t("指數在均線之上，短期走勢偏強。","The index is above its averages — the short-term trend is strong."):I.close<ma5&&I.close<ma20?t("指數跌破均線，短期走勢偏弱。","The index is below its averages — the short-term trend is weak."):t("指數在兩條均線之間，方向還不明確。","The index is between its averages — no clear direction yet.");
+    if(amp!=null)tip+=amp>=3?t(`振幅 ${amp.toFixed(1)}%，盤中上下震盪很大。`,`A ${amp.toFixed(1)}% range. A very volatile day. `):amp<1?t(`振幅只有 ${amp.toFixed(1)}%，盤中很平靜。`,`Only a ${amp.toFixed(1)}% range. A calm day. `):t(`振幅 ${amp.toFixed(1)}%，屬於一般波動。`,`A ${amp.toFixed(1)}% range. Normal movement. `);
+    if(ma5&&ma20)tip+=I.close>=ma5&&I.close>=ma20?t("指數在均線之上，短期走勢偏強。","The index is above its averages, so the short-term trend is strong."):I.close<ma5&&I.close<ma20?t("指數跌破均線，短期走勢偏弱。","The index is below its averages, so the short-term trend is weak."):t("指數在兩條均線之間，方向還不明確。","The index is between its averages. No clear direction yet.");
     $("advTip").innerHTML=tip+t("<br><span class=\"sub\">均線只是參考，不能用來預測明天。</span>","<br><span class=\"sub\">Averages are only a reference, not a prediction.</span>");
   }
 
@@ -706,7 +706,7 @@ function render(){
     const lab=EN?(temp>=80?"Hot":temp>=60?"Warm":temp>40?"Normal":temp>20?"Cool":"Cold"):(temp>=80?"很熱":temp>=60?"偏熱":temp>40?"普通":temp>20?"偏冷":"很冷");
     $("tempV").innerHTML=`<span class="${temp>50?"up":temp<50?"down":"flat"}">${temp}・${lab}</span>`;
     const iu=ch>=0,mu=up>down;
-    $("breadthTip").innerHTML=EN?(iu&&mu?`Most stocks rose — a <b class="up">broad rally</b>.`:!iu&&!mu?`Most stocks fell — a <b class="down">broad sell-off</b>.`:iu?`The index rose, but <b class="down">more stocks fell</b> → a few big companies may be holding the index up.`:`The index fell, but <b class="up">more stocks rose</b> → a few big companies may be dragging it down.`)
+    $("breadthTip").innerHTML=EN?(iu&&mu?`Most stocks rose: a <b class="up">broad rally</b>.`:!iu&&!mu?`Most stocks fell: a <b class="down">broad sell-off</b>.`:iu?`The index rose, but <b class="down">more stocks fell</b> → a few big companies may be holding the index up.`:`The index fell, but <b class="up">more stocks rose</b> → a few big companies may be dragging it down.`)
       :(iu&&mu?`多數股票都上漲，是<b class="up">全面上漲</b>的一天。`:!iu&&!mu?`多數股票都下跌，是<b class="down">全面下跌</b>的一天。`:iu?`指數漲，但<b class="down">下跌的股票比較多</b> → 可能只是少數大公司在撐指數。`:`指數跌，但<b class="up">上漲的股票比較多</b> → 可能是少數大公司拖累指數。`);
   }
   const ratio=D.breadth&&D.breadth.down?(D.breadth.up/D.breadth.down):null;
@@ -756,7 +756,7 @@ let sortBy="amt";
 function stockNote(r){
   let s=KNOWN[r.code]||"";
   if(!s){
-    if(EN){if(/^00\d+L$/.test(r.code))s=`${r.name}: a leveraged ETF that moves about 2× the index — much riskier than a normal ETF.`;else if(/^00\d+R$/.test(r.code))s=`${r.name}: an inverse ETF — it rises when the index falls.`;else if(/^00/.test(r.code))s=`${r.name}: an ETF that holds a basket of stocks.`;else s=`${r.name}: one of today's actively traded stocks.`}
+    if(EN){if(/^00\d+L$/.test(r.code))s=`${r.name}: a leveraged ETF that moves about 2× the index, so it's much riskier than a normal ETF.`;else if(/^00\d+R$/.test(r.code))s=`${r.name}: an inverse ETF. It rises when the index falls.`;else if(/^00/.test(r.code))s=`${r.name}: an ETF that holds a basket of stocks.`;else s=`${r.name}: one of today's actively traded stocks.`}
     else{if(/^00\d+L$/.test(r.code))s=`${r.name}：槓桿 ETF，漲跌大約是指數的 2 倍，風險比一般 ETF 高很多。`;else if(/^00\d+R$/.test(r.code))s=`${r.name}：反向 ETF，指數跌它漲、指數漲它跌。`;else if(/^00/.test(r.code))s=`${r.name}：ETF，一次買進一籃子股票。`;else s=`${r.name}：今天交易很熱絡的股票之一。`}
   }
   const p=r.pct;
@@ -786,7 +786,7 @@ function renderList(){
   } else {
     rows=rows.sort((a,b)=>b[sortBy]-a[sortBy]).slice(0,document.body.classList.contains("simple")?12:20);
     $("seg").style.display="";
-    $("listHint").innerHTML=t("點一檔看白話說明。排行＝市場注意力，<b>不是推薦</b>。","Tap a stock for a plain explanation. Rankings show attention, <b>not recommendations</b>.");
+    $("listHint").innerHTML=t("點一檔看說明。排行＝市場注意力，<b>不是推薦</b>。","Tap a stock for details. Rankings show attention, <b>not recommendations</b>.");
   }
   $("list").innerHTML=rows.map((r,i)=>`<div class="item press" data-c="${r.code}" style="--j:${i}"><div class="rk">${i+1}</div>
     <div><span class="nm">${r.name}</span><span class="cd">${r.code}</span><button class="star ${isW(r.code)?"on":""}" data-star="${r.code}" aria-label="${t("自選","Watchlist")}">${isW(r.code)?"★":"☆"}</button><div class="meta">${sortBy==="vol"?lotsTxt(r.vol):yi(r.amt)}<span class="adv">・${sortBy==="vol"?yi(r.amt):lotsTxt(r.vol)}</span></div></div>
@@ -834,21 +834,21 @@ requestAnimationFrame(()=>moveKnob(segBtns[0]));
 /* ---------- 辭典 ---------- */
 $("dict").innerHTML=DICT.map(d=>`<details><summary>${d[0]}</summary><p>${d[1]}</p></details>`).join("");
 
-/* ---------- 內建問答（不用 Claude） ---------- */
+/* ---------- 常見問題 ---------- */
 const FAQ=EN?[
   {k:["market","today","index","taiex","how"],q:"How did the market do today?",a:()=>`The TAIEX closed at ${fmt(D.idx.close)}, ${D._ch>=0?"up":"down"} ${fmt(Math.abs(D._ch))} points (${D._pct.toFixed(2)}%). ${D.breadth?`${D.breadth.up} stocks rose and ${D.breadth.down} fell. `:""}See the Market and Heat pages for more.`},
-  {k:["candle","red","green","color","colour"],q:"Candle color vs. up/down — what's the difference?",a:()=>`The candle color compares the close with today's open. Up/down compares the close with yesterday's close. Today it opened at ${fmt(D.idx.open)} and closed at ${fmt(D.idx.close)}, so it's a ${kName(D.idx.close>=D.idx.open)}, while vs. yesterday it was ${D._ch>=0?"up":"down"}. They can differ!`},
+  {k:["candle","red","green","color","colour"],q:"Candle color vs. up/down: what's the difference?",a:()=>`The candle color compares the close with today's open. Up/down compares the close with yesterday's close. Today it opened at ${fmt(D.idx.open)} and closed at ${fmt(D.idx.close)}, so it's a ${kName(D.idx.close>=D.idx.open)}, while vs. yesterday it was ${D._ch>=0?"up":"down"}. They can differ!`},
   {k:["shadow","wick"],q:"What is an upper shadow?",a:()=>"The thin line above the candle. It means the price went higher during the day but was sold back down. The line below (lower shadow) means it dropped and was bought back. Longer lines = bigger tug-of-war."},
   {k:["volume","value","busy","traded"],q:"What does high volume mean?",a:()=>`High volume = many people trading; low volume = people waiting. Today's trading value was ${yi(D.amount)}. High volume with rising prices usually means strong buying; with falling prices, many people may be rushing to sell.`},
   {k:["breadth","advanc","declin","temperature","mood"],q:"How do I read advancers vs. decliners?",a:()=>D.breadth?`Today ${D.breadth.up} stocks rose and ${D.breadth.down} fell (temperature ${D._temp}). If the index rises but more stocks fall, a few big companies may be holding it up.`:"It shows whether most stocks are rising or falling."},
-  {k:["institution","foreign","trust","dealer","net buy","net sell"],q:"What does institutional buying mean for me?",a:()=>D.inst?`Today: foreign ${yiS(D.inst.foreign)}, trusts ${yiS(D.inst.trust)}, dealers ${yiS(D.inst.dealer)}. Institutions move a lot of money, so their direction hints at market mood — but they can be wrong, so don't buy just because they did.`:"Institutions move a lot of money; their direction hints at market mood."},
+  {k:["institution","foreign","trust","dealer","net buy","net sell"],q:"What does institutional buying mean for me?",a:()=>D.inst?`Today: foreign ${yiS(D.inst.foreign)}, trusts ${yiS(D.inst.trust)}, dealers ${yiS(D.inst.dealer)}. Institutions move a lot of money, so their direction hints at market mood. But they can be wrong, so don't buy just because they did.`:"Institutions move a lot of money; their direction hints at market mood."},
   {k:["beginner","start","first","which numbers","where"],q:"Which numbers should a beginner check first?",a:()=>"Try this order: ① the index % change ② volume (busy or quiet?) ③ advancers vs. decliners (did most stocks move?) ④ institutional direction. Swipe through the pages in order for 3 minutes a day."},
   {k:["lot","share","odd","cost","price","afford"],q:"How much does one lot cost?",a:()=>"1 lot = 1,000 shares, so cost = price × 1,000. A NT$100 stock costs NT$100,000 per lot. With less money you can buy odd lots (1–999 shares), e.g. just 5 shares."},
   {k:["limit","10%","cap"],q:"What is limit up?",a:()=>`Most Taiwan stocks can move at most about 10% a day. Hitting the cap is limit up / limit down.${D.limitUp!=null?` Today about ${D.limitUp} stocks hit limit up and ${D.limitDown} hit limit down.`:""}`},
-  {k:["etf","0050","leverag","inverse"],q:"What is an ETF?",a:()=>"An ETF bundles many stocks into one product. 0050, for example, holds Taiwan's 50 biggest companies, so your money is spread out. ETFs with 正2 in the name are 2× leveraged and 反1 are inverse — very volatile, not for beginners to hold long-term."},
+  {k:["etf","0050","leverag","inverse"],q:"What is an ETF?",a:()=>"An ETF bundles many stocks into one product. 0050, for example, holds Taiwan's 50 biggest companies, so your money is spread out. ETFs with 正2 in the name are 2× leveraged and 反1 are inverse. They're very volatile, not for beginners to hold long-term."},
   {k:["tsmc","2330","heavyweight"],q:"Why is TSMC so important?",a:()=>{const x=D.stocks.find(s=>s[0]==="2330");return `TSMC is the biggest company in Taiwan's market, with a large weight in the TAIEX, so when it moves the index moves.${x?` Today it closed at NT$${x[4].toLocaleString()} (${sgn(x[5],0)}).`:""}`}},
   {k:["buy","sell","recommend","should i"],q:"Should I buy now?",a:()=>"This app can't give buy or sell advice or predict prices 🙏 But you can practice watching the trend, volume, institutional direction, and what a company does and whether it makes money. Try the Practice tab or tiny odd-lot amounts first."},
-  {k:["why","reason","cause"],q:"Why did the market go up/down today?",a:()=>"This app shows what happened (the numbers). For the why, check the news — global markets, big announcements, earnings. Search \"Taiwan stocks close\" and compare with the numbers here."},
+  {k:["why","reason","cause"],q:"Why did the market go up/down today?",a:()=>"This app shows what happened (the numbers). For the why, check the news: global markets, big announcements, earnings. Search \"Taiwan stocks close\" and compare with the numbers here."},
   {k:["practice","paper","simulat","fake","order"],q:"How do I use paper trading?",a:()=>"Open the Practice tab, search a stock, choose buy or sell and round or odd lot, and you'll see the full cost with fees and tax. It uses fake money and the latest close, so practice freely 💪"},
   {k:["watchlist","star","favorite","follow"],q:"How do I add to my watchlist?",a:()=>"On the Stocks page, tap the ☆ next to a stock's name in the ranking or search results. It will appear in the Watchlist at the top."},
   {k:["hour","time","open","close","when","update"],q:"When does the app update?",a:()=>"Taiwan stocks trade 9:00 am – 1:30 pm (Taipei). After the close the app checks every 15 minutes: prices update around 2:00–2:30 pm and institutional data around 3:00–3:30 pm. No update on holidays."}
@@ -874,14 +874,14 @@ function answer(q){
   const s=q.toLowerCase();let best=null,bs=0;
   FAQ.forEach(f=>{const sc=f.k.reduce((n,k)=>n+(s.includes(k.toLowerCase())?k.length:0),0);if(sc>bs){bs=sc;best=f}});
   if(!best){const d=DICT.find(d=>d[0].split(/[／ ()（）\/]/).some(w=>w&&w.length>1&&s.includes(w.toLowerCase())));if(d)return `<b>${d[0]}</b>${t("：",": ")}${d[1]}`}
-  return best?best.a():t("這題我還不會回答 😅 可以點下面的問題，或到「名詞小辭典」找找看。","I can't answer that one yet 😅 Try a question below, or look in the Glossary.");
+  return best?best.a():t("找不到這題的答案 😅 試試下面的常見問題，或到「名詞小辭典」找找看。","No answer found 😅 Try a common question below, or check the Glossary.");
 }
 function bubble(t,me){const b=document.createElement("div");b.className="bub "+(me?"me":"bot");b.innerHTML=t;$("chat").appendChild(b);$("chat").scrollTop=1e6}
 function ask(q){if(!q.trim()||!D)return;bubble(q.replace(/</g,"&lt;"),true);setTimeout(()=>bubble(answer(q),false),350)}
 $("quick").innerHTML=FAQ.slice(0,10).map(f=>`<button>${f.q}</button>`).join("");
 $("quick").querySelectorAll("button").forEach(b=>b.onclick=()=>ask(b.textContent));
 $("askForm").onsubmit=e=>{e.preventDefault();ask($("askQ").value);$("askQ").value=""};
-bubble(t("嗨！看不懂哪裡都可以問我，或點下面的問題 👇","Hi! Ask me anything you don't understand, or tap a question below 👇"),false);
+bubble(t("點下面的常見問題，或自己輸入問題 👇","Tap a common question below, or type your own 👇"),false);
 
 /* ---------- 啟動 ---------- */
 load().then(()=>{
