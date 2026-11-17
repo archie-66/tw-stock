@@ -163,6 +163,7 @@ body.simple .adv{display:none!important}
 .detail .acts{display:flex;gap:8px;margin-top:8px}
 .detail .acts button{flex:1;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:13px;padding:7px;border-radius:10px}
 .wl-empty{font-size:13px;color:var(--mute);line-height:1.6}
+.advtag{font-size:11px;font-weight:700;color:var(--accent);background:var(--accentbg);padding:2px 8px;border-radius:999px}
 .legend .k{display:inline-block;width:34px;color:var(--mute)}
 html[lang="en"] .legend .k{width:48px}
 /* 設定 */
@@ -282,6 +283,12 @@ footer a{color:var(--mute)}
       <h2>最近收盤走勢</h2>
       <svg id="hist" viewBox="0 0 320 110" preserveAspectRatio="none"></svg>
       <div class="axis" id="histL"></div>
+      <div class="sub adv" id="maLegend" style="margin-top:4px"></div>
+    </div>
+    <div class="card adv" style="--i:1" id="advCard">
+      <div class="hrow"><h2>進階數據</h2><span class="advtag">進階</span></div>
+      <div class="grid" id="advGrid"></div>
+      <div class="tip" id="advTip"></div>
     </div>
     <div class="card" style="--i:2">
       <h2>一根 <span class="term" data-t="K線">K 棒</span>看懂今天</h2>
@@ -464,7 +471,7 @@ footer a{color:var(--mute)}
 <div class="backdrop" id="backdrop"></div>
 <div class="setsheet" id="setSheet" role="dialog" aria-label="設定">
   <div class="grab"></div>
-  <h3>設定</h3>
+  <div class="hrow"><h3>設定</h3><button class="btn ghost" id="setDone" style="padding:6px 14px">完成</button></div>
   <div class="setrow"><div class="lab">語言</div><div class="seg" id="setLang"><button data-v="zh">中文</button><button data-v="en">English</button></div></div>
   <div class="setrow"><div class="lab">外觀</div><div class="seg" id="setTheme"><button data-v="auto">跟隨系統</button><button data-v="light">淺色</button><button data-v="dark">深色</button></div></div>
   <div class="setrow"><div class="lab">漲跌顏色</div><div class="seg" id="setColor"><button data-v="tw">台股 <span class="swatch" style="background:var(--red)"></span>漲 <span class="swatch" style="background:var(--green)"></span>跌</button><button data-v="intl">國際 <span class="swatch" style="background:var(--green)"></span>漲 <span class="swatch" style="background:var(--red)"></span>跌</button></div></div>
@@ -551,12 +558,15 @@ document.querySelectorAll("#setMode button").forEach(b=>b.onclick=()=>setMode(b.
 $("langBtn").textContent=EN?"中":"EN";$("langBtn").onclick=()=>setLang(EN?"zh":"en");
 document.querySelectorAll("#setLang button").forEach(b=>{b.classList.toggle("on",b.dataset.v===LANG);b.onclick=()=>{if(b.dataset.v!==LANG)setLang(b.dataset.v)}});
 const openSet=o=>{$("setSheet").classList.toggle("show",o);$("backdrop").classList.toggle("show",o)};
-$("setBtn").onclick=()=>openSet(true);$("backdrop").onclick=()=>openSet(false);
+$("setBtn").onclick=()=>openSet(true);$("setDone").onclick=()=>openSet(false);$("backdrop").onclick=()=>openSet(false);
 
 /* ---------- 模式 ---------- */
-const setMode=s=>{document.body.classList.toggle("simple",s);$("mSimple").classList.toggle("on",s);$("mAdv").classList.toggle("on",!s);document.querySelectorAll("#setMode button").forEach(b=>b.classList.toggle("on",(b.dataset.v==="s")===s));store.set("twmode",s?"s":"a")};
+let modeInit=true;
+const setMode=s=>{const was=document.body.classList.contains("simple");document.body.classList.toggle("simple",s);
+  if(!modeInit&&was!==s){const el=$("simToast");el.textContent=s?t("已切換到簡易模式：只留重點","Simple mode: just the key numbers"):t("已切換到進階模式：多了均線、振幅、漲跌比、更多排行、損益兩平價","Advanced mode: moving averages, range, up/down ratio, longer rankings, break-even price");el.classList.add("show");clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove("show"),2600);if(D)renderList();if(window.simRender)simRender()}
+$("mSimple").classList.toggle("on",s);$("mAdv").classList.toggle("on",!s);document.querySelectorAll("#setMode button").forEach(b=>b.classList.toggle("on",(b.dataset.v==="s")===s));store.set("twmode",s?"s":"a")};
 $("mSimple").onclick=()=>setMode(true);$("mAdv").onclick=()=>setMode(false);
-setMode(store.get("twmode")!=="a");applyColor(store.get("twcolor")||"tw");
+setMode(store.get("twmode")!=="a");modeInit=false;applyColor(store.get("twcolor")||"tw");
 
 /* ---------- 滑動換頁 ---------- */
 const pager=$("pager"),pages=[...document.querySelectorAll(".page")],tabBtns=[...document.querySelectorAll(".tabs button")],ind=$("ind");
@@ -639,6 +649,32 @@ function render(){
       <polyline class="ln" points="${pts}" fill="none" stroke="${col}" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
       <circle cx="${X(h.length-1)}" cy="${Y(cs[cs.length-1])}" r="4" fill="${col}"/>`;
     $("histL").innerHTML=`<span>${h[0].d}　${fmt(h[0].c,0)}</span><span>${h[h.length-1].d}　${fmt(h[h.length-1].c,0)}</span>`;
+    /* 進階：5 日均線疊在走勢圖上 */
+    if(h.length>=6){
+      const ma=cs.map((_,i)=>i<4?null:cs.slice(i-4,i+1).reduce((a,b)=>a+b,0)/5);
+      const mpts=ma.map((v,i)=>v==null?null:`${X(i)},${Y(v)}`).filter(Boolean).join(" ");
+      $("hist").insertAdjacentHTML("beforeend",`<polyline class="adv ma" points="${mpts}" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"/>`);
+      $("maLegend").innerHTML=t(`<span style="color:var(--accent)">- - -</span> 藍色虛線＝5 日均線（最近 5 天的平均收盤）`,`<span style="color:var(--accent)">- - -</span> Blue dashed line = 5-day moving average`);
+    }
+  }
+  /* 進階數據 */
+  {
+    const cs=(D.history||[]).map(x=>x.c),avg=n=>cs.length>=n?cs.slice(-n).reduce((a,b)=>a+b,0)/n:null;
+    const ma5=avg(5),ma20=avg(Math.min(20,cs.length)),n20=Math.min(20,cs.length);
+    const amp=I.high!=null?(I.high-I.low)/I.prev*100:null,gap=I.open!=null?I.open-I.prev:null;
+    const it=D.inst?D.inst.foreign+D.inst.trust+D.inst.dealer:null;
+    const cell=(k,v,c="")=>`<div class="stat"><div class="k">${k}</div><div class="v ${c}">${v}</div></div>`;
+    $("advGrid").innerHTML=
+      cell(t("振幅（今天高低差）","Range (high − low)"),amp!=null?amp.toFixed(2)+"%":"--")+
+      cell(t("開盤跳空","Opening gap"),gap!=null?sgn(gap,0):"--",gap!=null?cls(gap):"")+
+      cell(t("5 日均線","5-day average"),ma5?fmt(ma5,0)+` <span class="${cls(I.close-ma5)}" style="font-size:12px">${I.close>=ma5?t("站上","above"):t("跌破","below")}</span>`:"--")+
+      cell(t(`${n20} 日均線`,`${n20}-day average`),ma20?fmt(ma20,0)+` <span class="${cls(I.close-ma20)}" style="font-size:12px">${I.close>=ma20?t("站上","above"):t("跌破","below")}</span>`:"--")+
+      cell(t("成交筆數","Number of trades"),D.transactions?fmt(D.transactions,0):"--")+
+      cell(t("法人占成交金額","Institutions vs. value"),it!=null&&D.amount?(Math.abs(it)/D.amount*100).toFixed(1)+"%":"--");
+    let tip=t("<b>怎麼看：</b>","<b>How to read it:</b> ");
+    if(amp!=null)tip+=amp>=3?t(`振幅 ${amp.toFixed(1)}%，盤中上下震盪很大。`,`A ${amp.toFixed(1)}% range — a very volatile day. `):amp<1?t(`振幅只有 ${amp.toFixed(1)}%，盤中很平靜。`,`Only a ${amp.toFixed(1)}% range — a calm day. `):t(`振幅 ${amp.toFixed(1)}%，屬於一般波動。`,`A ${amp.toFixed(1)}% range — normal movement. `);
+    if(ma5&&ma20)tip+=I.close>=ma5&&I.close>=ma20?t("指數在均線之上，短期走勢偏強。","The index is above its averages — the short-term trend is strong."):I.close<ma5&&I.close<ma20?t("指數跌破均線，短期走勢偏弱。","The index is below its averages — the short-term trend is weak."):t("指數在兩條均線之間，方向還不明確。","The index is between its averages — no clear direction yet.");
+    $("advTip").innerHTML=tip+t("<br><span class=\"sub\">均線只是參考，不能用來預測明天。</span>","<br><span class=\"sub\">Averages are only a reference, not a prediction.</span>");
   }
 
   /* K棒 */
@@ -673,7 +709,8 @@ function render(){
     $("breadthTip").innerHTML=EN?(iu&&mu?`Most stocks rose — a <b class="up">broad rally</b>.`:!iu&&!mu?`Most stocks fell — a <b class="down">broad sell-off</b>.`:iu?`The index rose, but <b class="down">more stocks fell</b> → a few big companies may be holding the index up.`:`The index fell, but <b class="up">more stocks rose</b> → a few big companies may be dragging it down.`)
       :(iu&&mu?`多數股票都上漲，是<b class="up">全面上漲</b>的一天。`:!iu&&!mu?`多數股票都下跌，是<b class="down">全面下跌</b>的一天。`:iu?`指數漲，但<b class="down">下跌的股票比較多</b> → 可能只是少數大公司在撐指數。`:`指數跌，但<b class="up">上漲的股票比較多</b> → 可能是少數大公司拖累指數。`);
   }
-  $("limitBox").innerHTML=D.limitUp!=null?`<div class="stat"><div class="k">${t("漲停（約 +10%）","Limit up (≈ +10%)")}</div><div class="v up">${D.limitUp} ${t("檔","")}</div></div><div class="stat"><div class="k">${t("跌停（約 −10%）","Limit down (≈ −10%)")}</div><div class="v down">${D.limitDown} ${t("檔","")}</div></div>`:"";
+  const ratio=D.breadth&&D.breadth.down?(D.breadth.up/D.breadth.down):null;
+  $("limitBox").innerHTML=(ratio!=null?`<div class="stat"><div class="k">${t("漲跌比（上漲÷下跌家數）","Up/down ratio")}</div><div class="v ${ratio>=1?"up":"down"}">${ratio.toFixed(2)}</div></div><div class="stat"><div class="k">${t("平均每家成交金額","Avg value per stock")}</div><div class="v">${yi(D.amount/((D.breadth.up+D.breadth.down+D.breadth.flat)||1))}</div></div>`:"")+(D.limitUp!=null?`<div class="stat"><div class="k">${t("漲停（約 +10%）","Limit up (≈ +10%)")}</div><div class="v up">${D.limitUp} ${t("檔","")}</div></div><div class="stat"><div class="k">${t("跌停（約 −10%）","Limit down (≈ −10%)")}</div><div class="v down">${D.limitDown} ${t("檔","")}</div></div>`:"");
 
   /* 法人 */
   if(D.inst){
@@ -746,7 +783,7 @@ function renderList(){
     $("listHint").innerHTML=rows.length?t(`找到 ${rows.length>=30?"30+":rows.length} 檔，點一檔看說明。`,`Found ${rows.length>=30?"30+":rows.length}. Tap one for details.`):"";
     if(!rows.length){$("list").innerHTML=`<div class="empty">${t(`找不到「${q.replace(/</g,"&lt;")}」`,`Nothing found for "${q.replace(/</g,"&lt;")}"`)}<br><span class="sub">${t("試試代號（例如 2330）或名稱的一部分（例如 台積）","Try a stock code (e.g. 2330). Most names are in Chinese.")}</span></div>`;return}
   } else {
-    rows=rows.sort((a,b)=>b[sortBy]-a[sortBy]).slice(0,12);
+    rows=rows.sort((a,b)=>b[sortBy]-a[sortBy]).slice(0,document.body.classList.contains("simple")?12:20);
     $("seg").style.display="";
     $("listHint").innerHTML=t("點一檔看白話說明。排行＝市場注意力，<b>不是推薦</b>。","Tap a stock for a plain explanation. Rankings show attention, <b>not recommendations</b>.");
   }

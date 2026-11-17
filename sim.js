@@ -102,7 +102,8 @@ function renderOrder(){
     <div><span>${t("成交金額","Trade value")}</span><b>${nt(amt)}</b></div>
     <div><span>${t("手續費","Broker fee")} 0.1425%</span><b>${nt(fee)}</b></div>
     ${side==="sell"?`<div><span>${t("證交稅","Transaction tax")} ${isEtf(sel.code)?"0.1%":"0.3%"}</span><b>${nt(tax)}</b></div>`:""}
-    <div class="tot"><span>${side==="buy"?t("你要付","You pay"):t("你會拿到","You receive")}</span><b>${nt(total)}</b></div>`;
+    <div class="tot"><span>${side==="buy"?t("你要付","You pay"):t("你會拿到","You receive")}</span><b>${nt(total)}</b></div>
+    ${side==="buy"?`<div class="adv" style="margin-top:6px"><span>${t("損益兩平價（賣出要高於這個價才賺）","Break-even sell price")}</span><b>${(sel.px*(1+0.001425)/(1-0.001425-(isEtf(sel.code)?0.001:0.003))).toFixed(2)}</b></div>`:""}`;
   $("tErr").textContent=err;
   $("tGo").disabled=!!err;
   $("tGo").textContent=side==="buy"?t("確認買進","Confirm buy"):t("確認賣出","Confirm sell");
