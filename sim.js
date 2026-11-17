@@ -42,7 +42,37 @@ function renderTop(anim){
 }
 
 /* ---------- 持股、紀錄 ---------- */
+/* ---------- 資產配置圓餅圖 ---------- */
+const DCOL=["#3e63dd","#f59e0b","#8b5cf6","#14b8a6","#ec4899","#0ea5e9","#84cc16","#f97316"];
+let dSel=null;
+function renderDonut(){
+  const items=Object.keys(S.pos).map(c=>({k:c,name:S.pos[c].name,v:S.pos[c].sh*(priceOf(c)||0)})).sort((a,b)=>b.v-a.v);
+  let list=items.slice(0,6);
+  if(items.length>6)list.push({k:"_other",name:t("其他","Other"),v:items.slice(6).reduce((a,b)=>a+b.v,0)});
+  list=list.map((x,i)=>({...x,col:DCOL[i%DCOL.length]}));
+  list.push({k:"_cash",name:t("現金","Cash"),v:S.cash,col:"var(--line)"});
+  const tot=list.reduce((a,b)=>a+b.v,0)||1,R=48,C=2*Math.PI*R,gap=list.filter(x=>x.v>0).length>1?1.2:0;
+  let off=0;
+  $("donut").innerHTML=`<circle cx="60" cy="60" r="${R}" fill="none" stroke="var(--bg)" stroke-width="16"/>`+list.map((x,i)=>{
+    const len=x.v/tot*C,seg=Math.max(0,len-gap);
+    const el=x.v>0?`<circle class="seg" data-k="${x.k}" cx="60" cy="60" r="${R}" stroke="${x.col}" stroke-dasharray="${seg} ${C-seg}" stroke-dashoffset="${-off}" style="--k:${i}"/>`:"";
+    off+=len;return el}).join("");
+  const stockPct=(tot-S.cash)/tot*100;
+  const center=k=>{const x=list.find(y=>y.k===k);
+    $("dCenter").innerHTML=x?`<div class="dk">${x.name}</div><div class="dv">${(x.v/tot*100).toFixed(1)}%</div><div class="dk">${nt(x.v)}</div>`
+      :`<div class="dk">${t("股票占比","In stocks")}</div><div class="dv">${stockPct.toFixed(1)}%</div><div class="dk">${Object.keys(S.pos).length} ${t("檔","stocks")}</div>`};
+  $("dLegend").innerHTML=list.filter(x=>x.v>0).map(x=>`<button data-k="${x.k}"><span class="dot" style="background:${x.col}"></span><span class="nm2">${x.name}</span><b>${(x.v/tot*100).toFixed(1)}%</b></button>`).join("");
+  const select=k=>{dSel=dSel===k?null:k;
+    $("donut").classList.toggle("dim",!!dSel);
+    document.querySelectorAll("#donut .seg").forEach(e=>e.classList.toggle("hl",e.dataset.k===dSel));
+    document.querySelectorAll("#dLegend button").forEach(e=>e.classList.toggle("hl",e.dataset.k===dSel));
+    center(dSel)};
+  document.querySelectorAll("#donut .seg,#dLegend button").forEach(e=>e.onclick=ev=>{ev.stopPropagation();select(e.dataset.k)});
+  dSel=null;$("donut").classList.remove("dim");center(null);
+}
+
 function renderPos(){
+  renderDonut();
   const codes=Object.keys(S.pos);
   if(!codes.length){$("simPos").innerHTML=`<div class="empty">${t("還沒有持股","No holdings yet")}<br><span class="sub">${t("在上面「練習下單」買一檔試試看","Try buying one in \"Practice an order\" above")}</span></div>`;return}
   $("simPos").innerHTML=codes.map((c,i)=>{const p=S.pos[c],px=priceOf(c),mv=p.sh*px,avg=p.cost/p.sh,pl=mv-p.cost,plp=pl/p.cost*100;
