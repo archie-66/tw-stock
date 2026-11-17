@@ -172,6 +172,18 @@ def main():
                 if v:
                     cands[f"{title}|{x[0]}"] = round(v / 1e8, 2)
 
+    time.sleep(2)
+    m5 = get(f"{BASE}/afterTrading/MI_5MINS?date={ymd}&response=json")
+    for (title, f, data) in tables(m5):
+        ia = col(f, "成交金額")
+        if ia is not None and data:
+            last = data[-1]
+            cands[f"盤中|{last[0]}|累積成交金額"] = num(last[ia])
+            for k in ("委託買進數量", "委託賣出數量", "成交數量", "成交筆數"):
+                ik = col(f, k)
+                if ik is not None:
+                    cands[f"盤中|{k}"] = num(last[ik])
+
     # 4) 三大法人買賣金額（BFI82U）
     time.sleep(2)
     bf = get(f"{BASE}/fund/BFI82U?type=day&dayDate={ymd}&response=json")
