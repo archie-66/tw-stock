@@ -158,31 +158,19 @@ def main():
         breadth = {"up": sum(1 for s in stocks if s[5] > 0), "down": sum(1 for s in stocks if s[5] < 0),
                    "flat": sum(1 for s in stocks if s[5] == 0)}
 
-    # 3b) 各種「成交金額」統計（找出跟新聞一致的那個）
-    cands = {}
-    time.sleep(2)
-    ms = get(f"{BASE}/afterTrading/MI_INDEX?date={ymd}&type=MS&response=json")
-    for src in (mi, ms):
-        for (title, f, data) in tables(src):
-            ia = col(f, "成交金額")
-            if ia is None or col(f, "證券代號") is not None:
-                continue
-            for x in data:
-                v = num(x[ia])
-                if v:
-                    cands[f"{title}|{x[0]}"] = round(v / 1e8, 2)
-
     time.sleep(2)
     m5 = get(f"{BASE}/afterTrading/MI_5MINS?date={ymd}&response=json")
+    # 新聞用的是一般交易時段（13:30 收盤）的累積成交金額，不含盤後、零股、鉅額交易
+    session = {}
     for (title, f, data) in tables(m5):
         ia = col(f, "成交金額")
         if ia is not None and data:
             last = data[-1]
-            cands[f"盤中|{last[0]}|累積成交金額"] = num(last[ia])
-            for k in ("委託買進數量", "委託賣出數量", "成交數量", "成交筆數"):
-                ik = col(f, k)
+            session["amount"] = num(last[ia])  # 百萬元
+            for key, name in (("bid", "委託買進數量"), ("ask", "委託賣出數量"), ("shares", "成交數量"), ("tx", "成交筆數")):
+                ik = col(f, name)
                 if ik is not None:
-                    cands[f"盤中|{k}"] = num(last[ik])
+                    session[key] = num(last[ik])
 
     # 4) 三大法人買賣金額（BFI82U）
     time.sleep(2)
@@ -226,10 +214,11 @@ def main():
         "updatedAt": now.strftime("%Y-%m-%d %H:%M"),
         "complete": bool(inst and idx["open"] is not None and breadth),
         "idx": idx,
-        "amount": round((num(r[i_amt]) or 0) / 1e8, 2),
-        "amountCandidates": cands,
-        "shares": int((num(r[i_sh]) or 0) / 1000),
-        "transactions": int(num(r[i_tx]) or 0) if i_tx is not None else None,
+        "amount": round(session["amount"] / 100, 2) if session.get("amount") else round((num(r[i_amt]) or 0) / 1e8, 2),
+        "shares": int(session["shares"]) if session.get("shares") else int((num(r[i_sh]) or 0) / 1000),
+        "transactions": int(session["tx"]) if session.get("tx") else (int(num(r[i_tx]) or 0) if i_tx is not None else None),
+        "bid": int(session["bid"]) if session.get("bid") else None,
+        "ask": int(session["ask"]) if session.get("ask") else None,
         "breadth": breadth,
         "limitUp": limit_up, "limitDown": limit_down,
         "inst": inst,
