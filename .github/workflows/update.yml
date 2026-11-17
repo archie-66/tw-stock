@@ -2,12 +2,11 @@ name: 每日更新台股資料
 
 on:
   schedule:
-    # 台北時間 13:37～17:52 每 15 分鐘檢查一次（週一～五）
-    # 收盤行情約 14:00 出來、三大法人約 15:00 出來；資料完整後就不會再更新。
-    # 故意避開整點：GitHub 整點排程最容易塞車延遲。
+    # 台北時間 13:37～17:52 每 15 分鐘（週一～五）。GitHub 常常會漏跑排程，
+    # 所以只要有任何一次啟動，它就會自己每 5 分鐘再檢查，直到當天資料完整為止。
     - cron: "37,52 5 * * 1-5"
     - cron: "7,22,37,52 6-9 * * 1-5"
-  workflow_dispatch:          # 也可以在 Actions 頁面手動按「Run workflow」
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -19,21 +18,34 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 200
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: 抓證交所資料
-        run: python update.py
-      - name: 有變動就存檔
+      - name: 抓證交所資料（每 5 分鐘一次，直到完整）
         run: |
           git config user.name "stock-bot"
           git config user.email "stock-bot@users.noreply.github.com"
-          git add data.json
-          if ! git diff --cached --quiet; then
-            git commit -m "更新台股資料 $(TZ=Asia/Taipei date '+%F %H:%M')"
-            git pull --rebase -q origin main
-            git push
-          fi
+          for i in $(seq 1 40); do
+            git pull -q --rebase origin main || true
+            python update.py || true
+            if ! git diff --quiet -- data.json; then
+              git add data.json
+              git commit -q -m "更新台股資料 $(TZ=Asia/Taipei date '+%F %H:%M')"
+              git pull -q --rebase origin main && git push -q || echo "push 失敗，下一輪再試"
+            fi
+            STATE=$(python -c "
+          import json,datetime as dt
+          now=dt.datetime.utcnow()+dt.timedelta(hours=8);today=now.strftime('%Y-%m-%d');m=now.hour*60+now.minute
+          try: d=json.load(open('data.json'))
+          except Exception: d={}
+          if d.get('date')==today and d.get('complete'): print('DONE')
+          elif m>=18*60: print('DONE')
+          elif m>=15*60 and d.get('date')!=today: print('DONE')
+          else: print('WAIT')")
+            echo "第 $i 次檢查：$STATE"
+            [ "$STATE" = "DONE" ] && break
+            sleep 300
+          done
