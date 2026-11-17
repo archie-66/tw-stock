@@ -3,7 +3,7 @@
 由 GitHub Actions 在每個平日 15:20（台北時間）自動執行，只用 Python 內建模組。
 沒開盤（假日）或資料還沒出來時，不會改動 data.json。
 """
-import json, re, sys, time, urllib.request
+import json, os, re, sys, time, urllib.request
 from datetime import datetime, timedelta, timezone
 
 TW = timezone(timedelta(hours=8))
@@ -78,7 +78,7 @@ def main():
         old = {}
 
     # 今天的完整資料已經有了就不用再抓（每 15 分鐘會跑一次）
-    if old.get("date") == today and old.get("complete"):
+    if old.get("date") == today and old.get("complete") and not os.environ.get("FORCE"):
         print("今天的資料已經完整，不用更新。")
         return 0
 
@@ -158,6 +158,20 @@ def main():
         breadth = {"up": sum(1 for s in stocks if s[5] > 0), "down": sum(1 for s in stocks if s[5] < 0),
                    "flat": sum(1 for s in stocks if s[5] == 0)}
 
+    # 3b) 各種「成交金額」統計（找出跟新聞一致的那個）
+    cands = {}
+    time.sleep(2)
+    ms = get(f"{BASE}/afterTrading/MI_INDEX?date={ymd}&type=MS&response=json")
+    for src in (mi, ms):
+        for (title, f, data) in tables(src):
+            ia = col(f, "成交金額")
+            if ia is None or col(f, "證券代號") is not None:
+                continue
+            for x in data:
+                v = num(x[ia])
+                if v:
+                    cands[f"{title}|{x[0]}"] = round(v / 1e8, 2)
+
     # 4) 三大法人買賣金額（BFI82U）
     time.sleep(2)
     bf = get(f"{BASE}/fund/BFI82U?type=day&dayDate={ymd}&response=json")
@@ -201,6 +215,7 @@ def main():
         "complete": bool(inst and idx["open"] is not None and breadth),
         "idx": idx,
         "amount": round((num(r[i_amt]) or 0) / 1e8, 2),
+        "amountCandidates": cands,
         "shares": int((num(r[i_sh]) or 0) / 1000),
         "transactions": int(num(r[i_tx]) or 0) if i_tx is not None else None,
         "breadth": breadth,
