@@ -35,7 +35,7 @@ var STATIC={
 "學習工具，只描述「發生了什麼」，":"A learning tool that only describes what happened. ","不是投資建議":"Not investment advice","，也不預測股價。":", and no price predictions.",
 "每個交易日收盤後自動更新：股價約 14:00～14:30、法人資料約 15:00～15:30（開著 App 也會自己更新）。":"Updates automatically after the close each trading day: prices around 2:00–2:30 pm, institutional data around 3:00–3:30 pm (Taipei). It also refreshes itself while open.",
 "資料來源：":"Data: ","設計參考：投資先生 App 簡易模式、quants.tw。":"Design inspired by the Mr. Investment app's simple mode and quants.tw.",
-"模擬":"Practice","← 左右滑動換頁 →":"← Swipe to change pages →","外觀":"Appearance","跟隨系統":"System","淺色":"Light","深色":"Dark","漲跌顏色":"Up/down colors",
+"模擬":"Practice","← 左右滑動換頁 →":"← Swipe to change pages →","外觀":"Appearance","跟隨系統":"System","淺色":"Light","深色":"Dark","忍者":"Ninja","漲跌顏色":"Up/down colors",
 "台股":"Taiwan","漲":"up","跌":"down","國際":"Global","顯示內容":"Detail level","設定只存在這台裝置上。":"Settings are saved on this device only.","語言":"Language","進階數據":"Advanced data","完成":"Done","不記名答題統計":"Anonymous quiz stats","只會送出題號、對錯和等級，不含名字或帳號，用來改善題目。":"Only question numbers, right/wrong and level are sent. No names or accounts. Used to improve the questions."
 };
 function applyStatic(root){

@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
 <title>台股新手看盤小幫手</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#f4f1ea; --card:#fffdf9; --ink:#22242a; --mute:#7a7a82; --line:#e8e2d6;
@@ -23,8 +23,26 @@
   --st:env(safe-area-inset-top,0px); --sb:env(safe-area-inset-bottom,0px);
 }
 :root[data-theme="dark"]{--bg:#131418;--card:#1d1f25;--ink:#f1f1f4;--mute:#9b9ba5;--line:#2b2e36;--redbg:#3b1a20;--greenbg:#14301f;--accentbg:#1e2547;--warnbg:#3a2d14;--red:#ff5d70;--green:#3fd081;--accent:#8aa2ff;color-scheme:dark}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#131418;--card:#1d1f25;--ink:#f1f1f4;--mute:#9b9ba5;--line:#2b2e36;--redbg:#3b1a20;--greenbg:#14301f;--accentbg:#1e2547;--warnbg:#3a2d14;--red:#ff5d70;--green:#3fd081;--accent:#8aa2ff;color-scheme:dark}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]):not([data-theme="ninja"]){--bg:#131418;--card:#1d1f25;--ink:#f1f1f4;--mute:#9b9ba5;--line:#2b2e36;--redbg:#3b1a20;--greenbg:#14301f;--accentbg:#1e2547;--warnbg:#3a2d14;--red:#ff5d70;--green:#3fd081;--accent:#8aa2ff;color-scheme:dark}}
 :root[data-color="intl"]{--up:var(--green);--upbg:var(--greenbg);--down:var(--red);--downbg:var(--redbg)}
+/* ===== 忍者主題（原創：和紙、墨色山、朱紅印章、手裏劍） ===== */
+:root[data-theme="ninja"]{--bg:#e9dfc8;--card:#f8f1e1;--ink:#1d1a17;--mute:#6f6455;--line:#d6c6a2;--accent:#c8361d;--accentbg:#f5dccd;--warnbg:#f1e0b5;--r:6px;color-scheme:light}
+:root[data-theme="ninja"] body{background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 800' preserveAspectRatio='xMidYMax slice'%3E%3Ccircle cx='310' cy='130' r='70' fill='%23c8361d' fill-opacity='.13'/%3E%3Cpath d='M0 640 L70 560 L120 600 L190 500 L250 580 L300 540 L400 620 L400 800 L0 800Z' fill='%231d1a17' fill-opacity='.07'/%3E%3Cpath d='M0 700 L60 650 L140 690 L220 630 L300 680 L360 650 L400 670 L400 800 L0 800Z' fill='%231d1a17' fill-opacity='.10'/%3E%3C/svg%3E") center bottom/cover no-repeat fixed}
+:root[data-theme="ninja"] .top{background:linear-gradient(var(--bg) 70%,transparent)}
+:root[data-theme="ninja"] .top h1,:root[data-theme="ninja"] .card h2,:root[data-theme="ninja"] .big{font-family:"Noto Serif TC",serif;letter-spacing:.04em}
+:root[data-theme="ninja"] .card{border:2px solid var(--ink);border-radius:6px;box-shadow:4px 4px 0 var(--ink);position:relative}
+:root[data-theme="ninja"] .card h2{display:flex;align-items:center;gap:8px}
+:root[data-theme="ninja"] .card h2::before{content:"忍";flex:none;width:22px;height:22px;display:grid;place-items:center;font-size:13px;color:#f8f1e1;background:var(--accent);border-radius:3px;transform:rotate(-6deg);font-family:"Noto Serif TC",serif}
+:root[data-theme="ninja"] .card.hero::after{content:"";position:absolute;right:-14px;top:-14px;width:44px;height:44px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-50 -50 100 100'%3E%3Cg fill='%231d1a17'%3E%3Cpath d='M0-48 L9-9 L48 0 L9 9 L0 48 L-9 9 L-48 0 L-9-9Z'/%3E%3C/g%3E%3Ccircle r='7' fill='%23f8f1e1'/%3E%3C/svg%3E") center/contain no-repeat;animation:spin 6s linear infinite;pointer-events:none}
+:root[data-theme="ninja"] .stat,:root[data-theme="ninja"] .tip{border-radius:4px}
+:root[data-theme="ninja"] .tip{border-left:4px solid var(--accent)}
+:root[data-theme="ninja"] .tabs{background:#1d1a17;border:2px solid #1d1a17;border-radius:8px;box-shadow:0 10px 30px -12px rgba(0,0,0,.5)}
+:root[data-theme="ninja"] .tabs .ind{background:var(--accent);border-radius:5px}
+:root[data-theme="ninja"] .tabs button{color:#bfb39a}
+:root[data-theme="ninja"] .tabs button.on{color:#f8f1e1}
+:root[data-theme="ninja"] .icon-btn,:root[data-theme="ninja"] .mode{border:2px solid var(--ink)}
+:root[data-theme="ninja"] .mode button.on{background:var(--accent);color:#f8f1e1}
+:root[data-theme="ninja"] .btn{border-radius:4px}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
 body.simple .adv{display:none!important}
@@ -523,7 +541,7 @@ footer a{color:var(--mute)}
   <div class="grab"></div>
   <div class="hrow"><h3>設定</h3><button class="btn ghost" id="setDone" style="padding:6px 14px">完成</button></div>
   <div class="setrow"><div class="lab">語言</div><div class="seg" id="setLang"><button data-v="zh">中文</button><button data-v="en">English</button></div></div>
-  <div class="setrow"><div class="lab">外觀</div><div class="seg" id="setTheme"><button data-v="auto">跟隨系統</button><button data-v="light">淺色</button><button data-v="dark">深色</button></div></div>
+  <div class="setrow"><div class="lab">外觀</div><div class="seg" id="setTheme"><button data-v="auto">跟隨系統</button><button data-v="light">淺色</button><button data-v="dark">深色</button><button data-v="ninja">忍者</button></div></div>
   <div class="setrow"><div class="lab">漲跌顏色</div><div class="seg" id="setColor"><button data-v="tw">台股 <span class="swatch" style="background:var(--red)"></span>漲 <span class="swatch" style="background:var(--green)"></span>跌</button><button data-v="intl">國際 <span class="swatch" style="background:var(--green)"></span>漲 <span class="swatch" style="background:var(--red)"></span>跌</button></div></div>
   <div class="setrow"><div class="lab">顯示內容</div><div class="seg" id="setMode"><button data-v="s">簡易</button><button data-v="a">進階</button></div></div>
   <div class="setrow"><div class="lab">不記名答題統計</div><p class="sub" style="margin:0">只會送出題號、對錯和等級，不含名字或帳號，用來改善題目。</p></div>
@@ -603,7 +621,7 @@ const kName=up=>EN?(up?(intl()?"green candle":"red candle"):(intl()?"red candle"
 function applyTheme(v){
   const r=document.documentElement;if(v==="auto")delete r.dataset.theme;else r.dataset.theme=v;
   const dark=v==="dark"||(v==="auto"&&matchMedia("(prefers-color-scheme: dark)").matches);
-  document.querySelector('meta[name="theme-color"]').content=dark?"#131418":"#f4f1ea";
+  document.querySelector('meta[name="theme-color"]').content=v==="ninja"?"#e9dfc8":dark?"#131418":"#f4f1ea";
   document.querySelectorAll("#setTheme button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));store.set("twtheme",v)}
 function applyColor(v){
   const r=document.documentElement;if(v==="intl")r.dataset.color="intl";else delete r.dataset.color;
