@@ -501,7 +501,7 @@ footer a{color:var(--mute)}
   <div class="setrow"><div class="lab">外觀</div><div class="seg" id="setTheme"><button data-v="auto">跟隨系統</button><button data-v="light">淺色</button><button data-v="dark">深色</button></div></div>
   <div class="setrow"><div class="lab">漲跌顏色</div><div class="seg" id="setColor"><button data-v="tw">台股 <span class="swatch" style="background:var(--red)"></span>漲 <span class="swatch" style="background:var(--green)"></span>跌</button><button data-v="intl">國際 <span class="swatch" style="background:var(--green)"></span>漲 <span class="swatch" style="background:var(--red)"></span>跌</button></div></div>
   <div class="setrow"><div class="lab">顯示內容</div><div class="seg" id="setMode"><button data-v="s">簡易</button><button data-v="a">進階</button></div></div>
-  <div class="setrow"><div class="lab">不記名答題統計</div><div class="seg" id="setStat"><button data-v="1">開啟</button><button data-v="0">關閉</button></div><p class="sub" style="margin:6px 0 0">只會送出題號、對錯和等級，不含名字或帳號，用來改善題目。</p></div>
+  <div class="setrow"><div class="lab">不記名答題統計</div><p class="sub" style="margin:0">只會送出題號、對錯和等級，不含名字或帳號，用來改善題目。</p></div>
   <p class="sub" style="margin-top:14px">設定只存在這台裝置上。</p>
 </div>
 <div class="toast" id="simToast"></div>
@@ -583,10 +583,7 @@ document.querySelectorAll("#setColor button").forEach(b=>b.onclick=()=>applyColo
 document.querySelectorAll("#setMode button").forEach(b=>b.onclick=()=>setMode(b.dataset.v==="s"));
 $("langBtn").textContent=EN?"中":"EN";$("langBtn").onclick=()=>setLang(EN?"zh":"en");
 document.querySelectorAll("#setLang button").forEach(b=>{b.classList.toggle("on",b.dataset.v===LANG);b.onclick=()=>{if(b.dataset.v!==LANG)setLang(b.dataset.v)}});
-const syncStat=()=>document.querySelectorAll("#setStat button").forEach(b=>b.classList.toggle("on",(b.dataset.v==="1")===(window.statOn?statOn():true)));
-document.querySelectorAll("#setStat button").forEach(b=>b.onclick=()=>{if(window.setStatOn)setStatOn(b.dataset.v==="1");syncStat()});
-const openSet=o=>{if(o)syncStat();openSet0(o)};
-const openSet0=o=>{$("setSheet").classList.toggle("show",o);$("backdrop").classList.toggle("show",o)};
+const openSet=o=>{$("setSheet").classList.toggle("show",o);$("backdrop").classList.toggle("show",o)};
 $("setBtn").onclick=()=>openSet(true);$("setDone").onclick=()=>openSet(false);$("backdrop").onclick=()=>openSet(false);
 
 /* ---------- 模式 ---------- */

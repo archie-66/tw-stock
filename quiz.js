@@ -482,7 +482,7 @@ function finish(){
   if(emo==="🚀")confetti();
   header();
 }
-$("qStart").innerHTML=EN?`<p class="hint">${ROUND} questions per round. <b>Questions you've done never come back.</b> Do well and you level up to intermediate and expert concepts.</p><button class="btn" id="go">Start quiz</button><p class="sub" style="margin-top:10px">Answers are counted anonymously to improve the questions. You can turn this off in Settings.</p>`:`<p class="hint">每回合 ${ROUND} 題，<b>做過的題目不會再出現</b>。答得好會自動升級到進階、高手觀念題。</p><button class="btn" id="go">開始測驗</button><p class="sub" style="margin-top:10px">作答結果會不記名統計，用來改善題目，可以在設定裡關掉。</p>`;
+$("qStart").innerHTML=EN?`<p class="hint">${ROUND} questions per round. <b>Questions you've done never come back.</b> Do well and you level up to intermediate and expert concepts.</p><button class="btn" id="go">Start quiz</button><p class="sub" style="margin-top:10px">Answers are counted anonymously to improve the questions.</p>`:`<p class="hint">每回合 ${ROUND} 題，<b>做過的題目不會再出現</b>。答得好會自動升級到進階、高手觀念題。</p><button class="btn" id="go">開始測驗</button><p class="sub" style="margin-top:10px">作答結果會不記名統計，用來改善題目。</p>`;
 $("go").onclick=start;
 $("qNext").onclick=()=>{if(qi<round.length-1){qi++;ask()}else finish()};
 

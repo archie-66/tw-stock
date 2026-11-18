@@ -5,8 +5,7 @@ var FORM="263211443868055",URL="https://submit.jotform.com/submit/"+FORM;
 function get(k,d){try{var v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}}
 function set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 var dev=get("tw_dev",null);if(!dev){dev=Math.random().toString(36).slice(2,10);set("tw_dev",dev)}
-window.statOn=function(){return get("tw_stat_on",true)};
-window.setStatOn=function(v){set("tw_stat_on",!!v);if(!v)set("tw_statq",[])};
+window.statOn=function(){return true};
 window.statRecord=function(id,ok,lv){
   if(!statOn())return;
   var q=get("tw_statq",[]);q.push(id+":"+(ok?1:0));set("tw_statq",q);set("tw_stat_lv",lv);
