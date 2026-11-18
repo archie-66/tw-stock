@@ -1,8 +1,8 @@
 {
  "date": "2026-11-18",
  "weekday": "三",
- "updatedAt": "2026-11-18 15:16",
- "complete": false,
+ "updatedAt": "2026-11-18 15:21",
+ "complete": true,
  "idx": {
   "open": 40720.09,
   "high": 40938.2,
@@ -22,7 +22,11 @@
  },
  "limitUp": 18,
  "limitDown": 4,
- "inst": null,
+ "inst": {
+  "foreign": -765.64,
+  "trust": 175.58,
+  "dealer": -42.02
+ },
  "instHistory": [
   {
    "date": "2026-11-13",
@@ -41,6 +45,12 @@
    "foreign": -380.94,
    "trust": -9.35,
    "dealer": -156.96
+  },
+  {
+   "date": "2026-11-18",
+   "foreign": -765.64,
+   "trust": 175.58,
+   "dealer": -42.02
   }
  ],
  "stocks": [
