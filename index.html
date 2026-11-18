@@ -119,6 +119,10 @@ body.simple .adv{display:none!important}
 .sinput{width:100%;border:1.5px solid var(--line);border-radius:999px;background:var(--bg);color:var(--ink);font:inherit;font-size:16px;padding:9px 14px}
 #simCap button.on{background:var(--card);box-shadow:0 2px 8px rgba(0,0,0,.08);color:var(--ink);font-weight:700}
 #tSide button,#tUnit button,#simCap button,.setrow .seg button{color:var(--mute)}
+#tType button.on{background:var(--card);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+#tType button{color:var(--mute)}#tType button.on{color:var(--ink);font-weight:700}
+.mk{display:inline-block;font-size:10px;font-weight:700;color:var(--accent);background:var(--accentbg);border-radius:5px;padding:1px 5px;margin-left:5px;vertical-align:1px}
+.tag.none{background:var(--flat)}
 #tUnit button.on,.setrow .seg button.on{color:var(--ink);font-weight:700}
 .search input{flex:1;min-width:0;border:1.5px solid var(--accent);border-radius:999px;background:var(--bg);color:var(--ink);font:inherit;font-size:16px;padding:9px 14px}
 .hrow{display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -401,7 +405,7 @@ footer a{color:var(--mute)}
     </div>
     <div class="card" style="--i:1" id="orderCard">
       <h2>練習下單</h2>
-      <p class="hint">用假錢練習，用最新收盤價成交（盤後模擬），會照真實規則扣手續費和證交稅。</p>
+      <p class="hint">用假錢練習，規則跟真的一樣：送出委託後要等收盤才知道有沒有成交，限價單要當天價格碰到才會成交，也會扣手續費和證交稅。</p>
       <input id="tSearch" class="sinput" type="search" placeholder="搜尋股票代號或名稱" autocomplete="off" enterkeyhint="search">
       <div class="sugs" id="tSug"></div>
       <div id="tEmpty" class="sub" style="margin-top:8px">先搜尋一檔股票，或到「個股」頁按「模擬買進」。</div>
@@ -409,12 +413,18 @@ footer a{color:var(--mute)}
       <div id="tForm" hidden>
         <div class="seg" id="tSide" data-v="buy"><button class="on" data-v="buy">買進</button><button data-v="sell">賣出</button></div>
         <div class="seg" id="tUnit" style="margin-top:6px"><button class="on" data-v="lot">整張（1,000 股）</button><button data-v="odd">零股（1～999 股）</button></div>
+        <div class="seg" id="tType" style="margin-top:6px"><button class="on" data-v="mkt">收盤價成交</button><button data-v="lmt">限價</button></div>
+        <div id="tLimitRow" hidden><div class="stepper"><button id="tLMinus">−</button><input id="tLmt" type="number" inputmode="decimal" step="any"><span style="font-weight:700">元</span><button id="tLPlus">＋</button></div><div class="sub" id="tRange"></div></div>
         <div class="stepper"><button id="tMinus">−</button><input id="tQty" type="number" inputmode="numeric" min="1" max="999" value="1"><span id="tUnitLab" style="font-weight:700">張</span><button id="tPlus">＋</button></div>
         <div class="chips2" id="tQuick"><button data-q="1">1</button><button data-q="5">5</button><button data-q="10">10</button><button data-q="100">100</button><button data-q="max">最多</button></div>
         <div class="prev" id="tPrev"></div>
         <div class="err" id="tErr"></div>
         <button class="btn gobtn buy" id="tGo">確認買進</button>
       </div>
+    </div>
+    <div class="card" style="--i:2">
+      <h2>委託中</h2>
+      <div id="simOrders"></div>
     </div>
     <div class="card" style="--i:2">
       <h2>我的持股</h2>
@@ -801,7 +811,7 @@ const lotsTxt=v=>EN?`${v.toLocaleString()} lots`:`${v.toLocaleString()} 張`;
 let query="";
 function renderList(){
   if(!D)return;
-  let rows=D.stocks.map(s=>({code:s[0],name:s[1],amt:s[2],vol:s[3],px:s[4],ch:s[5],pct:s[4]-s[5]?s[5]/(s[4]-s[5])*100:0}));
+  let rows=D.stocks.map(s=>({code:s[0],name:s[1],amt:s[2],vol:s[3],px:s[4],ch:s[5],otc:s[8]==="o",pct:s[4]-s[5]?s[5]/(s[4]-s[5])*100:0}));
   const q=query.trim().toLowerCase();
   if(q){
     rows=rows.filter(r=>r.code.toLowerCase().includes(q)||r.name.toLowerCase().includes(q)||(KNOWN[r.code]||"").toLowerCase().split(":")[0].includes(q))
@@ -815,7 +825,7 @@ function renderList(){
     $("listHint").innerHTML=t("點一檔看說明。排行＝市場注意力，<b>不是推薦</b>。","Tap a stock for details. Rankings show attention, <b>not recommendations</b>.");
   }
   $("list").innerHTML=rows.map((r,i)=>`<div class="item press" data-c="${r.code}" style="--j:${i}"><div class="rk">${i+1}</div>
-    <div><span class="nm">${r.name}</span><span class="cd">${r.code}</span><button class="star ${isW(r.code)?"on":""}" data-star="${r.code}" aria-label="${t("自選","Watchlist")}">${isW(r.code)?"★":"☆"}</button><div class="meta">${sortBy==="vol"?lotsTxt(r.vol):yi(r.amt)}<span class="adv">・${sortBy==="vol"?yi(r.amt):lotsTxt(r.vol)}</span></div></div>
+    <div><span class="nm">${r.name}</span><span class="cd">${r.code}</span>${r.otc?`<span class="mk">${t("上櫃","OTC")}</span>`:""}<button class="star ${isW(r.code)?"on":""}" data-star="${r.code}" aria-label="${t("自選","Watchlist")}">${isW(r.code)?"★":"☆"}</button><div class="meta">${sortBy==="vol"?lotsTxt(r.vol):yi(r.amt)}<span class="adv">・${sortBy==="vol"?yi(r.amt):lotsTxt(r.vol)}</span></div></div>
     <div class="rt"><div class="px">${r.px.toLocaleString()}</div><span class="badge ${cls(r.ch)}">${arrow(r.ch)} ${Math.abs(r.pct).toFixed(2)}%</span></div></div>
     <div class="detail" id="d${r.code}"><div>${stockNote(r)}<div class="acts"><button data-sim="${r.code}">${t("模擬買進","Paper buy")}</button><button data-star="${r.code}">${isW(r.code)?t("移除自選","Remove from watchlist"):t("加入自選","Add to watchlist")}</button></div></div></div>`).join("");
   document.querySelectorAll("#list .item").forEach(el=>el.onclick=()=>$("d"+el.dataset.c).classList.toggle("open"));
@@ -836,10 +846,10 @@ function renderWatch(){
   if(!WL.length){$("watch").innerHTML=`<div class="wl-empty">${t("在下面的排行或搜尋結果，點股票名稱旁的 ☆ 就能加入自選股。","Tap the ☆ next to any stock below (or in search results) to add it here.")}</div>`;return}
   $("watch").innerHTML=WL.map((c,i)=>{const s=m[c];
     if(!s)return `<div class="item" style="--j:${i}"><div class="rk"></div><div><span class="nm">${c}</span><div class="meta">${t("今天沒有這檔的資料","No data for this stock today")}</div></div><div class="rt"><button class="star on" data-star="${c}">★</button></div></div>`;
-    const r={code:s[0],name:s[1],amt:s[2],vol:s[3],px:s[4],ch:s[5]};r.pct=r.px-r.ch?r.ch/(r.px-r.ch)*100:0;
+    const r={code:s[0],name:s[1],amt:s[2],vol:s[3],px:s[4],ch:s[5],otc:s[8]==="o"};r.pct=r.px-r.ch?r.ch/(r.px-r.ch)*100:0;
     const held=window.simHeld?simHeld(c):0;
     return `<div class="item press" data-w="${c}" style="--j:${i}"><div class="rk"></div>
-      <div><span class="nm">${r.name}</span><span class="cd">${c}</span><button class="star on" data-star="${c}">★</button><div class="meta">${held?t(`模擬持有 ${held.toLocaleString()} 股`,`Paper holding: ${held.toLocaleString()} sh`):yi(r.amt)}</div></div>
+      <div><span class="nm">${r.name}</span><span class="cd">${c}</span>${r.otc?`<span class="mk">${t("上櫃","OTC")}</span>`:""}<button class="star on" data-star="${c}">★</button><div class="meta">${held?t(`模擬持有 ${held.toLocaleString()} 股`,`Paper holding: ${held.toLocaleString()} sh`):yi(r.amt)}</div></div>
       <div class="rt"><div class="px">${r.px.toLocaleString()}</div><span class="badge ${cls(r.ch)}">${arrow(r.ch)} ${Math.abs(r.pct).toFixed(2)}%</span></div></div>
       <div class="detail" id="w${c}"><div>${stockNote(r)}<div class="acts"><button data-sim="${c}">${t("模擬買賣","Paper trade")}</button></div></div></div>`}).join("");
   document.querySelectorAll("#watch .item[data-w]").forEach(el=>el.onclick=()=>$("w"+el.dataset.w).classList.toggle("open"));

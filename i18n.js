@@ -25,7 +25,7 @@ var STATIC={
 "今天漲最多／跌最多":"Biggest gainers / losers today","只算成交金額 1 億元以上的股票。":"Only stocks that traded over NT$100M today.","新手觀念":"Beginner tip",
 "高價股（像一張好幾百萬的）成交張數少但金額大；低價股張數多但金額小，所以「金額」和「張數」兩個排行會很不一樣。熱門股常常漲得快、跌得也快。":"Expensive stocks trade few lots but a lot of money; cheap stocks trade many lots but little money, so the two rankings look very different. Hot stocks often rise fast and fall fast.",
 "模擬交易":"Paper trading","模擬帳戶總資產":"Total paper account value","現金":"Cash","股票市值":"Stock value","資產變化":"Account value over time","練習下單":"Practice an order",
-"用假錢練習，用最新收盤價成交（盤後模擬），會照真實規則扣手續費和證交稅。":"Practice with fake money at the latest closing price. Real fees and transaction tax are charged.",
+"用假錢練習，規則跟真的一樣：送出委託後要等收盤才知道有沒有成交，限價單要當天價格碰到才會成交，也會扣手續費和證交稅。":"Practice with fake money, with real rules: after you place an order you wait for the close to see if it fills, limit orders only fill if the price reaches them that day, and fees and tax are charged.","收盤價成交":"At close","限價":"Limit","元":"NT$","委託中":"Pending orders",
 "搜尋股票代號或名稱":"Search stock code or name","先搜尋一檔股票，或到「個股」頁按「模擬買進」。":"Search a stock first, or tap \"Paper buy\" on the Stocks page.",
 "買進":"Buy","賣出":"Sell","整張（1,000 股）":"Round lot (1,000 sh)","零股（1～999 股）":"Odd lot (1–999 sh)","張":"lots","＋":"+","最多":"Max","確認買進":"Confirm buy",
 "我的持股":"My holdings","交易紀錄":"Trade history","重新開始":"Start over","清空所有持股和紀錄，用新的起始資金重來。":"Clear all holdings and history, and start again with new money.",
