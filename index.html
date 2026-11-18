@@ -160,6 +160,20 @@ body.simple .adv{display:none!important}
 .revnav .btn{padding:8px 18px}.revnav .btn:disabled{opacity:.3}
 .okbtn{width:100%;margin-top:10px;background:var(--down)}
 [hidden]{display:none!important}
+.bars-top{position:fixed;left:0;right:0;top:calc(var(--st) + 56px);z-index:11;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
+.nbar{pointer-events:auto;max-width:min(92vw,560px);border:0;font:inherit;font-size:13px;line-height:1.45;padding:8px 14px;border-radius:14px;box-shadow:0 6px 20px -8px rgba(0,0,0,.3);animation:pop .35s cubic-bezier(.3,1.4,.5,1)}
+.nbar.upd{background:var(--accent);color:#fff;font-weight:700}
+.nbar.stale{background:var(--warnbg);color:var(--ink);border:1px solid var(--line);font-size:12px;cursor:pointer}
+.nbar.stale::after{content:" ✕";color:var(--mute)}
+.setsheet.witharrow{padding-bottom:calc(var(--sb) + 64px)}
+.inst-head{display:flex;gap:12px;align-items:center;margin-bottom:6px}
+.inst-head h3{margin:0 0 2px;font-size:17px}
+.inst-ic{width:54px;height:54px;border-radius:13px;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.inst-steps ol{margin:10px 0 4px;padding-left:22px;font-size:15px;line-height:2}
+.inst-steps p{font-size:15px}
+.shi{width:18px;height:18px;stroke:var(--accent);fill:none;stroke-width:2;vertical-align:-3px;margin:0 2px}
+.inst-arrow{position:fixed;left:50%;bottom:calc(var(--sb) + 4px);transform:translateX(-50%);z-index:21;font-size:34px;color:var(--accent);font-weight:900;animation:bob 1s ease-in-out infinite;pointer-events:none}
+@keyframes bob{50%{transform:translate(-50%,8px)}}
 @media (max-width:440px){.top .mode{display:none}}
 .tabs button svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s cubic-bezier(.3,1.6,.5,1)}
 .tabs button.on svg{transform:translateY(-1px) scale(1.1)}
@@ -291,6 +305,7 @@ footer a{color:var(--mute)}
   <div class="mode"><button id="mSimple" class="on">簡易</button><button id="mAdv">進階</button></div>
 </div>
 
+<div class="bars-top"><button class="nbar upd" id="updBar" hidden>有新版本，點這裡更新</button><div class="nbar stale" id="staleBar" hidden></div></div>
 <main class="pager" id="pager">
   <!-- 1 大盤 -->
   <section class="page" data-title="大盤"><div class="inner">
@@ -512,9 +527,19 @@ footer a{color:var(--mute)}
   <div class="setrow"><div class="lab">漲跌顏色</div><div class="seg" id="setColor"><button data-v="tw">台股 <span class="swatch" style="background:var(--red)"></span>漲 <span class="swatch" style="background:var(--green)"></span>跌</button><button data-v="intl">國際 <span class="swatch" style="background:var(--green)"></span>漲 <span class="swatch" style="background:var(--red)"></span>跌</button></div></div>
   <div class="setrow"><div class="lab">顯示內容</div><div class="seg" id="setMode"><button data-v="s">簡易</button><button data-v="a">進階</button></div></div>
   <div class="setrow"><div class="lab">不記名答題統計</div><p class="sub" style="margin:0">只會送出題號、對錯和等級，不含名字或帳號，用來改善題目。</p></div>
+  <div class="setrow" id="instHelpRow"><div class="lab">加到主畫面</div><button class="btn ghost" id="instHelp" style="width:100%">看教學</button></div>
   <p class="sub" style="margin-top:14px">設定只存在這台裝置上。</p>
 </div>
 <div class="toast" id="simToast"></div>
+<div class="backdrop" id="instBack"></div>
+<div class="setsheet" id="instSheet" role="dialog">
+  <div class="grab"></div>
+  <div class="inst-head"><img src="icon-192.png" alt="" class="inst-ic"><div><h3>把台股小幫手加到主畫面</h3><div class="sub">像一般 App 一樣全螢幕打開，進度也比較不會不見</div></div></div>
+  <div class="inst-steps" id="instSteps"></div>
+  <button class="btn" id="instGo" hidden style="width:100%;margin-top:4px">安裝到主畫面</button>
+  <div class="row2" style="margin-top:12px"><button class="btn ghost" id="instLater">下次再說</button><button class="btn" id="instDone">我加好了</button></div>
+</div>
+<div class="inst-arrow" id="instArrow" hidden>↓</div>
 <div class="sheet" id="sheet"><span class="x" id="sheetX">✕</span><b id="sheetT"></b><span id="sheetB"></span></div>
 
 <script src="i18n.js"></script>
@@ -594,7 +619,7 @@ document.querySelectorAll("#setMode button").forEach(b=>b.onclick=()=>setMode(b.
 $("langBtn").textContent=EN?"中":"EN";$("langBtn").onclick=()=>setLang(EN?"zh":"en");
 document.querySelectorAll("#setLang button").forEach(b=>{b.classList.toggle("on",b.dataset.v===LANG);b.onclick=()=>{if(b.dataset.v!==LANG)setLang(b.dataset.v)}});
 const openSet=o=>{$("setSheet").classList.toggle("show",o);$("backdrop").classList.toggle("show",o)};
-$("setBtn").onclick=()=>openSet(true);$("setDone").onclick=()=>openSet(false);$("backdrop").onclick=()=>openSet(false);
+$("setBtn").onclick=()=>openSet(true);window.openSet=openSet;$("setDone").onclick=()=>openSet(false);$("backdrop").onclick=()=>openSet(false);
 
 /* ---------- 模式 ---------- */
 let modeInit=true;
@@ -773,6 +798,7 @@ function render(){
   const mv=(arr)=>arr.map(s=>{const p=s[5]/(s[4]-s[5])*100;return `<div><span>${s[1]}</span><b class="${cls(p)}">${p>0?"+":""}${p.toFixed(1)}%</b></div>`}).join("");
   if(D.gainers&&D.gainers.length){$("gainers").innerHTML=`<div class="sub" style="border:0">${t("漲最多","Top gainers")}</div>`+mv(D.gainers);$("losers").innerHTML=`<div class="sub" style="border:0">${t("跌最多","Top losers")}</div>`+mv(D.losers||[]);$("moversCard").style.display=""}else $("moversCard").style.display="none";
 
+  if(window.checkStale)checkStale();
   $("srcs").innerHTML=(D.sources||[]).map(s=>`<a href="${s[1]}">${EN&&/證券交易所|證交所/.test(s[0])?"Taiwan Stock Exchange (TWSE)":s[0]}</a>`).join(t("、",", "));
 }
 
@@ -933,5 +959,6 @@ if("serviceWorker" in navigator&&location.hostname.endsWith("github.io")){naviga
 <script src="stats.js"></script>
 <script src="quiz.js"></script>
 <script src="sim.js"></script>
+<script src="notices.js"></script>
 </body>
 </html>
