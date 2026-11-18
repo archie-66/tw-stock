@@ -42,7 +42,19 @@ const C_ZH={
  pb:["本淨比 P/B","股價 ÷ 每股淨值。低於 1 代表股價比公司帳面淨值便宜。","金融股常用本淨比評估"],
  roe:["ROE","股東權益報酬率：公司用股東的錢賺錢的效率。","ROE 15%＝每 100 元賺 15 元"],
  disposal:["注意股／處置股","股價或成交量異常時，交易所會先列注意股，嚴重的變處置股（交易受限制）。","處置股要先付錢才能買"],
- diversify:["分散投資","不要把錢全放一檔，可以降低「單一公司」出事的風險。","ETF 是最簡單的分散方法"]
+ diversify:["分散投資","不要把錢全放一檔，可以降低「單一公司」出事的風險。","ETF 是最簡單的分散方法"],
+ tick:["升降單位（跳動單位）","股價每次最少能跳多少錢：10 元以下 0.01、10～50 元 0.05、50～100 元 0.1、100～500 元 0.5、500～1000 元 1、1000 元以上 5。","股價 85 元時，每跳一檔是 0.1 元"],
+ exright:["除權（配股）","公司用股票發股利，股數變多、股價依比例往下調。配股 1 元＝每 1,000 股多 100 股。","1 張配股 1 元 → 變 1,100 股"],
+ margins:["毛利率／營業利益率","毛利率＝毛利 ÷ 營收；營業利益率再扣掉營業費用（薪水、研發、行銷）。越高代表本業越會賺。","營收成長但毛利率下降＝賣得多、賺得薄"],
+ debt:["負債比率","負債 ÷ 總資產。太高代表借太多錢，景氣不好時風險大。","負債比 80% 比 30% 的公司風險高"],
+ statements:["三大財報","損益表看賺多少、資產負債表看有多少家當和負債、現金流量表看錢真的有沒有進來。","帳上賺錢但現金一直流出要小心"],
+ kd:["KD 指標","看股價在最近一段時間的相對位置。80 以上叫超買、20 以下叫超賣；K 往上穿過 D 叫黃金交叉。","超買不代表馬上會跌"],
+ rsi:["RSI 相對強弱","看最近漲的力道和跌的力道誰強。70～80 以上偏超買、20～30 以下偏超賣。股價和 RSI 方向不一致叫背離。","股價創新低、RSI 沒創新低＝背離"],
+ premium:["ETF 溢價／折價","ETF 市價比淨值高叫溢價，比淨值低叫折價。溢價太多時買進，等於買貴了。","淨值 30、市價 31.5 → 溢價 5%"],
+ beta:["Beta 值","股票跟大盤一起動的程度。大於 1 波動比大盤大，小於 1 比較穩。","Beta 1.5：大盤漲 10%，它大約漲 15%"],
+ recovery:["虧損回本","跌了多少%，要漲回來需要更多%。跌 50% 要漲 100% 才回本。","100 → 50 → 要漲回 100"],
+ breakeven:["損益兩平價","買進要付手續費、賣出要付手續費和稅，所以股價要漲一點點才不會賠。一般股票約要漲 0.6%。","100 元買進 → 約 100.6 元才打平"],
+ compound:["複利與 72 法則","報酬會再生報酬。72 ÷ 年報酬率≈資金翻倍要幾年。","年報酬 8% → 約 9 年翻倍"]
 };
 
 /* ---------- 題庫：3 個等級 ---------- */
@@ -107,7 +119,49 @@ const BANK_ZH=[
  [3,"diversify","分散投資主要降低哪種風險？",["單一公司風險","整個市場風險","手續費"]],
  [3,"settle","T+2 沒錢付款會變成？",["違約交割","自動取消","延後一週"]],
  [3,"lev","指數 +10% 再 −10%，正2 大約？",["虧約 4%","剛好打平","賺約 4%"]],
- [3,"pb","本淨比小於 1 代表？",["股價低於淨值","公司虧損","股價很貴"]]
+ [3,"pb","本淨比小於 1 代表？",["股價低於淨值","公司虧損","股價很貴"]],
+ // Lv4 大師
+ [4,"pe","股價 60、EPS 3，本益比？",["20","18","180"]],
+ [4,"yield","股價 50、配息 2 元，殖利率？",["4%","2.5%","25%"]],
+ [4,"limit","昨收 85 元，漲停價？",["93.5","94","90"]],
+ [4,"tick","股價 50～100 元，每檔跳多少？",["0.1 元","0.05 元","0.5 元"]],
+ [4,"tick","股價 500～1000 元，每檔跳多少？",["1 元","0.5 元","5 元"]],
+ [4,"fee","買 10 萬元股票，手續費最多？",["142 元","1,425 元","20 元"]],
+ [4,"tax","賣出 20 萬元股票，證交稅？",["600 元","200 元","2,000 元"]],
+ [4,"exright","除權（配股）後，股數會？",["變多","變少","不變"]],
+ [4,"margins","毛利率怎麼算？",["毛利 ÷ 營收","淨利 ÷ 營收","營收 ÷ 成本"]],
+ [4,"margins","營業利益比毛利多扣了？",["營業費用","所得稅","業外收入"]],
+ [4,"debt","負債比率很高代表？",["財務風險較高","一定很賺錢","股價會漲"]],
+ [4,"statements","帳上賺錢卻沒現金，要看？",["現金流量表","損益表","股東名冊"]],
+ [4,"kd","KD 大於 80 通常叫？",["超買","超賣","黃金交叉"]],
+ [4,"rsi","RSI 低於 20～30 通常叫？",["超賣","超買","量縮"]],
+ [4,"volprice","下跌時成交量放大，常代表？",["賣壓沉重","買氣很強","沒人交易"]],
+ [4,"support","跌破支撐後，支撐常變成？",["壓力","更強支撐","停利點"]],
+ [4,"premium","ETF 市價高於淨值叫？",["溢價","折價","填息"]],
+ [4,"premium","ETF 溢價很多時買進，風險是？",["買貴了","買到折扣","不能賣"]],
+ [4,"margin","融資買進後大跌，可能被？",["追繳保證金","退還股款","自動加碼"]],
+ [4,"beta","Beta 大於 1 的股票通常？",["波動比大盤大","比大盤穩","不會跌"]],
+ // Lv5 傳奇
+ [5,"lev","指數 −10% 再 +10%，正2 約？",["−4%","−2%","打平"]],
+ [5,"limit","昨收 9.5 元，跌停價？",["8.55","8.5","8.6"]],
+ [5,"limit","連續兩天漲停，約漲了多少？",["21%","20%","10%"]],
+ [5,"recovery","虧損 50% 後，要漲多少才回本？",["100%","50%","75%"]],
+ [5,"pe","EPS 成長 20%、本益比不變，股價？",["約漲 20%","不變","約跌 20%"]],
+ [5,"div","股價 100 元配 3 元，除息參考價？",["97 元","100 元","103 元"]],
+ [5,"exright","配股 1 元，1 張會變幾股？",["1,100 股","1,010 股","2,000 股"]],
+ [5,"fee","股票買賣各一次，成本合計約？",["0.585%","0.3%","0.1425%"]],
+ [5,"breakeven","100 元買進，約漲到多少才不賠？",["100.6 元","100.1 元","103 元"]],
+ [5,"dca","定期定額遇到下跌，同樣金額會買到？",["更多股數","更少股數","一樣股數"]],
+ [5,"compound","年報酬 7%，資金翻倍約要？",["約 10 年","約 7 年","約 20 年"]],
+ [5,"pb","每股淨值 40、股價 30，本淨比？",["0.75","1.33","10"]],
+ [5,"roe","淨利 15 億、股東權益 100 億，ROE？",["15%","6.7%","1.5%"]],
+ [5,"diversify","兩檔走勢完全一樣，分散效果？",["幾乎沒有","非常好","加倍"]],
+ [5,"inst","外資賣超但指數上漲，可能是？",["其他人在買","資料錯誤","明天一定跌"]],
+ [5,"kd","K 由下往上穿過 D 叫？",["黃金交叉","死亡交叉","背離"]],
+ [5,"rsi","股價創新低、RSI 沒創新低叫？",["背離","超買","同步"]],
+ [5,"settle","週四買進，哪天扣款？",["下週一","週五","週六"]],
+ [5,"margins","營收成長、毛利率下降，可能是？",["賣得多但賺得薄","成本降低","漲價成功"]],
+ [5,"beta","Beta 0.5，大盤跌 10%，它約？",["跌 5%","跌 10%","漲 5%"]]
 ];
 /* ---------- English ---------- */
 const C_EN={
@@ -148,7 +202,19 @@ const C_EN={
  pb:["P/B ratio","Price ÷ book value per share. Below 1 = priced below the company's book value.","Often used for financial stocks"],
  roe:["ROE","Return on equity: how well a company turns shareholders' money into profit.","ROE 15% = NT$15 profit per NT$100"],
  disposal:["Watch / disposal stocks","Unusual price or volume → the exchange flags it; serious cases get trading restrictions.","Disposal stocks require paying before buying"],
- diversify:["Diversification","Don't put all your money in one stock. It reduces single-company risk.","ETFs are the easiest way"]
+ diversify:["Diversification","Don't put all your money in one stock. It reduces single-company risk.","ETFs are the easiest way"],
+ tick:["Tick size","The smallest price step: under NT$10: 0.01; 10–50: 0.05; 50–100: 0.1; 100–500: 0.5; 500–1000: 1; 1000+: 5.","At NT$85, each step is NT$0.1"],
+ exright:["Stock dividends","The company pays in shares: you get more shares and the price adjusts down. A NT$1 stock dividend = 100 extra shares per 1,000.","1 lot + NT$1 stock dividend → 1,100 shares"],
+ margins:["Gross / operating margin","Gross margin = gross profit ÷ revenue. Operating margin also subtracts operating expenses (salaries, R&D, marketing). Higher = the core business earns more.","Revenue up but margin down = selling more, earning less on each"],
+ debt:["Debt ratio","Liabilities ÷ total assets. Too high means too much borrowing, which is risky in bad times.","80% debt ratio is riskier than 30%"],
+ statements:["The three statements","Income statement: how much it earned. Balance sheet: what it owns and owes. Cash flow statement: whether cash actually came in.","Profits on paper but cash flowing out: be careful"],
+ kd:["KD indicator","Shows where the price sits within its recent range. Above 80 = overbought, below 20 = oversold. K crossing above D = golden cross.","Overbought doesn't mean it will drop right away"],
+ rsi:["RSI","Compares recent gains with recent losses. Above 70–80 leans overbought, below 20–30 leans oversold. Price and RSI moving differently = divergence.","Price makes a new low but RSI doesn't = divergence"],
+ premium:["ETF premium / discount","Price above NAV = premium; below NAV = discount. Buying at a big premium means paying too much.","NAV 30, price 31.5 → 5% premium"],
+ beta:["Beta","How much a stock moves with the market. Above 1 = more volatile than the market; below 1 = steadier.","Beta 1.5: market +10% → stock about +15%"],
+ recovery:["Recovering losses","After a loss you need a bigger % gain to get back. Down 50% needs +100% to break even.","100 → 50 → needs to double back to 100"],
+ breakeven:["Break-even price","You pay a fee to buy, and a fee plus tax to sell, so the price must rise a little before you profit. About 0.6% for stocks.","Buy at NT$100 → about NT$100.6 to break even"],
+ compound:["Compounding and the rule of 72","Returns earn more returns. 72 ÷ yearly return ≈ years to double your money.","8% a year → about 9 years to double"]
 };
 const BANK_EN=[
  ["In Taiwan, red means?",["Up","Down","Flat"]],["1 lot = how many shares?",["1,000","100","10"]],["Max daily rise for most stocks?",["10%","7%","No limit"]],["When does the market close?",["1:30 pm","3:00 pm","12:00 pm"]],
@@ -165,13 +231,24 @@ const BANK_EN=[
  ["P/B ratio = ?",["Price ÷ book value/share","Book value ÷ revenue","Price ÷ EPS"]],["What is ROE?",["Return on equity","Debt ratio","P/E ratio"]],["Stocks restricted for unusual trading?",["Disposal stocks","Heavyweights","Dividend stocks"]],["New high on lower volume is?",["Divergence","Price-volume rally","In sync"]],
  ["Broken resistance often becomes?",["Support","Stronger resistance","Stop-loss"]],["A death cross is?",["Short MA falls below long MA","Limit down","Institutions sell all"]],["Index at new high, fewer advancers?",["Gains concentrated","Broad strength","Volume rising"]],["Q3 earnings deadline?",["Nov 14","Sep 30","Next March"]],
  ["A high P/E usually means?",["Market expects growth","Company is losing money","Price will fall"]],["Price falls, dividend same: yield?",["Rises","Falls","Unchanged"]],["Diversification mainly reduces?",["Single-company risk","Whole-market risk","Fees"]],["Not paying on T+2 becomes?",["Settlement default","Auto-cancel","One-week delay"]],
- ["Index +10% then −10%: a 2× ETF ≈ ?",["−4%","Break even","+4%"]],["P/B below 1 means?",["Price below book value","Company losing money","Very expensive"]]
+ ["Index +10% then −10%: a 2× ETF ≈ ?",["−4%","Break even","+4%"]],["P/B below 1 means?",["Price below book value","Company losing money","Very expensive"]],
+ ["Price 60, EPS 3: P/E?",["20","18","180"]],["Price 50, dividend 2: yield?",["4%","2.5%","25%"]],["Prev close 85: limit-up price?",["93.5","94","90"]],["Tick size for NT$50–100?",["0.1","0.05","0.5"]],
+ ["Tick size for NT$500–1000?",["1","0.5","5"]],["Max fee on a NT$100,000 buy?",["NT$142","NT$1,425","NT$20"]],["Tax on selling NT$200,000 of stock?",["NT$600","NT$200","NT$2,000"]],["After a stock dividend, your shares?",["Increase","Decrease","Stay the same"]],
+ ["Gross margin = ?",["Gross profit ÷ revenue","Net profit ÷ revenue","Revenue ÷ cost"]],["Operating profit also subtracts?",["Operating expenses","Income tax","Non-operating income"]],["A very high debt ratio means?",["Higher financial risk","Big profits for sure","Price will rise"]],["Profits but no cash: check the?",["Cash flow statement","Income statement","Shareholder list"]],
+ ["KD above 80 is called?",["Overbought","Oversold","Golden cross"]],["RSI below 20–30 is called?",["Oversold","Overbought","Low volume"]],["Falling price with rising volume?",["Heavy selling","Strong buying","No trading"]],["Broken support often becomes?",["Resistance","Stronger support","Take-profit point"]],
+ ["ETF price above NAV is a?",["Premium","Discount","Gap fill"]],["Buying an ETF at a big premium?",["You overpay","You get a discount","You can't sell"]],["Margin buy, then a big drop: you may get?",["A margin call","A refund","An auto top-up"]],["A stock with beta above 1 usually?",["Swings more than the market","Is steadier than the market","Never falls"]],
+ ["Index −10% then +10%: a 2× ETF ≈ ?",["−4%","−2%","Break even"]],["Prev close 9.5: limit-down price?",["8.55","8.5","8.6"]],["Two limit-up days in a row ≈ ?",["+21%","+20%","+10%"]],["After a 50% loss, gain needed to recover?",["100%","50%","75%"]],
+ ["EPS +20%, same P/E: price?",["About +20%","Unchanged","About −20%"]],["Price 100, cash dividend 3: ex-div price?",["97","100","103"]],["NT$1 stock dividend: 1 lot becomes?",["1,100 shares","1,010 shares","2,000 shares"]],["Buy + sell once (stock): total cost ≈ ?",["0.585%","0.3%","0.1425%"]],
+ ["Bought at 100: break-even price ≈ ?",["100.6","100.1","103"]],["DCA during a drop buys?",["More shares","Fewer shares","Same shares"]],["7% a year: money doubles in about?",["10 years","7 years","20 years"]],["Book value 40, price 30: P/B?",["0.75","1.33","10"]],
+ ["Profit 1.5bn, equity 10bn: ROE?",["15%","6.7%","1.5%"]],["Two stocks that move exactly alike?",["Almost no diversification","Great diversification","Double the benefit"]],["Foreigners sell but the index rises?",["Others are buying","Data error","It falls tomorrow"]],["K crossing above D is a?",["Golden cross","Death cross","Divergence"]],
+ ["New price low, RSI no new low?",["Divergence","Overbought","In sync"]],["Buy on Thursday: payment day?",["Next Monday","Friday","Saturday"]],["Revenue up, gross margin down?",["Selling more, earning less each","Lower costs","Price hike worked"]],["Beta 0.5, market −10%: stock ≈ ?",["−5%","−10%","+5%"]]
 ];
 
 const C=EN?C_EN:C_ZH;
 const BANK=BANK_ZH.map((x,i)=>({id:i,lv:x[0],t:x[1],q:EN?BANK_EN[i][0]:x[2],o:EN?BANK_EN[i][1]:x[3]})); // 每題第一個選項是正解，出題時會打亂
 
-const LV=EN?{1:"Beginner",2:"Intermediate",3:"Expert"}:{1:"新手",2:"進階",3:"高手"};
+const LV=EN?{1:"Beginner",2:"Intermediate",3:"Expert",4:"Master",5:"Legend"}:{1:"新手",2:"進階",3:"高手",4:"大師",5:"傳奇"};
+const MAXLV=5;
 const ROUND=5, UP=4;
 let lv=st.get("tw_lv",1), seen=new Set(st.get("tw_seen",[])), weak=st.get("tw_weak",{}); // weak: {topic:次數}
 let round=[],qi=0,score=0,locked=false;
@@ -183,7 +260,7 @@ function header(){
   const tot=BANK.filter(q=>q.lv===lv).length, done=tot-pool(lv).length;
   $("lvBadge").textContent=`Lv.${lv} ${LV[lv]}`; $("lvBadge").dataset.lv=lv;
   $("lvFill").style.width=(done/tot*100)+"%";
-  $("lvTxt").textContent=EN?`${LV[lv]}: ${done}/${tot} done`+(lv<3?` · get ${UP}+ right in a round to level up`:" · top level"):`${LV[lv]}題庫 ${done}/${tot} 題做過`+(lv<3?`・一回合答對 ${UP} 題以上就升級`:"・最高等級");
+  $("lvTxt").textContent=EN?`${LV[lv]}: ${done}/${tot} done`+(lv<MAXLV?` · get ${UP}+ right in a round to level up`:" · top level"):`${LV[lv]}題庫 ${done}/${tot} 題做過`+(lv<MAXLV?`・一回合答對 ${UP} 題以上就升級`:"・最高等級");
   const n=Object.keys(weak).length; $("wrongN").textContent=n?n:""; $("wrongN").style.display=n?"":"none";
 }
 function show(v){["qStart","qPlay","qEnd"].forEach(id=>$(id).hidden=id!==v)}
@@ -191,7 +268,7 @@ function show(v){["qStart","qPlay","qEnd"].forEach(id=>$(id).hidden=id!==v)}
 function start(){
   let p=pool(lv);
   // 這個等級做完了：往上找；全部做完就請使用者重置
-  while(p.length===0&&lv<3){lv++;p=pool(lv)}
+  while(p.length===0&&lv<MAXLV){lv++;p=pool(lv)}
   if(p.length===0)p=BANK.filter(x=>!seen.has(x.id)); // 高等級做完了，補做之前跳過的題目
   if(p.length===0){
     show("qEnd");
@@ -199,7 +276,7 @@ function start(){
     $("goRev").onclick=()=>tab("rev"); $("reset").onclick=()=>{if(resetArm()){seen=new Set();lv=1;save();header();show("qStart")}};
     header(); return;
   }
-  let pick5=shuffle(p).slice(0,ROUND); if(pick5.length<ROUND&&lv<3)pick5=pick5.concat(shuffle(pool(lv+1)).slice(0,ROUND-pick5.length));
+  let pick5=shuffle(p).slice(0,ROUND); if(pick5.length<ROUND&&lv<MAXLV)pick5=pick5.concat(shuffle(pool(lv+1)).slice(0,ROUND-pick5.length));
   round=pick5.map(q=>{const o=shuffle(q.o.map((t,i)=>({t,ok:i===0})));return {...q,opts:o}});
   qi=0;score=0; header(); show("qPlay");
   $("qDots").innerHTML=round.map(()=>"<span></span>").join(""); ask();
@@ -226,8 +303,8 @@ function finish(){
   show("qEnd");
   let msg,emo,extra="";
   const leftThis=pool(lv).length;
-  if(score>=UP&&lv<3){lv++;save();emo="🚀";msg=t(`升級到 Lv.${lv} ${LV[lv]}！`,`Level up! Lv.${lv} ${LV[lv]}`);extra=t(`接下來是更進階的觀念題。`,`Harder concept questions are next.`);}
-  else if(score>=UP){emo="🏆";msg=t("高手等級，太強了！","Expert level. Amazing!");extra=leftThis?t(`還有 ${leftThis} 題高手題可以挑戰。`,`${leftThis} expert questions left.`):"";}
+  if(score>=UP&&lv<MAXLV){lv++;save();emo="🚀";msg=t(`升級到 Lv.${lv} ${LV[lv]}！`,`Level up! Lv.${lv} ${LV[lv]}`);extra=t(`接下來是更進階的觀念題。`,`Harder concept questions are next.`);}
+  else if(score>=UP){emo="🏆";msg=t(`${LV[lv]}等級，太強了！`,`${LV[lv]} level. Amazing!`);extra=leftThis?t(`還有 ${leftThis} 題${LV[lv]}題可以挑戰。`,`${leftThis} ${LV[lv]} questions left.`):"";}
   else if(score>=3){emo="👍";msg=t("不錯喔！","Nice!");extra=t(`再一回合答對 ${UP} 題就能升級。`,`Get ${UP} right in a round to level up.`);}
   else{emo="💪";msg=t("先複習一下再挑戰","Review a bit, then try again");extra=t("錯的觀念已經放進「觀念複習」。","Missed concepts were added to Review.");}
   $("qEnd").innerHTML=`<div class="big-emoji pop-in">${emo}</div><div class="q">${score} / ${round.length}　${msg}</div><p class="hint">${extra}</p><div class="row2"><button class="btn" id="again">${t("再一回合","Another round")}</button>${score<UP?`<button class="btn ghost" id="goRev">${t("觀念複習","Review")}</button>`:""}</div>`;
