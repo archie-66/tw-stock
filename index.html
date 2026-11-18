@@ -184,6 +184,11 @@ body.simple .adv{display:none!important}
 .nbar.stale{background:var(--warnbg);color:var(--ink);border:1px solid var(--line);font-size:12px;cursor:pointer}
 .nbar.stale::after{content:" ✕";color:var(--mute)}
 .setsheet.witharrow{padding-bottom:calc(var(--sb) + 64px)}
+.wn-list{max-height:52vh;overflow-y:auto;margin:6px 0 4px}
+.wn-ver{font-size:12px;font-weight:700;color:var(--accent);margin:10px 0 2px}
+.wn-list ul{margin:0;padding-left:20px;font-size:15px;line-height:1.75}
+.wn-list li{margin:4px 0}
+.wn-list li::marker{color:var(--accent)}
 .inst-head{display:flex;gap:12px;align-items:center;margin-bottom:6px}
 .inst-head h3{margin:0 0 2px;font-size:17px}
 .inst-ic{width:54px;height:54px;border-radius:13px;box-shadow:0 4px 12px rgba(0,0,0,.15)}
@@ -545,10 +550,18 @@ footer a{color:var(--mute)}
   <div class="setrow"><div class="lab">漲跌顏色</div><div class="seg" id="setColor"><button data-v="tw">台股 <span class="swatch" style="background:var(--red)"></span>漲 <span class="swatch" style="background:var(--green)"></span>跌</button><button data-v="intl">國際 <span class="swatch" style="background:var(--green)"></span>漲 <span class="swatch" style="background:var(--red)"></span>跌</button></div></div>
   <div class="setrow"><div class="lab">顯示內容</div><div class="seg" id="setMode"><button data-v="s">簡易</button><button data-v="a">進階</button></div></div>
   <div class="setrow"><div class="lab">不記名答題統計</div><p class="sub" style="margin:0">只會送出題號、對錯和等級，不含名字或帳號，用來改善題目。</p></div>
+  <div class="setrow"><div class="lab">最新功能</div><button class="btn ghost" id="wnHelp" style="width:100%">看這次更新了什麼</button></div>
   <div class="setrow" id="instHelpRow"><div class="lab">加到主畫面</div><button class="btn ghost" id="instHelp" style="width:100%">看教學</button></div>
   <p class="sub" style="margin-top:14px">設定只存在這台裝置上。</p>
 </div>
 <div class="toast" id="simToast"></div>
+<div class="backdrop" id="wnBack"></div>
+<div class="setsheet" id="wnSheet" role="dialog">
+  <div class="grab"></div>
+  <div class="inst-head"><img src="icon-192.png" alt="" class="inst-ic"><div><h3>更新了！這次有什麼新功能</h3><div class="sub">台股小幫手已經是最新版本</div></div></div>
+  <div class="wn-list" id="wnList"></div>
+  <button class="btn" id="wnOk" style="width:100%;margin-top:6px">知道了</button>
+</div>
 <div class="backdrop" id="instBack"></div>
 <div class="setsheet" id="instSheet" role="dialog">
   <div class="grab"></div>
@@ -978,5 +991,6 @@ if("serviceWorker" in navigator&&location.hostname.endsWith("github.io")){naviga
 <script src="quiz.js"></script>
 <script src="sim.js"></script>
 <script src="notices.js"></script>
+<script src="whatsnew.js"></script>
 </body>
 </html>

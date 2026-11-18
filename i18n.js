@@ -1,6 +1,8 @@
 /* 語言切換：中文 / English。切換時存起來並重新載入。 */
 var LANG=(function(){try{var v=localStorage.getItem("twlang");if(v)return v}catch(e){}return /^zh/i.test(navigator.language||"")?"zh":"en"})();
 var EN=LANG==="en";
+/* 開 App 一開始就記下「之前有沒有用過」（給更新說明判斷用） */
+var RETURNING=(function(){try{return ["twpage","tw_lv","tw_seen","tw_watch","tw_sim","twtheme","twmode","twlang","tw_news_seen"].some(function(k){return localStorage.getItem(k)!==null})}catch(e){return false}})();
 function t(zh,en){return EN?en:zh}
 function setLang(v){try{localStorage.setItem("twlang",v)}catch(e){}location.reload()}
 document.documentElement.lang=EN?"en":"zh-Hant";
@@ -35,7 +37,7 @@ var STATIC={
 "學習工具，只描述「發生了什麼」，":"A learning tool that only describes what happened. ","不是投資建議":"Not investment advice","，也不預測股價。":", and no price predictions.",
 "每個交易日收盤後自動更新：股價約 14:00～14:30、法人資料約 15:00～15:30（開著 App 也會自己更新）。":"Updates automatically after the close each trading day: prices around 2:00–2:30 pm, institutional data around 3:00–3:30 pm (Taipei). It also refreshes itself while open.",
 "資料來源：":"Data: ","設計參考：投資先生 App 簡易模式、quants.tw。":"Design inspired by the Mr. Investment app's simple mode and quants.tw.",
-"模擬":"Practice","← 左右滑動換頁 →":"← Swipe to change pages →","外觀":"Appearance","跟隨系統":"System","淺色":"Light","深色":"Dark","忍者":"Ninja","漲跌顏色":"Up/down colors",
+"模擬":"Practice","← 左右滑動換頁 →":"← Swipe to change pages →","外觀":"Appearance","跟隨系統":"System","淺色":"Light","深色":"Dark","忍者":"Ninja","更新了！這次有什麼新功能":"Updated! Here's what's new","台股小幫手已經是最新版本":"You're on the latest version","知道了":"Got it","最新功能":"What's new","看這次更新了什麼":"See what's new in this update","漲跌顏色":"Up/down colors",
 "台股":"Taiwan","漲":"up","跌":"down","國際":"Global","顯示內容":"Detail level","設定只存在這台裝置上。":"Settings are saved on this device only.","語言":"Language","進階數據":"Advanced data","完成":"Done","不記名答題統計":"Anonymous quiz stats","只會送出題號、對錯和等級，不含名字或帳號，用來改善題目。":"Only question numbers, right/wrong and level are sent. No names or accounts. Used to improve the questions."
 };
 function applyStatic(root){

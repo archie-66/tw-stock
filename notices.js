@@ -22,7 +22,7 @@ window.checkStale=function(){
 
 /* ---------- 2. 有新版本 ---------- */
 $("staleBar").onclick=()=>{try{sessionStorage.setItem("tw_stale_hide",window.D?D.date:"")}catch(e){}$("staleBar").hidden=true};
-const FILES=["index.html","quiz.js","sim.js","i18n.js","stats.js","notices.js"];
+const FILES=["index.html","quiz.js","sim.js","i18n.js","stats.js","notices.js","whatsnew.js"];
 let base=null;
 async function sig(){
   const out=[];
@@ -77,5 +77,5 @@ $("instGo").onclick=async()=>{if(!deferred)return;deferred.prompt();try{await de
 $("instHelp").onclick=()=>{if(window.openSet)openSet(false);setTimeout(()=>showInstall(true),300)};
 if(standalone)$("instHelpRow").hidden=true;
 // 第一次用（不是從主畫面打開）就提醒；按「下次再說」的話 3 天後再提醒
-if(!standalone&&!st.get("tw_inst_done",false)&&Date.now()-st.get("tw_inst_later",0)>3*864e5)setTimeout(()=>showInstall(false),1800);
+if(!standalone&&!st.get("tw_inst_done",false)&&Date.now()-st.get("tw_inst_later",0)>3*864e5)setTimeout(()=>{if(window.whatsNewOpen)window.afterWhatsNew=()=>showInstall(false);else showInstall(false)},1800);
 })();
