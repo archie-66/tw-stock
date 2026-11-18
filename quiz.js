@@ -463,6 +463,7 @@ function pick(i,b){
   const q=round[qi], ok=q.opts[i].ok, ri=q.opts.findIndex(o=>o.ok);
   $("qOpts").children[ri].classList.add("right");
   seen.add(q.id);
+  if(window.statRecord)statRecord(q.id,ok,lv);
   const dot=$("qDots").children[qi];
   if(ok){score++;dot.classList.add("ok");$("qFb").innerHTML=`<b class="down">${t("答對了！","Correct!")}</b> ${q.e?`<span class="sol">${t("解法：","How: ")}${q.e}</span>`:C[q.t][1]}`;}
   else{b.classList.add("wrong");dot.classList.add("ng");weak[q.t]=(weak[q.t]||0)+1;$("qFb").innerHTML=`<b class="up">${t("差一點～","So close!")}</b> ${q.e?`<span class="sol">${t("解法：","How: ")}${q.e}</span>`:C[q.t][1]}<br><span class="sub">${t("已加入「觀念複習 › 要加強」","Added to Review › Needs work")}</span>`;}
@@ -481,7 +482,7 @@ function finish(){
   if(emo==="🚀")confetti();
   header();
 }
-$("qStart").innerHTML=EN?`<p class="hint">${ROUND} questions per round. <b>Questions you've done never come back.</b> Do well and you level up to intermediate and expert concepts.</p><button class="btn" id="go">Start quiz</button>`:`<p class="hint">每回合 ${ROUND} 題，<b>做過的題目不會再出現</b>。答得好會自動升級到進階、高手觀念題。</p><button class="btn" id="go">開始測驗</button>`;
+$("qStart").innerHTML=EN?`<p class="hint">${ROUND} questions per round. <b>Questions you've done never come back.</b> Do well and you level up to intermediate and expert concepts.</p><button class="btn" id="go">Start quiz</button><p class="sub" style="margin-top:10px">Answers are counted anonymously to improve the questions. You can turn this off in Settings.</p>`:`<p class="hint">每回合 ${ROUND} 題，<b>做過的題目不會再出現</b>。答得好會自動升級到進階、高手觀念題。</p><button class="btn" id="go">開始測驗</button><p class="sub" style="margin-top:10px">作答結果會不記名統計，用來改善題目，可以在設定裡關掉。</p>`;
 $("go").onclick=start;
 $("qNext").onclick=()=>{if(qi<round.length-1){qi++;ask()}else finish()};
 
