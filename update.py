@@ -67,6 +67,63 @@ def col(fields, *names):
     return None
 
 
+def get_otc(now):
+    """上櫃股票收盤行情（櫃買中心）。格式可能改版，所以試好幾個來源、用欄位名稱找。"""
+    roc_d = f"{now.year-1911}/{now.month:02d}/{now.day:02d}"
+    roc_compact = f"{now.year-1911}{now.month:02d}{now.day:02d}"
+    out = []
+
+    def add(code, name, close, chg, hi, lo, shares, amount):
+        code = str(code).strip(); c = num(close)
+        if not code or c is None or not re.match(r"^[0-9A-Z]{4,6}$", code):
+            return
+        d = num(chg) or 0.0
+        if isinstance(chg, str) and chg.strip().startswith("-"):
+            d = -abs(d)
+        out.append([code, str(name).strip(), round((num(amount) or 0) / 1e8, 2), int((num(shares) or 0) / 1000),
+                    c, round(d, 2), num(hi) or c, num(lo) or c, "o"])
+
+    # A) OpenAPI（JSON 陣列，英文欄位）
+    js = get("https://www.tpex.org.tw/openapi/v1/tpex_mainboard_daily_close_quotes")
+    if isinstance(js, list) and js:
+        k = list(js[0].keys())
+        pick = lambda *names: next((x for x in k for n in names if n.lower() == x.lower()), None)
+        kd, kc, kn = pick("Date"), pick("SecuritiesCompanyCode", "Code"), pick("CompanyName", "Name")
+        kcl, kch, kh, kl = pick("Close"), pick("Change"), pick("High"), pick("Low")
+        ksh, kam = pick("TradingShares", "TradeVolume"), pick("TransactionAmount", "TradeValue")
+        print("TPEx OpenAPI keys:", k[:14], "date:", js[0].get(kd))
+        if kc and kcl and (not kd or str(js[0].get(kd)).replace("/", "") == roc_compact):
+            for x in js:
+                add(x.get(kc), x.get(kn, ""), x.get(kcl), x.get(kch), x.get(kh), x.get(kl), x.get(ksh), x.get(kam))
+    if out:
+        return out
+    # B) 舊版網址（aaData）
+    js = get(f"https://www.tpex.org.tw/web/stock/aftertrading/otc_quotes_no1430/stk_wn1430_result.php?l=zh-tw&d={roc_d}&se=EW&o=json")
+    rows = (js or {}).get("aaData") or []
+    if rows and (js or {}).get("reportDate", roc_d) in (roc_d, roc_d.replace("/", "")):
+        print("TPEx legacy rows:", len(rows), rows[0][:9])
+        for x in rows:
+            # 代號,名稱,收盤,漲跌,開盤,最高,最低,均價,成交股數,成交金額
+            if len(x) >= 10:
+                add(x[0], x[1], x[2], x[3], x[5], x[6], x[8], x[9])
+    if out:
+        return out
+    # C) 新版網站
+    js = get(f"https://www.tpex.org.tw/www/zh-tw/afterTrading/otc?date={now.year}%2F{now.month:02d}%2F{now.day:02d}&type=EW&id=&response=json")
+    for (title, f, data) in tables(js):
+        ic, iname, icl = col(f, "代號"), col(f, "名稱"), col(f, "收盤")
+        if None in (ic, icl):
+            continue
+        ich, ih, il = col(f, "漲跌"), col(f, "最高"), col(f, "最低")
+        ish, iam = col(f, "成交股數"), col(f, "成交金額")
+        print("TPEx new-site fields:", f[:12])
+        for x in data:
+            add(x[ic], x[iname] if iname is not None else "", x[icl], x[ich] if ich is not None else 0,
+                x[ih] if ih is not None else None, x[il] if il is not None else None,
+                x[ish] if ish is not None else 0, x[iam] if iam is not None else 0)
+    return out
+
+
 def main():
     now = datetime.now(TW)
     ymd = now.strftime("%Y%m%d")
@@ -126,6 +183,7 @@ def main():
             ic, iname = col(f, "證券代號"), col(f, "證券名稱")
             ish, iam = col(f, "成交股數"), col(f, "成交金額")
             icl, isg, idf = col(f, "收盤價"), col(f, "漲跌(+/-)"), col(f, "漲跌價差")
+            ihi, ilo = col(f, "最高價"), col(f, "最低價")
             for x in data:
                 c = num(x[icl]); diff = num(x[idf]) or 0.0
                 sign_txt = str(x[isg]) if isg is not None else ""
@@ -137,8 +195,10 @@ def main():
                     diff = 0.0
                 if c is None:
                     continue
+                hi = num(x[ihi]) if ihi is not None else None
+                lo = num(x[ilo]) if ilo is not None else None
                 stocks.append([x[ic].strip(), x[iname].strip(), round((num(x[iam]) or 0) / 1e8, 2),
-                               int((num(x[ish]) or 0) / 1000), c, round(diff, 2)])
+                               int((num(x[ish]) or 0) / 1000), c, round(diff, 2), hi or c, lo or c, ""])
         if "漲跌證券數" in title or (col(f, "類型") is not None and data and "上漲" in str(data[0][0])):
             istk = col(f, "股票")
             if istk is None:
@@ -188,17 +248,19 @@ def main():
             elif "自營商" in name: de += v
         inst = {"foreign": round(fo, 2), "trust": round(tr, 2), "dealer": round(de, 2)}
 
-    # 5) 組合資料
-    stocks.sort(key=lambda s: -s[2])
-    top = stocks[:40]
+    # 5) 組合資料（漲跌家數、漲停、排行只算上市；上櫃股票加進來給搜尋、自選、模擬用）
+    pct = lambda s: s[5] / (s[4] - s[5]) * 100 if (s[4] - s[5]) > 0 else 0
     liquid = [s for s in stocks if s[2] >= 1 and (s[4] - s[5]) > 0]
-    for s in liquid:
-        s_pct = s[5] / (s[4] - s[5]) * 100
-        s.append(round(s_pct, 2))
-    gainers = sorted([s for s in liquid if s[6] > 0], key=lambda s: -s[6])[:5]
-    losers = sorted([s for s in liquid if s[6] < 0], key=lambda s: s[6])[:5]
-    limit_up = sum(1 for s in liquid if s[6] >= 9.5)
-    limit_down = sum(1 for s in liquid if s[6] <= -9.5)
+    gainers = sorted([s for s in liquid if pct(s) > 0], key=lambda s: -pct(s))[:5]
+    losers = sorted([s for s in liquid if pct(s) < 0], key=lambda s: pct(s))[:5]
+    limit_up = sum(1 for s in liquid if pct(s) >= 9.5)
+    limit_down = sum(1 for s in liquid if pct(s) <= -9.5)
+    otc = get_otc(now)
+    print("上櫃股票：", len(otc))
+    if not otc and old.get("date") == today:
+        otc = [s for s in old.get("stocks", []) if len(s) > 8 and s[8] == "o"]  # 這次沒抓到就保留上一次的
+    stocks = stocks + otc
+    stocks.sort(key=lambda s: -s[2])
 
     inst_hist = [h for h in old.get("instHistory", []) if h.get("date") != today]
     if inst:
@@ -212,7 +274,7 @@ def main():
         "date": today,
         "weekday": "一二三四五六日"[now.weekday()],
         "updatedAt": now.strftime("%Y-%m-%d %H:%M"),
-        "complete": bool(inst and idx["open"] is not None and breadth),
+        "complete": bool(inst and idx["open"] is not None and breadth and (otc or now.hour * 60 + now.minute >= 16 * 60 + 30)),
         "idx": idx,
         "amount": round(session["amount"] / 100, 2) if session.get("amount") else round((num(r[i_amt]) or 0) / 1e8, 2),
         "shares": int(session["shares"]) if session.get("shares") else int((num(r[i_sh]) or 0) / 1000),
@@ -223,11 +285,12 @@ def main():
         "limitUp": limit_up, "limitDown": limit_down,
         "inst": inst,
         "instHistory": inst_hist,
-        "stocks": [s[:6] for s in stocks],  # 全部股票（依成交金額排序），排行取前幾名、搜尋用全部
+        "otcCount": sum(1 for s in stocks if s[8] == "o"),
+        "stocks": stocks,  # 全部股票（依成交金額排序），排行取前幾名、搜尋用全部
         "gainers": [s[:6] for s in gainers],
         "losers": [s[:6] for s in losers],
         "history": [{"d": h["date"][5:].replace("-", "/"), "c": h["c"]} for h in hist[-KEEP:]],
-        "sources": [["臺灣證券交易所 盤後資料", "https://www.twse.com.tw/zh/trading/historical/mi-index.html"]],
+        "sources": [["臺灣證券交易所 盤後資料", "https://www.twse.com.tw/zh/trading/historical/mi-index.html"], ["證券櫃檯買賣中心 上櫃行情", "https://www.tpex.org.tw/"]],
     }
     json.dump(out, open(DATA_FILE, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print("更新完成：", today, close, change)
