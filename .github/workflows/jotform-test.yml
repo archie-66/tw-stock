@@ -1,0 +1,12 @@
+name: jotform-test
+on: workflow_dispatch
+jobs:
+  t:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          curl -sS -o /dev/null -w "%{http_code}\n" -X POST "https://submit.jotform.com/submit/263211443868055" \
+            -H "Origin: https://archie-66.github.io" -H "Referer: https://archie-66.github.io/tw-stock/" \
+            --data-urlencode "formID=263211443868055" --data-urlencode "simple_spc=263211443868055-263211443868055" \
+            --data-urlencode "q2_textbox0=TEST2" --data-urlencode "q3_textbox1=3" --data-urlencode "q4_textbox2=en" \
+            --data-urlencode "q5_textarea3=5:1,6:0" --data-urlencode "q6_textbox4=post-test"
