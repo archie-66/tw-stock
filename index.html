@@ -23,7 +23,7 @@
   --st:env(safe-area-inset-top,0px); --sb:env(safe-area-inset-bottom,0px);
 }
 :root[data-theme="dark"]{--bg:#131418;--card:#1d1f25;--ink:#f1f1f4;--mute:#9b9ba5;--line:#2b2e36;--redbg:#3b1a20;--greenbg:#14301f;--accentbg:#1e2547;--warnbg:#3a2d14;--red:#ff5d70;--green:#3fd081;--accent:#8aa2ff;color-scheme:dark}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]):not([data-theme="ninja"]){--bg:#131418;--card:#1d1f25;--ink:#f1f1f4;--mute:#9b9ba5;--line:#2b2e36;--redbg:#3b1a20;--greenbg:#14301f;--accentbg:#1e2547;--warnbg:#3a2d14;--red:#ff5d70;--green:#3fd081;--accent:#8aa2ff;color-scheme:dark}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]):not([data-theme="ninja"]):not([data-theme="jjk"]){--bg:#131418;--card:#1d1f25;--ink:#f1f1f4;--mute:#9b9ba5;--line:#2b2e36;--redbg:#3b1a20;--greenbg:#14301f;--accentbg:#1e2547;--warnbg:#3a2d14;--red:#ff5d70;--green:#3fd081;--accent:#8aa2ff;color-scheme:dark}}
 :root[data-color="intl"]{--up:var(--green);--upbg:var(--greenbg);--down:var(--red);--downbg:var(--redbg)}
 /* ===== 忍者主題（原創：和紙、墨色山、朱紅印章、手裏劍） ===== */
 :root[data-theme="ninja"]{--bg:#e9dfc8;--card:#f8f1e1;--ink:#1d1a17;--mute:#6f6455;--line:#d6c6a2;--accent:#c8361d;--accentbg:#f5dccd;--warnbg:#f1e0b5;--r:6px;color-scheme:light}
@@ -344,6 +344,62 @@ details p{margin:6px 0 0;font-size:14px;line-height:1.65}
 .sheet .x{position:absolute;right:16px;top:12px;opacity:.7;font-size:18px}
 footer{font-size:11px;color:var(--mute);line-height:1.6;padding:4px 4px 0}
 footer a{color:var(--mute)}
+/* ===== 咒術主題（參考行事曆：深夜紫、咒力光暈、「呪」浮水印、斬擊與點擊漣漪） ===== */
+:root[data-theme="jjk"]{color-scheme:dark;--bg:#0a0a15;--card:#14142b;--ink:#ecebff;--mute:#9d9bc9;--line:#2b2b52;--red:#ff6b81;--redbg:#3a1630;--green:#43d39a;--greenbg:#0f2e2c;--flat:#8c8ab8;--accent:#9b8cff;--accentbg:#1d1a44;--warnbg:#2e2340;--hf:"Songti TC","Noto Serif TC","Hiragino Mincho ProN",serif}
+:root[data-theme="jjk"] body{background:#0a0a15}
+:root[data-theme="jjk"] body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(circle at 88% 4%,rgba(124,107,255,.28),transparent 42%),radial-gradient(circle at 6% 96%,rgba(61,123,255,.2),transparent 45%),repeating-linear-gradient(115deg,transparent 0 38px,rgba(124,107,255,.045) 38px 39px);animation:jaur 14s ease-in-out infinite alternate}
+:root[data-theme="jjk"] body::after{content:"呪";position:fixed;right:-12px;bottom:90px;font:900 220px/1 var(--hf);color:#7c6bff;opacity:.05;pointer-events:none;z-index:-1;animation:jkpulse 6s ease-in-out infinite}
+@keyframes jaur{to{filter:hue-rotate(28deg) brightness(1.15)}}
+@keyframes jkpulse{50%{opacity:.09;transform:scale(1.04)}}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1;display:none}
+:root[data-theme="jjk"] #fx{display:block}
+:root[data-theme="jjk"] .top{background:linear-gradient(#0a0a15 70%,transparent)}
+:root[data-theme="jjk"] .top h1{padding:8px 10px;margin:-8px -10px}
+:root[data-theme="jjk"] #pgTitle{font-family:var(--hf);letter-spacing:.1em;animation:jglow 4.5s ease-in-out infinite}
+@keyframes jglow{0%,100%{text-shadow:0 0 18px rgba(124,107,255,.55)}50%{text-shadow:0 0 28px rgba(170,180,255,.95),0 0 4px rgba(255,255,255,.5)}}
+:root[data-theme="jjk"] .card{background:linear-gradient(160deg,rgba(28,28,62,.92),rgba(15,15,36,.92));border:1px solid rgba(124,107,255,.24);border-radius:8px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 14px 30px -18px rgba(90,70,255,.65);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);position:relative}
+:root[data-theme="jjk"] .card h2{font-family:var(--hf);letter-spacing:.05em}
+:root[data-theme="jjk"] .card h2::before{content:"";display:inline-block;width:4px;height:.9em;background:linear-gradient(#8fa0ff,#6a4dff);margin-right:8px;vertical-align:-1px;box-shadow:0 0 8px #7c6bff;border-radius:2px}
+:root[data-theme="jjk"] .card.hero{overflow:visible}
+:root[data-theme="jjk"] .card.hero::after{content:"";position:absolute;right:-12px;top:-17px;width:32px;height:32px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0 5%,#b9c4ff 12%,#6a4dff 48%,#1a0f55 100%);box-shadow:0 0 18px 4px rgba(106,77,255,.65),0 0 44px 8px rgba(61,123,255,.3);animation:jorb 1.8s ease-in-out infinite;pointer-events:none}
+:root[data-theme="jjk"] .card.hero::before{content:"";position:absolute;right:-20px;top:-25px;width:48px;height:48px;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 50%,#8fa0ff 85%,transparent 100%);-webkit-mask:radial-gradient(circle,transparent 58%,#000 60% 68%,transparent 70%);mask:radial-gradient(circle,transparent 58%,#000 60% 68%,transparent 70%);animation:jspin 1.1s linear infinite;pointer-events:none;z-index:1}
+@keyframes jorb{50%{transform:scale(1.12)}}
+@keyframes jspin{to{transform:rotate(360deg)}}
+:root[data-theme="jjk"] .stat,:root[data-theme="jjk"] .tip{border-radius:6px}
+:root[data-theme="jjk"] .stat{border-color:rgba(124,107,255,.22);background:rgba(10,10,21,.35)}
+:root[data-theme="jjk"] .tip{background:rgba(29,26,68,.85);border-left:3px solid #7c6bff;box-shadow:inset 0 0 18px -10px #7c6bff}
+:root[data-theme="jjk"] .tabs{background:rgba(16,16,38,.86);border:1px solid rgba(124,107,255,.3);border-radius:10px;box-shadow:0 0 0 1px rgba(124,107,255,.25),0 10px 30px -10px rgba(90,70,255,.6)}
+:root[data-theme="jjk"] .tabs .ind{background:linear-gradient(135deg,#6a4dff,#3d7bff);border-radius:7px;box-shadow:0 0 14px rgba(106,77,255,.7)}
+:root[data-theme="jjk"] .tabs button{color:#8f8dbd}
+:root[data-theme="jjk"] .tabs button.on{color:#fff;text-shadow:0 0 8px rgba(255,255,255,.6)}
+:root[data-theme="jjk"] .icon-btn,:root[data-theme="jjk"] .mode{background:linear-gradient(160deg,rgba(46,44,104,.95),rgba(22,22,56,.95));border:1px solid rgba(143,160,255,.4);box-shadow:0 0 12px -4px rgba(124,107,255,.8)}
+:root[data-theme="jjk"] .icon-btn:active{transform:scale(.92);box-shadow:0 0 22px rgba(143,160,255,.9)}
+:root[data-theme="jjk"] .mode button.on{background:linear-gradient(135deg,#6a4dff,#3d7bff);color:#fff;box-shadow:0 0 12px rgba(106,77,255,.8)}
+:root[data-theme="jjk"] .seg{border:1px solid rgba(143,160,255,.3);border-radius:6px;box-shadow:0 0 14px -6px rgba(124,107,255,.7)}
+:root[data-theme="jjk"] .seg .knob{background:linear-gradient(135deg,#6a4dff,#3d7bff);border-radius:4px;box-shadow:0 0 14px rgba(106,77,255,.8)}
+:root[data-theme="jjk"] .seg button{border-radius:4px}
+:root[data-theme="jjk"] .seg button.on{color:#fff;text-shadow:0 0 8px rgba(255,255,255,.7)}
+:root[data-theme="jjk"] .setrow .seg button.on,:root[data-theme="jjk"] .mini3 button.on{background:linear-gradient(135deg,#6a4dff,#3d7bff);color:#fff;box-shadow:0 0 12px rgba(106,77,255,.8)}
+:root[data-theme="jjk"] .btn{position:relative;overflow:hidden;border-radius:6px;background:linear-gradient(120deg,#5b3df5,#3d7bff,#7a4dff,#3d7bff,#5b3df5);background-size:300% 100%;animation:jgrad 6s linear infinite;color:#fff;letter-spacing:.06em;box-shadow:0 0 16px rgba(106,77,255,.55);transition:transform .15s,box-shadow .2s}
+:root[data-theme="jjk"] .btn::after{content:"";position:absolute;top:0;bottom:0;left:-70%;width:45%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-22deg);pointer-events:none;animation:jsweep 4.2s ease-in-out infinite}
+:root[data-theme="jjk"] .btn:active{transform:scale(.94);box-shadow:0 0 30px rgba(160,175,255,1)}
+:root[data-theme="jjk"] .btn.ghost{background:linear-gradient(160deg,rgba(46,44,104,.95),rgba(22,22,56,.95));border:1px solid rgba(143,160,255,.45);animation:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 0 12px -4px rgba(124,107,255,.8)}
+:root[data-theme="jjk"] .btn.ghost::after{animation:none}
+:root[data-theme="jjk"] .btn.ghost:active::after{animation:jsweep .55s}
+@keyframes jgrad{to{background-position:300% 0}}
+@keyframes jsweep{0%,55%{left:-70%}100%{left:135%}}
+:root[data-theme="jjk"] .item{border-bottom-color:rgba(124,107,255,.16);transition:background .2s}
+:root[data-theme="jjk"] .item:active{background:rgba(124,107,255,.12)}
+:root[data-theme="jjk"] .setsheet,:root[data-theme="jjk"] .sd{background:#11112a}
+:root[data-theme="jjk"] .setsheet{border-top:2px solid #7c6bff;border-radius:10px 10px 0 0;box-shadow:0 -10px 40px -10px rgba(106,77,255,.6)}
+:root[data-theme="jjk"] .sd-head{background:linear-gradient(#11112a 80%,transparent)}
+:root[data-theme="jjk"] .sdstats div,:root[data-theme="jjk"] .sdrecent div{border-radius:6px;background:rgba(10,10,21,.5);border-color:rgba(124,107,255,.22)}
+:root[data-theme="jjk"] .sdrecent div{border:1px solid rgba(124,107,255,.22)}
+.tap{position:fixed;width:14px;height:14px;margin:-7px;border-radius:50%;border:2px solid #9fb0ff;box-shadow:0 0 14px #7c6bff,inset 0 0 8px #7c6bff;pointer-events:none;z-index:90;animation:jtapr .65s ease-out forwards}
+.sp{position:fixed;width:5px;height:5px;margin:-2.5px;border-radius:50%;background:#cfd6ff;box-shadow:0 0 8px #8fa0ff;pointer-events:none;z-index:90;animation:jspk .6s ease-out forwards}
+@keyframes jtapr{to{transform:scale(6);opacity:0}}
+@keyframes jspk{to{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.2)}}
+@media (prefers-reduced-motion:reduce){:root[data-theme="jjk"] *,:root[data-theme="jjk"] *::before,:root[data-theme="jjk"] *::after{animation-duration:.01ms!important;animation-iteration-count:1!important}}
 </style>
 </head>
 <body class="simple">
@@ -584,7 +640,7 @@ footer a{color:var(--mute)}
     <div class="acct"><img id="acctAv" alt="" hidden referrerpolicy="no-referrer"><b id="acctName"></b><button class="btn" id="acctBtn">用 Google 登入</button></div>
     <p class="sub" id="acctSub" style="margin:6px 0 0"></p></div>
   <div class="setrow"><div class="lab">語言</div><div class="seg" id="setLang"><button data-v="zh">中文</button><button data-v="en">English</button></div></div>
-  <div class="setrow"><div class="lab">外觀</div><div class="seg" id="setTheme"><button data-v="auto">跟隨系統</button><button data-v="light">淺色</button><button data-v="dark">深色</button><button data-v="ninja">忍者</button></div></div>
+  <div class="setrow"><div class="lab">外觀</div><div class="seg" id="setTheme"><button data-v="auto">跟隨系統</button><button data-v="light">淺色</button><button data-v="dark">深色</button><button data-v="ninja">忍者</button><button data-v="jjk">咒術</button></div></div>
   <div class="setrow"><div class="lab">漲跌顏色</div><div class="seg" id="setColor"><button data-v="tw">台股 <span class="swatch" style="background:var(--red)"></span>漲 <span class="swatch" style="background:var(--green)"></span>跌</button><button data-v="intl">國際 <span class="swatch" style="background:var(--green)"></span>漲 <span class="swatch" style="background:var(--red)"></span>跌</button></div></div>
   <div class="setrow"><div class="lab">顯示內容</div><div class="seg" id="setMode"><button data-v="s">簡易</button><button data-v="a">進階</button></div></div>
   <div class="setrow"><div class="lab">不記名答題統計</div><p class="sub" style="margin:0">只會送出題號、對錯和等級，不含名字或帳號，用來改善題目。</p></div>
@@ -694,7 +750,7 @@ const kName=up=>EN?(up?(intl()?"green candle":"red candle"):(intl()?"red candle"
 function applyTheme(v){
   const r=document.documentElement;if(v==="auto")delete r.dataset.theme;else r.dataset.theme=v;
   const dark=v==="dark"||(v==="auto"&&matchMedia("(prefers-color-scheme: dark)").matches);
-  document.querySelector('meta[name="theme-color"]').content=v==="ninja"?"#e9dfc8":dark?"#131418":"#f4f1ea";
+  document.querySelector('meta[name="theme-color"]').content=v==="ninja"?"#e9dfc8":v==="jjk"?"#0a0a15":dark?"#131418":"#f4f1ea";
   document.querySelectorAll("#setTheme button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));store.set("twtheme",v)}
 function applyColor(v){
   const r=document.documentElement;if(v==="intl")r.dataset.color="intl";else delete r.dataset.color;
@@ -1054,6 +1110,7 @@ if("serviceWorker" in navigator&&location.hostname.endsWith("github.io")){naviga
 <script src="whatsnew.js"></script>
 <script src="stock.js"></script>
 <script src="klesson.js"></script>
+<script src="fx.js"></script>
 <script src="firebase-config.js"></script>
 <script type="module" src="sync.js"></script>
 </body>

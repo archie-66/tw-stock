@@ -1,6 +1,8 @@
 /* 更新後跳出「新功能」說明。每次改版就在 NEWS 最上面加一筆（id 要是新的）。 */
 (function(){
 const NEWS=[
+ {id:"2026-11-19c",zh:["外觀新增「咒術」風格：深夜紫配色、咒力光點，點畫面會有漣漪（設定 → 外觀）"],
+  en:["New \"Jujutsu\" look: midnight purple, glowing particles and tap ripples (Settings → Appearance)"]},
  {id:"2026-11-19b",zh:["可以用 Google 帳號登入了（在設定最上面）","登入後，自選股、模擬交易和測驗進度會存在雲端，換手機或 iPad 也還在"],
   en:["You can now sign in with Google (top of Settings)","Signed in, your watchlist, paper trades and quiz progress follow you to every device"]},
  {id:"2026-11-19",zh:["點個股會打開詳細頁：K 線圖、公司簡介、近三天走勢和新聞","在 K 線圖上點一下或左右滑，可以看每一天的開高低收","學習頁新增「看懂 K 線」8 堂圖解小課"],
