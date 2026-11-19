@@ -1,3 +1,9 @@
-/* Firebase 設定：在 Firebase 主控台「專案設定 → 你的應用程式」複製過來貼在這裡。
-   沒填的話，App 照常使用，只是不會出現 Google 登入。 */
-window.FB_CONFIG = null;
+/* Firebase 設定（網頁用的公開設定，不是密碼；資料安全靠 Firestore 規則：每個人只能讀寫自己的資料） */
+window.FB_CONFIG = {
+  apiKey: "AIzaSyA6Wcpg48WIhNr2iumOlGMJb0XBqttAsp0",
+  authDomain: "tw-stock-55f10.firebaseapp.com",
+  projectId: "tw-stock-55f10",
+  storageBucket: "tw-stock-55f10.firebasestorage.app",
+  messagingSenderId: "470113419950",
+  appId: "1:470113419950:web:b6e6597170aad11e63a33f"
+};
