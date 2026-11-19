@@ -1,6 +1,8 @@
 /* 更新後跳出「新功能」說明。每次改版就在 NEWS 最上面加一筆（id 要是新的）。 */
 (function(){
 const NEWS=[
+ {id:"2026-11-19",zh:["點個股會打開詳細頁：K 線圖、公司簡介、近三天走勢和新聞","在 K 線圖上點一下或左右滑，可以看每一天的開高低收","學習頁新增「看懂 K 線」8 堂圖解小課"],
+  en:["Tap a stock to open its page: candlestick chart, company info, last 3 days and news","Tap or slide on the chart to see each day's open, high, low and close","New on the Learn page: \"Reading candlesticks\", 8 short picture lessons"]},
  {id:"2026-11-18",zh:["上櫃股票加進來了：搜尋、自選股、模擬都找得到，旁邊會標「上櫃」","模擬交易更像真的：下單後等收盤才成交，可以下限價單","新的外觀「忍者」：設定 → 外觀，大盤卡片上有旋轉的手裏劍","小測驗擴充到 10 級、173 題，後面的情境題會一步一步教你解","資料太舊或有新版本時，上方會跳出提醒"],
   en:["OTC (TPEx) stocks added: search, watchlist and paper trading all include them","Paper trading is more realistic: orders fill at the close, and limit orders are supported","New Ninja theme: Settings → Appearance, with a spinning shuriken","The quiz now has 10 levels and 173 questions, with step-by-step scenario solutions","You'll see a notice when data is old or a new version is available"]}
 ];

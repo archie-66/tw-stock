@@ -178,12 +178,39 @@ body.simple .adv{display:none!important}
 .revnav .btn{padding:8px 18px}.revnav .btn:disabled{opacity:.3}
 .okbtn{width:100%;margin-top:10px;background:var(--down)}
 [hidden]{display:none!important}
+.sd{position:fixed;inset:0;z-index:15;background:var(--bg);transform:translateY(100%);transition:transform .42s cubic-bezier(.2,.9,.25,1);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.sd.show{transform:none}
+body.sd-open .tabs,body.sd-open .bars-top{opacity:0;pointer-events:none;transition:opacity .2s}
+.sd-head{position:sticky;top:0;z-index:2;background:linear-gradient(var(--bg) 80%,transparent);padding:calc(var(--st) + 6px) 16px 8px}
+.sd-head .grab{width:40px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 8px}
+.sd-head h2{font-size:20px}
+.sd-body{max-width:640px;margin:0 auto;padding:0 14px calc(var(--sb) + 30px)}
+.sdstats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:10px 0 12px}
+.sdstats div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:7px 9px;display:flex;flex-direction:column}
+.sdstats span{font-size:11px;color:var(--mute)}.sdstats b{font-size:14px;font-variant-numeric:tabular-nums}
+.sdc{opacity:1;transform:none}
+.sd.show .sdc{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+.sd.show .sdc:nth-of-type(2){animation-delay:.06s}.sd.show .sdc:nth-of-type(3){animation-delay:.12s}.sd.show .sdc:nth-of-type(4){animation-delay:.18s}
+#sdK{width:100%;height:230px;display:block;touch-action:pan-y}
+#sdK .kc{transform-box:fill-box;transform-origin:center;animation:growy .45s cubic-bezier(.2,.9,.3,1.2) both;animation-delay:calc(var(--k) * 12ms)}
+.mini3{margin:0}.mini3 button{padding:4px 10px;font-size:12px;white-space:nowrap}.mini3 button.on{background:var(--card);box-shadow:0 2px 8px rgba(0,0,0,.08);color:var(--ink);font-weight:700}
+.sdrecent{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:4px}
+.sdrecent div{display:flex;flex-direction:column;align-items:center;background:var(--bg);border-radius:12px;padding:8px 4px;font-size:12px}
+.sdrecent b{font-size:16px;font-variant-numeric:tabular-nums}
+.nitem{display:block;text-decoration:none;color:var(--ink);padding:10px 2px;border-bottom:1px solid var(--line)}
+.nitem .nd{font-size:11px;color:var(--mute)}.nitem .nt{font-size:14.5px;line-height:1.5;font-weight:500}
+.nmore{display:inline-block;margin-top:8px;font-size:13px;color:var(--accent);text-decoration:none;font-weight:700}
+:root[data-theme="ninja"] .sdstats div,:root[data-theme="ninja"] .sdrecent div{border-radius:4px}
 .bars-top{position:fixed;left:0;right:0;top:calc(var(--st) + 56px);z-index:11;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
 .nbar{pointer-events:auto;max-width:min(92vw,560px);border:0;font:inherit;font-size:13px;line-height:1.45;padding:8px 14px;border-radius:14px;box-shadow:0 6px 20px -8px rgba(0,0,0,.3);animation:pop .35s cubic-bezier(.3,1.4,.5,1)}
 .nbar.upd{background:var(--accent);color:#fff;font-weight:700}
 .nbar.stale{background:var(--warnbg);color:var(--ink);border:1px solid var(--line);font-size:12px;cursor:pointer}
 .nbar.stale::after{content:" ✕";color:var(--mute)}
 .setsheet.witharrow{padding-bottom:calc(var(--sb) + 64px)}
+#klSvg{width:100%;height:auto;display:block;margin:4px 0}
+#klSvg.kpop{animation:pop .45s cubic-bezier(.3,1.4,.5,1)}
+.kl-t{font-weight:700;font-size:16px;margin-top:4px}
+.kl-d{font-size:14.5px;line-height:1.7;margin:4px 0 0;min-height:4.5em}
 .wn-list{max-height:52vh;overflow-y:auto;margin:6px 0 4px}
 .wn-ver{font-size:12px;font-weight:700;color:var(--accent);margin:10px 0 2px}
 .wn-list ul{margin:0;padding-left:20px;font-size:15px;line-height:1.75}
@@ -493,7 +520,14 @@ footer a{color:var(--mute)}
       <div class="quick" id="quick"></div>
       <form class="askrow" id="askForm"><input id="askQ" placeholder="例如：成交量大代表什麼？" autocomplete="off"><button class="btn">問</button></form>
     </div>
-    <div class="card" style="--i:1;position:relative;overflow:hidden" id="quizCard">
+    <div class="card" style="--i:1" id="klCard">
+      <div class="hrow"><h2>🕯️ 看懂 K 線</h2><span class="sub" id="klN"></span></div>
+      <div class="kl-t" id="klT"></div>
+      <svg id="klSvg" viewBox="0 0 360 175"></svg>
+      <p class="kl-d" id="klD"></p>
+      <div class="foot"><button class="btn ghost" id="klPrev">←</button><div class="dots" id="klDots"></div><button class="btn" id="klNext">下一課 →</button><button class="btn" id="klTry" hidden>用台積電練習看看 →</button></div>
+    </div>
+    <div class="card" style="--i:2;position:relative;overflow:hidden" id="quizCard">
       <div class="hrow"><h2>🎯 小測驗</h2><span class="lvl" id="lvBadge"></span></div>
       <div class="lvbar"><div id="lvFill"></div></div>
       <div class="sub" id="lvTxt" style="margin-top:4px"></div>
@@ -555,6 +589,27 @@ footer a{color:var(--mute)}
   <p class="sub" style="margin-top:14px">設定只存在這台裝置上。</p>
 </div>
 <div class="toast" id="simToast"></div>
+<div class="sd" id="sd" role="dialog">
+  <div class="sd-head" id="sdGrab"><div class="grab"></div>
+    <div class="hrow"><h2 id="sdName" style="margin:0"></h2><div style="display:flex;gap:6px;align-items:center"><button class="star" id="sdStar" aria-label="自選">☆</button><button class="icon-btn" id="sdClose" aria-label="關閉">✕</button></div></div>
+  </div>
+  <div class="sd-body">
+    <div id="sdPx"></div>
+    <div class="sdstats" id="sdStats"></div>
+    <div class="card sdc">
+      <div class="hrow"><h2>K 線圖</h2><div class="seg mini3" id="sdRange"><button class="on" data-r="20">1 個月</button><button data-r="60">3 個月</button></div></div>
+      <div class="sub" id="sdKInfo" style="min-height:18px"></div>
+      <svg id="sdK" viewBox="0 0 340 215" preserveAspectRatio="none"></svg>
+      <div class="axis" id="sdKAxis"></div>
+      <div class="sub" style="margin-top:6px">在圖上點一下或左右滑，可以看每一天的價格。</div>
+    </div>
+    <div class="card sdc"><h2>這檔股票</h2><p class="hint" id="sdAbout" style="margin:0;color:var(--ink)"></p></div>
+    <div class="card sdc"><h2>近三天走勢</h2><div class="sdrecent" id="sdRecent"></div><div class="tip" id="sdTrend"></div></div>
+    <div class="card sdc"><h2>近三天新聞</h2><div id="sdNews"></div><div class="sub" style="margin-top:8px">新聞標題來自 Google 新聞，點開會到原本的新聞網站。</div></div>
+    <div class="row2" style="margin:4px 0 8px"><button class="btn" id="sdSim">模擬買進</button></div>
+    <p class="sub" style="text-align:center">只描述發生了什麼，不是投資建議。</p>
+  </div>
+</div>
 <div class="backdrop" id="wnBack"></div>
 <div class="setsheet" id="wnSheet" role="dialog">
   <div class="grab"></div>
@@ -625,6 +680,7 @@ const DICT=EN?[
 const TERM={"加權指數":0,"K線":6,"上影線":7,"成交金額":4,"張":2,"漲跌家數":10,"三大法人":8,"買超":9};
 const KNOWN=EN?{"2330":"TSMC: the biggest company in Taiwan's market; it moves the index the most.","2454":"MediaTek: leading phone-chip designer.","2317":"Hon Hai (Foxconn): the world's largest electronics maker for other brands.","2303":"UMC: Taiwan's No. 2 chip foundry.","2308":"Delta Electronics: power supplies and cooling.","3711":"ASE: leader in chip packaging and testing.","2409":"AUO: display panel maker.","3481":"Innolux: display panel maker.","1802":"Taiwan Glass: glass maker (traditional industry).","1303":"Nan Ya Plastics: plastics and electronic materials (Formosa group).","2408":"Nanya Technology: memory (DRAM) maker.","3443":"Global Unichip (GUC): custom chip (ASIC) design services.","3661":"Alchip: custom chip (ASIC) design services.","3008":"Largan: leading phone-camera lens maker.","2382":"Quanta: server and laptop maker.","2881":"Fubon Financial: financial holding company.","2882":"Cathay Financial: financial holding company.","2891":"CTBC Financial: financial holding company.","0050":"Yuanta Taiwan 50: an ETF holding Taiwan's 50 biggest companies, a common first investment.","0056":"Yuanta High Dividend: an ETF of high-dividend stocks.","00878":"Cathay Sustainable High Dividend: a popular high-dividend ETF."}
 :{"2330":"台積電：台股市值最大的公司，指數受它影響最大。","2454":"聯發科：手機晶片、IC 設計龍頭。","2317":"鴻海：全球最大電子代工廠。","2303":"聯電：晶圓代工「二哥」。","2308":"台達電：電源、散熱大廠。","3711":"日月光：晶片封裝測試龍頭。","2409":"友達：面板廠。","3481":"群創：面板廠。","1802":"台玻：玻璃製造商（傳產）。","1303":"南亞：塑膠、電子材料（台塑集團）。","2408":"南亞科：記憶體（DRAM）廠。","3443":"創意：客製化晶片（ASIC）設計服務。","3661":"世芯-KY：客製化晶片（ASIC）設計服務。","3008":"大立光：手機鏡頭龍頭。","2382":"廣達：伺服器、筆電代工。","2881":"富邦金：金融控股公司。","2882":"國泰金：金融控股公司。","2891":"中信金：金融控股公司。","0050":"元大台灣50：一次買進台灣前 50 大公司的 ETF，常被當新手入門標的。","0056":"元大高股息：挑高股息股票的 ETF。","00878":"國泰永續高股息：高股息 ETF，很多存股族持有。"};
+window.KNOWN=KNOWN;
 /* 金額（單位：億元）→ 顯示文字 */
 const yi=(v,d=2)=>EN?(Math.abs(v)>=10?`NT$${fmt(v/10,1)}bn`:`NT$${fmt(v*100,0)}M`):`${fmt(v,d)} 億元`;
 const yiS=(v)=>EN?`${v>0?"+":v<0?"−":""}NT$${fmt(Math.abs(v)/10,1)}bn`:`${sgn(v)}億`;
@@ -641,7 +697,7 @@ function applyColor(v){
   document.querySelectorAll("#setColor button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));store.set("twcolor",v);
   $("colorNote").innerHTML=EN?(v==="intl"?"<b>Global colors:</b> green = up, red = down (Taiwan normally uses the opposite).":"<b>Taiwan colors:</b> red = up, green = down. That's the opposite of the US. You can switch in Settings."):(v==="intl"?"<b>目前是國際配色：</b>綠色＝漲、紅色＝跌（台股習慣剛好相反）。":"<b>台股顏色跟美股相反：</b>紅色＝漲、綠色＝跌。");
   $("streakHint").textContent=EN?(v==="intl"?"Green = net buy, red = net sell":"Red = net buy, green = net sell")+" (since this app started recording).":(v==="intl"?"綠格＝買超、紅格＝賣超":"紅格＝買超、綠格＝賣超")+"（從這個 App 開始記錄的那天算起）。";
-  if(D){render();renderList();if(window.simRender)simRender()}}
+  if(D){render();renderList();if(window.simRender)simRender()}if(window.klRefresh)klRefresh()}
 applyTheme(store.get("twtheme")||"auto");
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>applyTheme(store.get("twtheme")||"auto"));
 document.querySelectorAll("#setTheme button").forEach(b=>b.onclick=()=>applyTheme(b.dataset.v));
@@ -826,7 +882,7 @@ function render(){
 
   /* 個股 */
   renderList();renderWatch();if(window.simRender)simRender();
-  const mv=(arr)=>arr.map(s=>{const p=s[5]/(s[4]-s[5])*100;return `<div><span>${s[1]}</span><b class="${cls(p)}">${p>0?"+":""}${p.toFixed(1)}%</b></div>`}).join("");
+  const mv=(arr)=>arr.map(s=>{const p=s[5]/(s[4]-s[5])*100;return `<div class="press" onclick="openStock('${s[0]}')" style="cursor:pointer"><span>${s[1]}</span><b class="${cls(p)}">${p>0?"+":""}${p.toFixed(1)}%</b></div>`}).join("");
   if(D.gainers&&D.gainers.length){$("gainers").innerHTML=`<div class="sub" style="border:0">${t("漲最多","Top gainers")}</div>`+mv(D.gainers);$("losers").innerHTML=`<div class="sub" style="border:0">${t("跌最多","Top losers")}</div>`+mv(D.losers||[]);$("moversCard").style.display=""}else $("moversCard").style.display="none";
 
   if(window.checkStale)checkStale();
@@ -885,7 +941,7 @@ function renderList(){
     <div><span class="nm">${r.name}</span><span class="cd">${r.code}</span>${r.otc?`<span class="mk">${t("上櫃","OTC")}</span>`:""}<button class="star ${isW(r.code)?"on":""}" data-star="${r.code}" aria-label="${t("自選","Watchlist")}">${isW(r.code)?"★":"☆"}</button><div class="meta">${sortBy==="vol"?lotsTxt(r.vol):yi(r.amt)}<span class="adv">・${sortBy==="vol"?yi(r.amt):lotsTxt(r.vol)}</span></div></div>
     <div class="rt"><div class="px">${r.px.toLocaleString()}</div><span class="badge ${cls(r.ch)}">${arrow(r.ch)} ${Math.abs(r.pct).toFixed(2)}%</span></div></div>
     <div class="detail" id="d${r.code}"><div>${stockNote(r)}<div class="acts"><button data-sim="${r.code}">${t("模擬買進","Paper buy")}</button><button data-star="${r.code}">${isW(r.code)?t("移除自選","Remove from watchlist"):t("加入自選","Add to watchlist")}</button></div></div></div>`).join("");
-  document.querySelectorAll("#list .item").forEach(el=>el.onclick=()=>$("d"+el.dataset.c).classList.toggle("open"));
+  document.querySelectorAll("#list .item").forEach(el=>el.onclick=()=>window.openStock&&openStock(el.dataset.c));
 }
 /* ---------- 自選股 ---------- */
 let WL=(()=>{try{return JSON.parse(localStorage.getItem("tw_watch"))||[]}catch(e){return []}})();
@@ -909,7 +965,7 @@ function renderWatch(){
       <div><span class="nm">${r.name}</span><span class="cd">${c}</span>${r.otc?`<span class="mk">${t("上櫃","OTC")}</span>`:""}<button class="star on" data-star="${c}">★</button><div class="meta">${held?t(`模擬持有 ${held.toLocaleString()} 股`,`Paper holding: ${held.toLocaleString()} sh`):yi(r.amt)}</div></div>
       <div class="rt"><div class="px">${r.px.toLocaleString()}</div><span class="badge ${cls(r.ch)}">${arrow(r.ch)} ${Math.abs(r.pct).toFixed(2)}%</span></div></div>
       <div class="detail" id="w${c}"><div>${stockNote(r)}<div class="acts"><button data-sim="${c}">${t("模擬買賣","Paper trade")}</button></div></div></div>`}).join("");
-  document.querySelectorAll("#watch .item[data-w]").forEach(el=>el.onclick=()=>$("w"+el.dataset.w).classList.toggle("open"));
+  document.querySelectorAll("#watch .item[data-w]").forEach(el=>el.onclick=()=>window.openStock&&openStock(el.dataset.w));
 }
 document.addEventListener("click",e=>{
   const st=e.target.closest("[data-star]");if(st){e.stopPropagation();toggleW(st.dataset.star,st);return}
@@ -992,5 +1048,7 @@ if("serviceWorker" in navigator&&location.hostname.endsWith("github.io")){naviga
 <script src="sim.js"></script>
 <script src="notices.js"></script>
 <script src="whatsnew.js"></script>
+<script src="stock.js"></script>
+<script src="klesson.js"></script>
 </body>
 </html>
