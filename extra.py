@@ -120,6 +120,7 @@ def fetch_info():
 
 
 # ---------- 新聞 ----------
+FORUM = ("爆料同學會", "PTT", "Dcard", "Mobile01", "論壇", "討論區", "社團")
 def fetch_news(stocks, today):
     old = load("news.json", {})
     out = {}
@@ -148,14 +149,25 @@ def fetch_news(stocks, today):
                     title = title[: -len(" - " + src)]
                 if name not in title and code not in title:
                     continue
-                items.append([dt.strftime("%m/%d"), title[:80], src[:20], link])
-                if len(items) >= 3:
-                    break
-            out[code] = items
+                if any(k in src or k in title for k in FORUM):
+                    continue
+                if any(title[:18] == x[1][:18] for x in items):
+                    continue
+                items.append([dt.strftime("%m/%d"), title[:80], src[:20], link, dt.timestamp()])
+            items.sort(key=lambda x: -x[4])
+            pick, days = [], set()
+            for x in items:               # 先每天挑一則，讓三天都有
+                if x[0] not in days and len(pick) < 3:
+                    pick.append(x); days.add(x[0])
+            for x in items:
+                if x not in pick and len(pick) < 3:
+                    pick.append(x)
+            pick.sort(key=lambda x: -x[4])
+            out[code] = [x[:4] for x in pick]
         except Exception as e:
             print("新聞失敗", code, e)
             out[code] = old.get("c", {}).get(code, [])
-        time.sleep(0.6)
+        time.sleep(1.2)
     save("news.json", {"date": today, "c": out})
     print("新聞", sum(1 for v in out.values() if v), "/", len(out))
 
