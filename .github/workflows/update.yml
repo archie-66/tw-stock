@@ -7,6 +7,11 @@ on:
     - cron: "37,52 5 * * 1-5"
     - cron: "7,22,37,52 6-9 * * 1-5"
   workflow_dispatch:
+    inputs:
+      backfill:
+        description: "回補幾個交易日的個股 K 線（平常留空）"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -49,3 +54,14 @@ jobs:
             [ "$STATE" = "DONE" ] && break
             sleep 300
           done
+      - name: 個股 K 線歷史、公司資料、新聞
+        env:
+          BACKFILL: ${{ github.event.inputs.backfill }}
+        run: |
+          git pull -q --rebase origin main || true
+          python extra.py || echo "extra.py 有錯誤，詳細看上面"
+          git add hist info.json news.json 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -q -m "更新個股 K 線／公司資料／新聞 $(TZ=Asia/Taipei date '+%F %H:%M')"
+            git pull -q --rebase origin main && git push -q
+          fi

@@ -67,13 +67,53 @@ def col(fields, *names):
     return None
 
 
+def parse_listed(mi):
+    """證交所 MI_INDEX → 每檔 [代號,名稱,成交金額億,張數,收盤,漲跌,最高,最低,市場,開盤] 和漲跌家數"""
+    stocks, breadth = [], None
+    for (title, f, data) in tables(mi):
+        if col(f, "證券代號") is not None and col(f, "收盤價") is not None:
+            ic, iname = col(f, "證券代號"), col(f, "證券名稱")
+            ish, iam = col(f, "成交股數"), col(f, "成交金額")
+            icl, isg, idf = col(f, "收盤價"), col(f, "漲跌(+/-)"), col(f, "漲跌價差")
+            ihi, ilo, iop = col(f, "最高價"), col(f, "最低價"), col(f, "開盤價")
+            for x in data:
+                c = num(x[icl]); diff = num(x[idf]) or 0.0
+                sign_txt = str(x[isg]) if isg is not None else ""
+                if "-" in sign_txt or "green" in sign_txt:
+                    diff = -abs(diff)
+                elif "+" in sign_txt or "red" in sign_txt:
+                    diff = abs(diff)
+                elif "X" in sign_txt:
+                    diff = 0.0
+                if c is None:
+                    continue
+                hi = num(x[ihi]) if ihi is not None else None
+                lo = num(x[ilo]) if ilo is not None else None
+                stocks.append([x[ic].strip(), x[iname].strip(), round((num(x[iam]) or 0) / 1e8, 2),
+                               int((num(x[ish]) or 0) / 1000), c, round(diff, 2), hi or c, lo or c, "",
+                               (num(x[iop]) if iop is not None else None) or c])
+        if "漲跌證券數" in title or (col(f, "類型") is not None and data and "上漲" in str(data[0][0])):
+            istk = col(f, "股票")
+            if istk is None:
+                continue
+            b = {}
+            for x in data:
+                k = str(x[0]); v = num(str(x[istk]).split("(")[0])
+                if "上漲" in k: b["up"] = int(v or 0)
+                elif "下跌" in k: b["down"] = int(v or 0)
+                elif "持平" in k: b["flat"] = int(v or 0)
+            if "up" in b:
+                breadth = b
+    return stocks, breadth
+
+
 def get_otc(now):
     """上櫃股票收盤行情（櫃買中心）。格式可能改版，所以試好幾個來源、用欄位名稱找。"""
     roc_d = f"{now.year-1911}/{now.month:02d}/{now.day:02d}"
     roc_compact = f"{now.year-1911}{now.month:02d}{now.day:02d}"
     out = []
 
-    def add(code, name, close, chg, hi, lo, shares, amount):
+    def add(code, name, close, chg, hi, lo, shares, amount, op=None):
         code = str(code).strip(); c = num(close)
         if not code or c is None or not re.match(r"^[0-9A-Z]{4,6}$", code):
             return
@@ -81,7 +121,7 @@ def get_otc(now):
         if isinstance(chg, str) and chg.strip().startswith("-"):
             d = -abs(d)
         out.append([code, str(name).strip(), round((num(amount) or 0) / 1e8, 2), int((num(shares) or 0) / 1000),
-                    c, round(d, 2), num(hi) or c, num(lo) or c, "o"])
+                    c, round(d, 2), num(hi) or c, num(lo) or c, "o", num(op) or c])
 
     # A) OpenAPI（JSON 陣列，英文欄位）
     js = get("https://www.tpex.org.tw/openapi/v1/tpex_mainboard_daily_close_quotes")
@@ -89,12 +129,12 @@ def get_otc(now):
         k = list(js[0].keys())
         pick = lambda *names: next((x for x in k for n in names if n.lower() == x.lower()), None)
         kd, kc, kn = pick("Date"), pick("SecuritiesCompanyCode", "Code"), pick("CompanyName", "Name")
-        kcl, kch, kh, kl = pick("Close"), pick("Change"), pick("High"), pick("Low")
+        kcl, kch, kh, kl, ko = pick("Close"), pick("Change"), pick("High"), pick("Low"), pick("Open")
         ksh, kam = pick("TradingShares", "TradeVolume"), pick("TransactionAmount", "TradeValue")
         print("TPEx OpenAPI keys:", k[:14], "date:", js[0].get(kd))
         if kc and kcl and (not kd or str(js[0].get(kd)).replace("/", "") == roc_compact):
             for x in js:
-                add(x.get(kc), x.get(kn, ""), x.get(kcl), x.get(kch), x.get(kh), x.get(kl), x.get(ksh), x.get(kam))
+                add(x.get(kc), x.get(kn, ""), x.get(kcl), x.get(kch), x.get(kh), x.get(kl), x.get(ksh), x.get(kam), x.get(ko) if ko else None)
     if out:
         return out
     # B) 舊版網址（aaData）
@@ -105,7 +145,7 @@ def get_otc(now):
         for x in rows:
             # 代號,名稱,收盤,漲跌,開盤,最高,最低,均價,成交股數,成交金額
             if len(x) >= 10:
-                add(x[0], x[1], x[2], x[3], x[5], x[6], x[8], x[9])
+                add(x[0], x[1], x[2], x[3], x[5], x[6], x[8], x[9], x[4])
     if out:
         return out
     # C) 新版網站
@@ -114,13 +154,13 @@ def get_otc(now):
         ic, iname, icl = col(f, "代號"), col(f, "名稱"), col(f, "收盤")
         if None in (ic, icl):
             continue
-        ich, ih, il = col(f, "漲跌"), col(f, "最高"), col(f, "最低")
+        ich, ih, il, io = col(f, "漲跌"), col(f, "最高"), col(f, "最低"), col(f, "開盤")
         ish, iam = col(f, "成交股數"), col(f, "成交金額")
         print("TPEx new-site fields:", f[:12])
         for x in data:
             add(x[ic], x[iname] if iname is not None else "", x[icl], x[ich] if ich is not None else 0,
                 x[ih] if ih is not None else None, x[il] if il is not None else None,
-                x[ish] if ish is not None else 0, x[iam] if iam is not None else 0)
+                x[ish] if ish is not None else 0, x[iam] if iam is not None else 0, x[io] if io is not None else None)
     return out
 
 
@@ -177,40 +217,7 @@ def main():
     # 3) 每檔股票收盤行情 + 漲跌家數（MI_INDEX）
     time.sleep(2)
     mi = get(f"{BASE}/afterTrading/MI_INDEX?date={ymd}&type=ALLBUT0999&response=json")
-    stocks, breadth = [], None
-    for (title, f, data) in tables(mi):
-        if col(f, "證券代號") is not None and col(f, "收盤價") is not None:
-            ic, iname = col(f, "證券代號"), col(f, "證券名稱")
-            ish, iam = col(f, "成交股數"), col(f, "成交金額")
-            icl, isg, idf = col(f, "收盤價"), col(f, "漲跌(+/-)"), col(f, "漲跌價差")
-            ihi, ilo = col(f, "最高價"), col(f, "最低價")
-            for x in data:
-                c = num(x[icl]); diff = num(x[idf]) or 0.0
-                sign_txt = str(x[isg]) if isg is not None else ""
-                if "-" in sign_txt or "green" in sign_txt:
-                    diff = -abs(diff)
-                elif "+" in sign_txt or "red" in sign_txt:
-                    diff = abs(diff)
-                elif "X" in sign_txt:
-                    diff = 0.0
-                if c is None:
-                    continue
-                hi = num(x[ihi]) if ihi is not None else None
-                lo = num(x[ilo]) if ilo is not None else None
-                stocks.append([x[ic].strip(), x[iname].strip(), round((num(x[iam]) or 0) / 1e8, 2),
-                               int((num(x[ish]) or 0) / 1000), c, round(diff, 2), hi or c, lo or c, ""])
-        if "漲跌證券數" in title or (col(f, "類型") is not None and data and "上漲" in str(data[0][0])):
-            istk = col(f, "股票")
-            if istk is None:
-                continue
-            b = {}
-            for x in data:
-                k = str(x[0]); v = num(str(x[istk]).split("(")[0])
-                if "上漲" in k: b["up"] = int(v or 0)
-                elif "下跌" in k: b["down"] = int(v or 0)
-                elif "持平" in k: b["flat"] = int(v or 0)
-            if "up" in b:
-                breadth = b
+    stocks, breadth = parse_listed(mi)
     if not stocks:
         print("個股收盤行情還沒公布，等下一次再試。")
         return 0
