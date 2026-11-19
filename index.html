@@ -178,6 +178,7 @@ body.simple .adv{display:none!important}
 .revnav .btn{padding:8px 18px}.revnav .btn:disabled{opacity:.3}
 .okbtn{width:100%;margin-top:10px;background:var(--down)}
 [hidden]{display:none!important}
+.acct{display:flex;align-items:center;gap:10px}.acct img{width:34px;height:34px;border-radius:50%}.acct b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px}.acct .btn{padding:8px 14px;white-space:nowrap}
 .sd{position:fixed;inset:0;z-index:15;background:var(--bg);transform:translateY(100%);transition:transform .42s cubic-bezier(.2,.9,.25,1);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .sd.show{transform:none}
 body.sd-open .tabs,body.sd-open .bars-top{opacity:0;pointer-events:none;transition:opacity .2s}
@@ -579,6 +580,9 @@ footer a{color:var(--mute)}
 <div class="setsheet" id="setSheet" role="dialog" aria-label="設定">
   <div class="grab"></div>
   <div class="hrow"><h3>設定</h3><button class="btn ghost" id="setDone" style="padding:6px 14px">完成</button></div>
+  <div class="setrow" id="acctRow" hidden><div class="lab">帳號</div>
+    <div class="acct"><img id="acctAv" alt="" hidden referrerpolicy="no-referrer"><b id="acctName"></b><button class="btn" id="acctBtn">用 Google 登入</button></div>
+    <p class="sub" id="acctSub" style="margin:6px 0 0"></p></div>
   <div class="setrow"><div class="lab">語言</div><div class="seg" id="setLang"><button data-v="zh">中文</button><button data-v="en">English</button></div></div>
   <div class="setrow"><div class="lab">外觀</div><div class="seg" id="setTheme"><button data-v="auto">跟隨系統</button><button data-v="light">淺色</button><button data-v="dark">深色</button><button data-v="ninja">忍者</button></div></div>
   <div class="setrow"><div class="lab">漲跌顏色</div><div class="seg" id="setColor"><button data-v="tw">台股 <span class="swatch" style="background:var(--red)"></span>漲 <span class="swatch" style="background:var(--green)"></span>跌</button><button data-v="intl">國際 <span class="swatch" style="background:var(--green)"></span>漲 <span class="swatch" style="background:var(--red)"></span>跌</button></div></div>
@@ -586,7 +590,7 @@ footer a{color:var(--mute)}
   <div class="setrow"><div class="lab">不記名答題統計</div><p class="sub" style="margin:0">只會送出題號、對錯和等級，不含名字或帳號，用來改善題目。</p></div>
   <div class="setrow"><div class="lab">最新功能</div><button class="btn ghost" id="wnHelp" style="width:100%">看這次更新了什麼</button></div>
   <div class="setrow" id="instHelpRow"><div class="lab">加到主畫面</div><button class="btn ghost" id="instHelp" style="width:100%">看教學</button></div>
-  <p class="sub" style="margin-top:14px">設定只存在這台裝置上。</p>
+  <p class="sub" style="margin-top:14px">外觀、語言這些設定只存在這台裝置上。</p>
 </div>
 <div class="toast" id="simToast"></div>
 <div class="sd" id="sd" role="dialog">
@@ -1050,5 +1054,7 @@ if("serviceWorker" in navigator&&location.hostname.endsWith("github.io")){naviga
 <script src="whatsnew.js"></script>
 <script src="stock.js"></script>
 <script src="klesson.js"></script>
+<script src="firebase-config.js"></script>
+<script type="module" src="sync.js"></script>
 </body>
 </html>
