@@ -1,6 +1,8 @@
 /* 更新後跳出「新功能」說明。每次改版就在 NEWS 最上面加一筆（id 要是新的）。 */
 (function(){
 const NEWS=[
+ {id:"2026-11-19d",zh:["新的開啟畫面：依外觀風格換動畫（K 棒、手裏劍、咒力球），進度條跟著真的載入走","每次打開會給一則新手小知識；網路不穩時可以重試或先進去看"],
+  en:["New start screen: animation matches your look (candles, shuriken, cursed orb) and the bar follows real loading","A beginner tip each time you open the app; retry or continue if the connection is slow"]},
  {id:"2026-11-19c",zh:["外觀新增「咒術」風格：深夜紫配色、咒力光點，點畫面會有漣漪（設定 → 外觀）"],
   en:["New \"Jujutsu\" look: midnight purple, glowing particles and tap ripples (Settings → Appearance)"]},
  {id:"2026-11-19b",zh:["可以用 Google 帳號登入了（在設定最上面）","登入後，自選股、模擬交易和測驗進度會存在雲端，換手機或 iPad 也還在"],

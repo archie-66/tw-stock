@@ -22,7 +22,7 @@ window.checkStale=function(){
 
 /* ---------- 2. 有新版本 ---------- */
 $("staleBar").onclick=()=>{try{sessionStorage.setItem("tw_stale_hide",window.D?D.date:"")}catch(e){}$("staleBar").hidden=true};
-const FILES=["index.html","quiz.js","sim.js","i18n.js","stats.js","notices.js","whatsnew.js","stock.js","klesson.js","fx.js","sync.js","firebase-config.js"];
+const FILES=["index.html","quiz.js","sim.js","i18n.js","stats.js","notices.js","whatsnew.js","stock.js","klesson.js","fx.js","splash.js","sync.js","firebase-config.js"];
 let base=null;
 async function sig(){
   const out=[];

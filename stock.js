@@ -88,10 +88,11 @@ async function openStock(code){
   $("sdPx").innerHTML=`<span class="big ${cls(ch)}" style="font-size:34px">${s[4].toLocaleString()}</span> <span class="chg ${cls(ch)}">${arrow(ch)} ${Math.abs(ch)}（${p>=0?"+":""}${p.toFixed(2)}%）</span>`;
   $("sdStats").innerHTML=[[t("開盤","Open"),s[9]??"--"],[t("最高","High"),s[6]],[t("最低","Low"),s[7]],[t("成交量","Volume"),s[3].toLocaleString()+t(" 張"," lots")],[t("成交金額","Value"),yi(s[2])],[t("昨收","Prev"),f2(ref,ref>=100?1:2)]].map(([k,v])=>`<div><span>${k}</span><b>${v}</b></div>`).join("");
   $("sdStar").textContent=isW(code)?"★":"☆";$("sdStar").classList.toggle("on",isW(code));$("sdStar").dataset.star=code;
-  $("sdAbout").textContent=t("載入中…","Loading…");$("sdTrend").innerHTML="";$("sdNews").innerHTML="";$("sdK").innerHTML="";$("sdKInfo").textContent="";
+  $("sdAbout").textContent=t("載入中…","Loading…");$("sdTrend").innerHTML="";$("sdNews").innerHTML="";$("sdK").innerHTML="";$("sdKInfo").textContent="";$("sdKLoad").hidden=false;$("sdK").style.display="none";
   $("sd").classList.add("show");$("sd").scrollTop=0;document.body.classList.add("sd-open");
   const [r,inf,nw]=await Promise.all([hist(code),info(),news()]);
   if(cur!==code)return;
+  $("sdKLoad").hidden=true;$("sdK").style.display="";
   rows=r.slice();
   const tday=D.date.replace(/-/g,"");
   if(!rows.length||rows[rows.length-1][0]<tday)rows.push([tday,s[9]||s[4],s[6]||s[4],s[7]||s[4],s[4],s[3]]);
