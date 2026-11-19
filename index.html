@@ -362,8 +362,6 @@ footer a{color:var(--mute)}
 :root[data-theme="jjk"] .card h2{font-family:var(--hf);letter-spacing:.05em}
 :root[data-theme="jjk"] .card h2::before{content:"";display:inline-block;width:4px;height:.9em;background:linear-gradient(#8fa0ff,#6a4dff);margin-right:8px;vertical-align:-1px;box-shadow:0 0 8px #7c6bff;border-radius:2px}
 :root[data-theme="jjk"] .card.hero{overflow:visible}
-:root[data-theme="jjk"] .card.hero::after{content:"";position:absolute;right:-12px;top:-17px;width:32px;height:32px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0 5%,#b9c4ff 12%,#6a4dff 48%,#1a0f55 100%);box-shadow:0 0 18px 4px rgba(106,77,255,.65),0 0 44px 8px rgba(61,123,255,.3);animation:jorb 1.8s ease-in-out infinite;pointer-events:none}
-:root[data-theme="jjk"] .card.hero::before{content:"";position:absolute;right:-20px;top:-25px;width:48px;height:48px;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 50%,#8fa0ff 85%,transparent 100%);-webkit-mask:radial-gradient(circle,transparent 58%,#000 60% 68%,transparent 70%);mask:radial-gradient(circle,transparent 58%,#000 60% 68%,transparent 70%);animation:jspin 1.1s linear infinite;pointer-events:none;z-index:1}
 @keyframes jorb{50%{transform:scale(1.12)}}
 @keyframes jspin{to{transform:rotate(360deg)}}
 :root[data-theme="jjk"] .stat,:root[data-theme="jjk"] .tip{border-radius:6px}
@@ -417,11 +415,13 @@ footer a{color:var(--mute)}
 :root[data-theme="ninja"] .ldr{color:#c8361d}
 :root[data-theme="ninja"] .ldr .ln{display:block;width:100%;height:100%;animation:jspin .85s linear infinite;filter:drop-shadow(0 6px 10px rgba(0,0,0,.25))}
 :root[data-theme="ninja"] .ldr .ln .hole{fill:var(--bg)}
-:root[data-theme="jjk"] .ldr .lj{display:block;width:72%;height:72%;border-radius:50%;position:relative;background:radial-gradient(circle at 35% 30%,#fff 0 5%,#b9c4ff 12%,#6a4dff 48%,#1a0f55 100%);box-shadow:0 0 24px 6px rgba(106,77,255,.65),0 0 60px 12px rgba(61,123,255,.35);animation:jorb 1.6s ease-in-out infinite}
-:root[data-theme="jjk"] .ldr .lj::before{content:"";position:absolute;inset:-22%;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 50%,#8fa0ff 85%,transparent 100%);-webkit-mask:radial-gradient(circle,transparent 60%,#000 62% 70%,transparent 72%);mask:radial-gradient(circle,transparent 60%,#000 62% 70%,transparent 72%);animation:jspin 1.1s linear infinite}
+:root[data-theme="jjk"] .ldr .lj{display:block;width:96%;height:96%;position:relative}
 .ldr::before{display:none;content:"";position:absolute;inset:-8%;border-radius:50%;border:1.5px dashed rgba(159,176,255,.65);animation:jspin 7s linear infinite reverse}
 :root[data-theme="jjk"] .ldr::before{display:block}
 :root[data-theme="ninja"] .ldr::before{display:block;border-color:rgba(200,54,29,.55)}
+.eorb{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none}
+.hero-orb{display:none}
+:root[data-theme="jjk"] .hero-orb{display:block;position:absolute;right:-2px;top:-6px;width:36px;height:36px;pointer-events:none;z-index:1}
 #splash.off .ldr{animation:bursto .5s ease-in forwards}
 @keyframes bursto{to{transform:scale(2.6);opacity:0}}
 @keyframes jspin{to{transform:rotate(360deg)}}
@@ -455,6 +455,7 @@ footer a{color:var(--mute)}
   <div class="sp-tip" id="spTip"></div>
 </div>
 <script src="splash.js"></script>
+<script src="orb.js"></script>
 
 <div class="top">
   <h1><span id="pgTitle">大盤</span><span class="pg" id="dateLine">載入中…</span></h1>
