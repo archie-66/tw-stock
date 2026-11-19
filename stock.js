@@ -23,8 +23,8 @@ function trendText(r,s){
   const ma5=avg(5),ma20=avg(20);
   const v=last[5],v5=r.length>=6?r.slice(-6,-1).reduce((a,x)=>a+x[5],0)/5:null;
   const out=[];
-  out.push(EN?`Over the last ${n} trading day${n>1?"s":""} it went ${ch>=0?"up":"down"} <b class="${cls(ch)}">${ch>=0?"+":""}${ch.toFixed(1)}%</b> (${ups} up day${ups===1?"":"s"} out of ${n}).`
-    :`最近 ${n} 個交易日${ch>=0?"上漲":"下跌"} <b class="${cls(ch)}">${ch>=0?"+":""}${ch.toFixed(1)}%</b>，其中 ${ups} 天收紅。`);
+  out.push(EN?`Over the last ${n} trading day${n>1?"s":""} it went ${ch>=0?"up":"down"} <b class="${cls(ch)}">${Math.abs(ch).toFixed(1)}%</b> (${ups} up day${ups===1?"":"s"} out of ${n}).`
+    :`最近 ${n} 個交易日${ch>=0?"上漲":"下跌"} <b class="${cls(ch)}">${Math.abs(ch).toFixed(1)}%</b>，其中 ${ups} 天比前一天漲。`);
   if(ma5&&ma20)out.push(c>=ma5&&c>=ma20?t("股價在 5 日和 20 日均線之上，短期走勢偏強。","It's above its 5- and 20-day averages: a stronger short-term trend."):c<ma5&&c<ma20?t("股價在 5 日和 20 日均線之下，短期走勢偏弱。","It's below its 5- and 20-day averages: a weaker short-term trend."):t("股價在兩條均線之間，方向還不明確。","It's between its averages: no clear direction yet."));
   else if(ma5)out.push(c>=ma5?t("股價站在 5 日均線之上。","It's above its 5-day average."):t("股價在 5 日均線之下。","It's below its 5-day average."));
   if(v5){const vr=v/v5;out.push(vr>=1.8?t(`今天成交量是前 5 天平均的 ${vr.toFixed(1)} 倍，交易特別熱絡。`,`Today's volume was ${vr.toFixed(1)}× the 5-day average: unusually busy.`):vr<=0.5?t("今天成交量比平常少很多，大家在觀望。","Volume was much lower than usual: people are waiting."):"")}
