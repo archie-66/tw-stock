@@ -1,8 +1,8 @@
 {
  "date": "2026-11-23",
  "weekday": "一",
- "updatedAt": "2026-11-23 15:00",
- "complete": false,
+ "updatedAt": "2026-11-23 15:06",
+ "complete": true,
  "idx": {
   "open": 35899.48,
   "high": 37108.2,
@@ -22,7 +22,11 @@
  },
  "limitUp": 31,
  "limitDown": 2,
- "inst": null,
+ "inst": {
+  "foreign": -289.48,
+  "trust": -32.28,
+  "dealer": -190.01
+ },
  "instHistory": [
   {
    "date": "2026-11-13",
@@ -59,6 +63,12 @@
    "foreign": -94.13,
    "trust": -87.49,
    "dealer": -340.84
+  },
+  {
+   "date": "2026-11-23",
+   "foreign": -289.48,
+   "trust": -32.28,
+   "dealer": -190.01
   }
  ],
  "otcCount": 993,
