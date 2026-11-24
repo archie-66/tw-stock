@@ -7,7 +7,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="台股小幫手">
-<meta name="theme-color" content="#f4f1ea">
+<meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#131418" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
@@ -804,7 +805,7 @@ const kName=up=>EN?(up?(intl()?"green candle":"red candle"):(intl()?"red candle"
 function applyTheme(v){
   const r=document.documentElement;if(v==="auto")delete r.dataset.theme;else r.dataset.theme=v;
   const dark=v==="dark"||(v==="auto"&&matchMedia("(prefers-color-scheme: dark)").matches);
-  document.querySelector('meta[name="theme-color"]').content=v==="ninja"?"#e9dfc8":v==="jjk"?"#0a0a15":dark?"#131418":"#f4f1ea";
+  const tc=v==="ninja"?"#e9dfc8":v==="jjk"?"#0a0a15":dark?"#131418":"#f4f1ea";document.querySelectorAll('meta[name="theme-color"]').forEach((m,i)=>{if(v==="auto"){m.content=i?"#131418":"#f4f1ea"}else m.content=tc});
   document.querySelectorAll("#setTheme button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));store.set("twtheme",v)}
 function applyColor(v){
   const r=document.documentElement;if(v==="intl")r.dataset.color="intl";else delete r.dataset.color;
